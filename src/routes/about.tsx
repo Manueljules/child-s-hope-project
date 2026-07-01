@@ -1,6 +1,21 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
 import { SiteLayout, PageHeader } from "@/components/site/SiteLayout";
-import { CheckCircle2 } from "lucide-react";
+import { CheckCircle2, Quote } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+
+type Message = { name: string; title: string; body: string; image_url?: string };
+
+function useLeaderMessage(key: "founder_message" | "cofounder_message", fallback: Message) {
+  return useQuery({
+    queryKey: ["site_content", key],
+    queryFn: async () => {
+      const { data } = await supabase.from("site_content").select("value").eq("key", key).maybeSingle();
+      return (data?.value as Message | undefined) ?? fallback;
+    },
+    initialData: fallback,
+  });
+}
 
 export const Route = createFileRoute("/about")({
   head: () => ({
