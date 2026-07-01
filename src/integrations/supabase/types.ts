@@ -14,16 +14,210 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      donation_accounts: {
+        Row: {
+          account_name: string | null
+          account_number: string | null
+          bank_name: string | null
+          created_at: string
+          currency: string
+          id: string
+          is_active: boolean
+          is_primary: boolean
+          label: string
+          mobile_money_number: string | null
+          mobile_money_provider: string | null
+          notes: string | null
+          swift_code: string | null
+          updated_at: string
+        }
+        Insert: {
+          account_name?: string | null
+          account_number?: string | null
+          bank_name?: string | null
+          created_at?: string
+          currency?: string
+          id?: string
+          is_active?: boolean
+          is_primary?: boolean
+          label: string
+          mobile_money_number?: string | null
+          mobile_money_provider?: string | null
+          notes?: string | null
+          swift_code?: string | null
+          updated_at?: string
+        }
+        Update: {
+          account_name?: string | null
+          account_number?: string | null
+          bank_name?: string | null
+          created_at?: string
+          currency?: string
+          id?: string
+          is_active?: boolean
+          is_primary?: boolean
+          label?: string
+          mobile_money_number?: string | null
+          mobile_money_provider?: string | null
+          notes?: string | null
+          swift_code?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      donations: {
+        Row: {
+          amount: number
+          anonymous: boolean
+          created_at: string
+          currency: string
+          dedication: string | null
+          donation_type: string
+          donor_country: string | null
+          donor_email: string | null
+          donor_name: string | null
+          donor_phone: string | null
+          frequency: string
+          id: string
+          metadata: Json | null
+          payment_method: string | null
+          reference: string
+          status: string
+        }
+        Insert: {
+          amount: number
+          anonymous?: boolean
+          created_at?: string
+          currency?: string
+          dedication?: string | null
+          donation_type?: string
+          donor_country?: string | null
+          donor_email?: string | null
+          donor_name?: string | null
+          donor_phone?: string | null
+          frequency?: string
+          id?: string
+          metadata?: Json | null
+          payment_method?: string | null
+          reference: string
+          status?: string
+        }
+        Update: {
+          amount?: number
+          anonymous?: boolean
+          created_at?: string
+          currency?: string
+          dedication?: string | null
+          donation_type?: string
+          donor_country?: string | null
+          donor_email?: string | null
+          donor_name?: string | null
+          donor_phone?: string | null
+          frequency?: string
+          id?: string
+          metadata?: Json | null
+          payment_method?: string | null
+          reference?: string
+          status?: string
+        }
+        Relationships: []
+      }
+      site_content: {
+        Row: {
+          key: string
+          updated_at: string
+          updated_by: string | null
+          value: Json
+        }
+        Insert: {
+          key: string
+          updated_at?: string
+          updated_by?: string | null
+          value?: Json
+        }
+        Update: {
+          key?: string
+          updated_at?: string
+          updated_by?: string | null
+          value?: Json
+        }
+        Relationships: []
+      }
+      stories: {
+        Row: {
+          body: string | null
+          created_at: string
+          excerpt: string | null
+          id: string
+          image_url: string | null
+          is_published: boolean
+          sort_order: number
+          tag: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          body?: string | null
+          created_at?: string
+          excerpt?: string | null
+          id?: string
+          image_url?: string | null
+          is_published?: boolean
+          sort_order?: number
+          tag?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          body?: string | null
+          created_at?: string
+          excerpt?: string | null
+          id?: string
+          image_url?: string | null
+          is_published?: boolean
+          sort_order?: number
+          tag?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "user"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +344,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "user"],
+    },
   },
 } as const
