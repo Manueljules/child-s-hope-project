@@ -33,6 +33,33 @@ export const Route = createFileRoute("/about")({
   component: AboutPage,
 });
 
+function LeaderCard({ msgKey, accent, fallback }: { msgKey: "founder_message" | "cofounder_message"; accent: "blue" | "orange"; fallback: Message }) {
+  const { data } = useLeaderMessage(msgKey, fallback);
+  const border = accent === "blue" ? "border-brand-blue" : "border-brand-orange";
+  const text = accent === "blue" ? "text-brand-blue" : "text-brand-orange";
+  return (
+    <article className={`bg-white border-t-4 ${border} p-8 md:p-10 shadow-sm`}>
+      <Quote className={`size-8 ${text} mb-4`} />
+      <p className="font-display text-lg md:text-xl leading-relaxed text-ink/80 mb-6 whitespace-pre-line">
+        {data.body}
+      </p>
+      <div className="flex items-center gap-4 pt-6 border-t border-ink/10">
+        {data.image_url ? (
+          <img src={data.image_url} alt={data.name} className="size-14 rounded-full object-cover" />
+        ) : (
+          <div className={`size-14 rounded-full ${accent === "blue" ? "bg-brand-blue" : "bg-brand-orange"} text-white grid place-items-center font-display font-extrabold text-lg`}>
+            {data.name.split(" ").map((s) => s[0]).slice(0, 2).join("")}
+          </div>
+        )}
+        <div>
+          <p className="font-display font-extrabold text-lg">{data.name}</p>
+          <p className={`font-mono text-[11px] uppercase tracking-widest ${text}`}>{data.title}</p>
+        </div>
+      </div>
+    </article>
+  );
+}
+
 function AboutPage() {
   return (
     <SiteLayout>
@@ -41,6 +68,38 @@ function AboutPage() {
         title="Holistic care for Uganda's most vulnerable children."
         description="A non-profit organization dedicated to transforming the lives of orphaned and vulnerable children through education, healthcare, shelter, nutrition, counseling, empowerment, and community development."
       />
+
+      {/* Leadership messages */}
+      <section className="py-20 bg-surface">
+        <div className="max-w-7xl mx-auto px-6">
+          <p className="font-mono text-brand-blue text-sm uppercase tracking-widest mb-4">/ Leadership Messages</p>
+          <h2 className="font-display font-extrabold text-4xl md:text-5xl tracking-tight mb-12 max-w-3xl">
+            A word from our founders.
+          </h2>
+          <div className="grid md:grid-cols-2 gap-8">
+            <LeaderCard
+              msgKey="founder_message"
+              accent="blue"
+              fallback={{
+                name: "Founder Name",
+                title: "Founder & Executive Director",
+                body: "When I founded The Saints Childcare Foundation Uganda, I made a promise to every orphaned and vulnerable child we would meet: you will not be forgotten.",
+              }}
+            />
+            <LeaderCard
+              msgKey="cofounder_message"
+              accent="orange"
+              fallback={{
+                name: "Cofounder Name",
+                title: "Cofounder & Programs Director",
+                body: "Change is stubborn work. It happens one child, one family, one village at a time.",
+              }}
+            />
+          </div>
+        </div>
+      </section>
+
+
 
       {/* Mission & Vision */}
       <section className="py-20 bg-white">
