@@ -3,14 +3,12 @@ import { useState } from "react";
 import { Menu, X } from "lucide-react";
 
 const navItems = [
+  { to: "/", label: "Home" },
   { to: "/about", label: "About" },
-  { to: "/programs", label: "Programs" },
-  { to: "/sponsorship", label: "Sponsorship" },
   { to: "/projects", label: "Projects" },
   { to: "/gallery", label: "Gallery" },
   { to: "/stories", label: "Stories" },
   { to: "/news", label: "News" },
-  { to: "/transparency", label: "Transparency" },
   { to: "/contact", label: "Contact" },
 ] as const;
 
@@ -41,6 +39,7 @@ export function SiteNav() {
               to={item.to}
               className="hover:text-brand-blue transition-colors"
               activeProps={{ className: "text-brand-blue" }}
+              activeOptions={{ exact: item.to === "/" }}
             >
               {item.label}
             </Link>
@@ -84,20 +83,6 @@ export function SiteNav() {
               className="font-display font-bold text-sm uppercase tracking-wider text-ink/80 hover:text-brand-blue py-2"
             >
               Volunteer
-            </Link>
-            <Link
-              to="/partner"
-              onClick={() => setOpen(false)}
-              className="font-display font-bold text-sm uppercase tracking-wider text-ink/80 hover:text-brand-blue py-2"
-            >
-              Partner
-            </Link>
-            <Link
-              to="/faq"
-              onClick={() => setOpen(false)}
-              className="font-display font-bold text-sm uppercase tracking-wider text-ink/80 hover:text-brand-blue py-2"
-            >
-              FAQs
             </Link>
           </div>
         </div>

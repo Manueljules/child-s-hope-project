@@ -44,10 +44,10 @@ export function SiteFooter() {
               Foundation
             </h4>
             <ul className="space-y-3 text-sm text-ink/60 font-medium">
+              <li><Link to="/" className="hover:text-brand-blue">Home</Link></li>
               <li><Link to="/about" className="hover:text-brand-blue">About Us</Link></li>
               <li><Link to="/founder" className="hover:text-brand-blue">Founder</Link></li>
               <li><Link to="/leadership" className="hover:text-brand-blue">Leadership</Link></li>
-              <li><Link to="/transparency" className="hover:text-brand-blue">Transparency</Link></li>
               <li><Link to="/news" className="hover:text-brand-blue">News & Events</Link></li>
             </ul>
           </div>
@@ -58,12 +58,13 @@ export function SiteFooter() {
             </h4>
             <ul className="space-y-3 text-sm text-ink/60 font-medium">
               <li><Link to="/donate" className="hover:text-brand-blue">Donate</Link></li>
-              <li><Link to="/sponsorship" className="hover:text-brand-blue">Sponsor a Child</Link></li>
               <li><Link to="/volunteer" className="hover:text-brand-blue">Volunteer</Link></li>
-              <li><Link to="/partner" className="hover:text-brand-blue">Partner with Us</Link></li>
               <li><Link to="/projects" className="hover:text-brand-blue">Our Projects</Link></li>
+              <li><Link to="/stories" className="hover:text-brand-blue">Stories</Link></li>
+              <li><Link to="/gallery" className="hover:text-brand-blue">Gallery</Link></li>
             </ul>
           </div>
+
 
           <div className="md:col-span-3">
             <h4 className="font-display font-bold uppercase text-[11px] tracking-widest mb-6 text-ink">
@@ -105,7 +106,7 @@ export function SiteFooter() {
           <div className="flex gap-6">
             <Link to="/privacy" className="hover:text-brand-blue">Privacy</Link>
             <Link to="/terms" className="hover:text-brand-blue">Terms</Link>
-            <Link to="/faq" className="hover:text-brand-blue">FAQs</Link>
+            <Link to="/contact" className="hover:text-brand-blue">Contact</Link>
           </div>
         </div>
       </div>

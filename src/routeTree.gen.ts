@@ -10,33 +10,26 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as VolunteerRouteImport } from './routes/volunteer'
-import { Route as TransparencyRouteImport } from './routes/transparency'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as StoriesRouteImport } from './routes/stories'
-import { Route as SponsorshipRouteImport } from './routes/sponsorship'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as ProjectsRouteImport } from './routes/projects'
-import { Route as ProgramsRouteImport } from './routes/programs'
 import { Route as PrivacyRouteImport } from './routes/privacy'
-import { Route as PartnerRouteImport } from './routes/partner'
 import { Route as NewsRouteImport } from './routes/news'
 import { Route as LeadershipRouteImport } from './routes/leadership'
 import { Route as GalleryRouteImport } from './routes/gallery'
 import { Route as FounderRouteImport } from './routes/founder'
-import { Route as FaqRouteImport } from './routes/faq'
 import { Route as DonateRouteImport } from './routes/donate'
 import { Route as ContactRouteImport } from './routes/contact'
+import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AboutRouteImport } from './routes/about'
+import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 
 const VolunteerRoute = VolunteerRouteImport.update({
   id: '/volunteer',
   path: '/volunteer',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const TransparencyRoute = TransparencyRouteImport.update({
-  id: '/transparency',
-  path: '/transparency',
   getParentRoute: () => rootRouteImport,
 } as any)
 const TermsRoute = TermsRouteImport.update({
@@ -49,11 +42,6 @@ const StoriesRoute = StoriesRouteImport.update({
   path: '/stories',
   getParentRoute: () => rootRouteImport,
 } as any)
-const SponsorshipRoute = SponsorshipRouteImport.update({
-  id: '/sponsorship',
-  path: '/sponsorship',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
   path: '/sitemap.xml',
@@ -64,19 +52,9 @@ const ProjectsRoute = ProjectsRouteImport.update({
   path: '/projects',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ProgramsRoute = ProgramsRouteImport.update({
-  id: '/programs',
-  path: '/programs',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const PrivacyRoute = PrivacyRouteImport.update({
   id: '/privacy',
   path: '/privacy',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PartnerRoute = PartnerRouteImport.update({
-  id: '/partner',
-  path: '/partner',
   getParentRoute: () => rootRouteImport,
 } as any)
 const NewsRoute = NewsRouteImport.update({
@@ -99,11 +77,6 @@ const FounderRoute = FounderRouteImport.update({
   path: '/founder',
   getParentRoute: () => rootRouteImport,
 } as any)
-const FaqRoute = FaqRouteImport.update({
-  id: '/faq',
-  path: '/faq',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const DonateRoute = DonateRouteImport.update({
   id: '/donate',
   path: '/donate',
@@ -114,9 +87,18 @@ const ContactRoute = ContactRouteImport.update({
   path: '/contact',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AboutRoute = AboutRouteImport.update({
   id: '/about',
   path: '/about',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
+  id: '/_authenticated',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -124,156 +106,142 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/auth': typeof AuthRoute
   '/contact': typeof ContactRoute
   '/donate': typeof DonateRoute
-  '/faq': typeof FaqRoute
   '/founder': typeof FounderRoute
   '/gallery': typeof GalleryRoute
   '/leadership': typeof LeadershipRoute
   '/news': typeof NewsRoute
-  '/partner': typeof PartnerRoute
   '/privacy': typeof PrivacyRoute
-  '/programs': typeof ProgramsRoute
   '/projects': typeof ProjectsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
-  '/sponsorship': typeof SponsorshipRoute
   '/stories': typeof StoriesRoute
   '/terms': typeof TermsRoute
-  '/transparency': typeof TransparencyRoute
   '/volunteer': typeof VolunteerRoute
+  '/admin': typeof AuthenticatedAdminRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/auth': typeof AuthRoute
   '/contact': typeof ContactRoute
   '/donate': typeof DonateRoute
-  '/faq': typeof FaqRoute
   '/founder': typeof FounderRoute
   '/gallery': typeof GalleryRoute
   '/leadership': typeof LeadershipRoute
   '/news': typeof NewsRoute
-  '/partner': typeof PartnerRoute
   '/privacy': typeof PrivacyRoute
-  '/programs': typeof ProgramsRoute
   '/projects': typeof ProjectsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
-  '/sponsorship': typeof SponsorshipRoute
   '/stories': typeof StoriesRoute
   '/terms': typeof TermsRoute
-  '/transparency': typeof TransparencyRoute
   '/volunteer': typeof VolunteerRoute
+  '/admin': typeof AuthenticatedAdminRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/about': typeof AboutRoute
+  '/auth': typeof AuthRoute
   '/contact': typeof ContactRoute
   '/donate': typeof DonateRoute
-  '/faq': typeof FaqRoute
   '/founder': typeof FounderRoute
   '/gallery': typeof GalleryRoute
   '/leadership': typeof LeadershipRoute
   '/news': typeof NewsRoute
-  '/partner': typeof PartnerRoute
   '/privacy': typeof PrivacyRoute
-  '/programs': typeof ProgramsRoute
   '/projects': typeof ProjectsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
-  '/sponsorship': typeof SponsorshipRoute
   '/stories': typeof StoriesRoute
   '/terms': typeof TermsRoute
-  '/transparency': typeof TransparencyRoute
   '/volunteer': typeof VolunteerRoute
+  '/_authenticated/admin': typeof AuthenticatedAdminRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
     | '/about'
+    | '/auth'
     | '/contact'
     | '/donate'
-    | '/faq'
     | '/founder'
     | '/gallery'
     | '/leadership'
     | '/news'
-    | '/partner'
     | '/privacy'
-    | '/programs'
     | '/projects'
     | '/sitemap.xml'
-    | '/sponsorship'
     | '/stories'
     | '/terms'
-    | '/transparency'
     | '/volunteer'
+    | '/admin'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/about'
+    | '/auth'
     | '/contact'
     | '/donate'
-    | '/faq'
     | '/founder'
     | '/gallery'
     | '/leadership'
     | '/news'
-    | '/partner'
     | '/privacy'
-    | '/programs'
     | '/projects'
     | '/sitemap.xml'
-    | '/sponsorship'
     | '/stories'
     | '/terms'
-    | '/transparency'
     | '/volunteer'
+    | '/admin'
   id:
     | '__root__'
     | '/'
+    | '/_authenticated'
     | '/about'
+    | '/auth'
     | '/contact'
     | '/donate'
-    | '/faq'
     | '/founder'
     | '/gallery'
     | '/leadership'
     | '/news'
-    | '/partner'
     | '/privacy'
-    | '/programs'
     | '/projects'
     | '/sitemap.xml'
-    | '/sponsorship'
     | '/stories'
     | '/terms'
-    | '/transparency'
     | '/volunteer'
+    | '/_authenticated/admin'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AboutRoute: typeof AboutRoute
+  AuthRoute: typeof AuthRoute
   ContactRoute: typeof ContactRoute
   DonateRoute: typeof DonateRoute
-  FaqRoute: typeof FaqRoute
   FounderRoute: typeof FounderRoute
   GalleryRoute: typeof GalleryRoute
   LeadershipRoute: typeof LeadershipRoute
   NewsRoute: typeof NewsRoute
-  PartnerRoute: typeof PartnerRoute
   PrivacyRoute: typeof PrivacyRoute
-  ProgramsRoute: typeof ProgramsRoute
   ProjectsRoute: typeof ProjectsRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
-  SponsorshipRoute: typeof SponsorshipRoute
   StoriesRoute: typeof StoriesRoute
   TermsRoute: typeof TermsRoute
-  TransparencyRoute: typeof TransparencyRoute
   VolunteerRoute: typeof VolunteerRoute
 }
 
@@ -284,13 +252,6 @@ declare module '@tanstack/react-router' {
       path: '/volunteer'
       fullPath: '/volunteer'
       preLoaderRoute: typeof VolunteerRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/transparency': {
-      id: '/transparency'
-      path: '/transparency'
-      fullPath: '/transparency'
-      preLoaderRoute: typeof TransparencyRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/terms': {
@@ -307,13 +268,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof StoriesRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/sponsorship': {
-      id: '/sponsorship'
-      path: '/sponsorship'
-      fullPath: '/sponsorship'
-      preLoaderRoute: typeof SponsorshipRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/sitemap.xml': {
       id: '/sitemap.xml'
       path: '/sitemap.xml'
@@ -328,25 +282,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProjectsRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/programs': {
-      id: '/programs'
-      path: '/programs'
-      fullPath: '/programs'
-      preLoaderRoute: typeof ProgramsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/privacy': {
       id: '/privacy'
       path: '/privacy'
       fullPath: '/privacy'
       preLoaderRoute: typeof PrivacyRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/partner': {
-      id: '/partner'
-      path: '/partner'
-      fullPath: '/partner'
-      preLoaderRoute: typeof PartnerRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/news': {
@@ -377,13 +317,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof FounderRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/faq': {
-      id: '/faq'
-      path: '/faq'
-      fullPath: '/faq'
-      preLoaderRoute: typeof FaqRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/donate': {
       id: '/donate'
       path: '/donate'
@@ -398,11 +331,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ContactRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/about': {
       id: '/about'
       path: '/about'
       fullPath: '/about'
       preLoaderRoute: typeof AboutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -412,40 +359,45 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/admin': {
+      id: '/_authenticated/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AuthenticatedAdminRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
   }
 }
 
+interface AuthenticatedRouteRouteChildren {
+  AuthenticatedAdminRoute: typeof AuthenticatedAdminRoute
+}
+
+const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedAdminRoute: AuthenticatedAdminRoute,
+}
+
+const AuthenticatedRouteRouteWithChildren =
+  AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AboutRoute: AboutRoute,
+  AuthRoute: AuthRoute,
   ContactRoute: ContactRoute,
   DonateRoute: DonateRoute,
-  FaqRoute: FaqRoute,
   FounderRoute: FounderRoute,
   GalleryRoute: GalleryRoute,
   LeadershipRoute: LeadershipRoute,
   NewsRoute: NewsRoute,
-  PartnerRoute: PartnerRoute,
   PrivacyRoute: PrivacyRoute,
-  ProgramsRoute: ProgramsRoute,
   ProjectsRoute: ProjectsRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
-  SponsorshipRoute: SponsorshipRoute,
   StoriesRoute: StoriesRoute,
   TermsRoute: TermsRoute,
-  TransparencyRoute: TransparencyRoute,
   VolunteerRoute: VolunteerRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

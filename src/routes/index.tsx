@@ -82,10 +82,10 @@ function HomePage() {
                 Donate Now
               </Link>
               <Link
-                to="/sponsorship"
+                to="/about"
                 className="border-2 border-white text-white px-7 py-4 font-display font-extrabold text-sm uppercase tracking-widest hover:bg-white/10 transition-all"
               >
-                Sponsor a Child
+                Our Mission
               </Link>
               <Link
                 to="/volunteer"
@@ -198,10 +198,10 @@ function HomePage() {
               </h2>
             </div>
             <Link
-              to="/programs"
+              to="/projects"
               className="text-brand-blue font-display font-extrabold uppercase tracking-widest text-sm border-b-2 border-brand-blue pb-1 self-start md:self-auto"
             >
-              View All Programs
+              View All Projects
             </Link>
           </div>
 
@@ -221,7 +221,7 @@ function HomePage() {
                 <h3 className="font-display font-extrabold text-xl mb-3">{p.title}</h3>
                 <p className="text-ink/60 mb-6 text-sm leading-relaxed">{p.desc}</p>
                 <Link
-                  to="/programs"
+                  to="/projects"
                   className={`font-mono text-[11px] uppercase tracking-widest text-${p.color} inline-flex items-center gap-1`}
                 >
                   Learn More <ArrowRight className="size-3" />
@@ -297,10 +297,10 @@ function HomePage() {
                 to lack of school fees. UGX 100,000/month sends him back to class.
               </p>
               <Link
-                to="/sponsorship"
+                to="/donate"
                 className="block w-full text-center border border-white/30 py-4 font-display font-bold uppercase tracking-widest text-xs hover:bg-white/10"
               >
-                Sponsor Brian
+                Donate for Brian
               </Link>
             </div>
           </div>
@@ -382,10 +382,10 @@ function HomePage() {
               <Heart className="size-4" /> Donate
             </Link>
             <Link
-              to="/partner"
+              to="/volunteer"
               className="border-2 border-white text-white px-7 py-4 font-display font-extrabold text-sm uppercase tracking-widest hover:bg-white/10 transition-all"
             >
-              Partner With Us
+              Volunteer With Us
             </Link>
           </div>
         </div>
@@ -450,7 +450,7 @@ function DonationWidget() {
       </Link>
 
       <p className="text-[11px] font-mono uppercase tracking-widest text-white/40 text-center">
-        Secured by Flutterwave · Pesapal · Stripe · MTN · Airtel
+        Secured payments · Visa · Mastercard · PayPal · Apple &amp; Google Pay
       </p>
     </div>
   );
