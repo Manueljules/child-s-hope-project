@@ -382,10 +382,10 @@ function HomePage() {
               <Heart className="size-4" /> Donate
             </Link>
             <Link
-              to="/partner"
+              to="/volunteer"
               className="border-2 border-white text-white px-7 py-4 font-display font-extrabold text-sm uppercase tracking-widest hover:bg-white/10 transition-all"
             >
-              Partner With Us
+              Volunteer With Us
             </Link>
           </div>
         </div>
@@ -450,7 +450,7 @@ function DonationWidget() {
       </Link>
 
       <p className="text-[11px] font-mono uppercase tracking-widest text-white/40 text-center">
-        Secured by Flutterwave · Pesapal · Stripe · MTN · Airtel
+        Secured payments · Visa · Mastercard · PayPal · Apple &amp; Google Pay
       </p>
     </div>
   );
