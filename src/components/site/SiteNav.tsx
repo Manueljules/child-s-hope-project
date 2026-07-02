@@ -215,6 +215,8 @@ export function SiteNav() {
           </div>
         </div>
       )}
+      <div id="google_translate_element" style={{ display: "none" }} />
     </nav>
   );
 }
+
