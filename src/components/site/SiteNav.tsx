@@ -98,7 +98,57 @@ export function SiteNav() {
           >
             Donate Now
           </Link>
+          <div ref={langRef} className="relative">
+            <button
+              type="button"
+              onClick={() => setLangOpen((v) => !v)}
+              aria-haspopup="listbox"
+              aria-expanded={langOpen}
+              aria-label="Select language"
+              className="flex items-center gap-1.5 px-2.5 sm:px-3 py-3 border border-brand-blue/20 text-ink hover:text-brand-blue hover:border-brand-blue/50 font-display font-bold text-xs uppercase tracking-wider transition-colors"
+            >
+              <Globe className="size-4" />
+              <span className="hidden sm:inline">{currentLang.code.toUpperCase()}</span>
+              <ChevronDown className={`size-3.5 transition-transform ${langOpen ? "rotate-180" : ""}`} />
+            </button>
+            {langOpen && (
+              <ul
+                role="listbox"
+                className="absolute right-0 mt-2 w-56 max-h-80 overflow-y-auto bg-background border border-brand-blue/15 shadow-xl z-50 py-1"
+              >
+                {languages.map((l) => (
+                  <li key={l.code}>
+                    <button
+                      type="button"
+                      role="option"
+                      aria-selected={l.code === lang}
+                      onClick={() => {
+                        setLang(l.code);
+                        setLangOpen(false);
+                      }}
+                      className={`w-full text-left px-4 py-2 text-sm flex items-center justify-between hover:bg-brand-blue/5 ${
+                        l.code === lang ? "text-brand-blue font-semibold" : "text-ink/80"
+                      }`}
+                    >
+                      <span>{l.label}</span>
+                      <span className="text-[10px] font-mono uppercase tracking-widest text-ink/40">
+                        {l.code}
+                      </span>
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
           <button
+            type="button"
+            aria-label={open ? "Close menu" : "Open menu"}
+            onClick={() => setOpen((v) => !v)}
+            className="xl:hidden size-11 grid place-items-center text-ink hover:text-brand-blue"
+          >
+            {open ? <X className="size-5" /> : <Menu className="size-5" />}
+          </button>
+
             type="button"
             aria-label={open ? "Close menu" : "Open menu"}
             onClick={() => setOpen((v) => !v)}
