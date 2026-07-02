@@ -163,9 +163,10 @@ export function SiteNav() {
                       role="option"
                       aria-selected={l.code === lang}
                       onClick={() => {
-                        setLang(l.code);
                         setLangOpen(false);
+                        setLanguage(l.code);
                       }}
+
                       className={`w-full text-left px-4 py-2 text-sm flex items-center justify-between hover:bg-brand-blue/5 ${
                         l.code === lang ? "text-brand-blue font-semibold" : "text-ink/80"
                       }`}
