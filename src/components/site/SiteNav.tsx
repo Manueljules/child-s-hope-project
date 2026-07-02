@@ -148,14 +148,6 @@ export function SiteNav() {
           >
             {open ? <X className="size-5" /> : <Menu className="size-5" />}
           </button>
-
-            type="button"
-            aria-label={open ? "Close menu" : "Open menu"}
-            onClick={() => setOpen((v) => !v)}
-            className="xl:hidden size-11 grid place-items-center text-ink hover:text-brand-blue"
-          >
-            {open ? <X className="size-5" /> : <Menu className="size-5" />}
-          </button>
         </div>
       </div>
 
