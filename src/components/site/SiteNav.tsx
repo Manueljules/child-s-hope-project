@@ -31,21 +31,60 @@ const navItems = [
   { to: "/contact", label: "Contact" },
 ] as const;
 
+function readGoogTrans(): string {
+  if (typeof document === "undefined") return "en";
+  const match = document.cookie.match(/(?:^|; )googtrans=([^;]+)/);
+  if (!match) return "en";
+  const parts = decodeURIComponent(match[1]).split("/");
+  return parts[2] || "en";
+}
+
+function setLanguage(code: string) {
+  const host = window.location.hostname;
+  const domains = ["", host, "." + host, host.replace(/^www\./, "."), "." + host.split(".").slice(-2).join(".")];
+  // Clear existing cookie on all possible domains
+  for (const d of domains) {
+    document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/${d ? `; domain=${d}` : ""}`;
+  }
+  if (code && code !== "en") {
+    const value = `/en/${code}`;
+    document.cookie = `googtrans=${value}; path=/`;
+    document.cookie = `googtrans=${value}; path=/; domain=${host}`;
+    document.cookie = `googtrans=${value}; path=/; domain=.${host}`;
+  }
+  window.localStorage.setItem("site.lang", code);
+  window.location.reload();
+}
+
 export function SiteNav() {
   const [open, setOpen] = useState(false);
   const [langOpen, setLangOpen] = useState(false);
-  const [lang, setLang] = useState<string>(() => {
-    if (typeof window === "undefined") return "en";
-    return window.localStorage.getItem("site.lang") ?? "en";
-  });
+  const [lang, setLang] = useState<string>("en");
   const langRef = useRef<HTMLDivElement>(null);
 
+  // Hydration-safe: read active language after mount
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      window.localStorage.setItem("site.lang", lang);
-      document.documentElement.lang = lang;
-    }
-  }, [lang]);
+    setLang(readGoogTrans());
+  }, []);
+
+  // Inject Google Website Translator once
+  useEffect(() => {
+    if (document.getElementById("google-translate-script")) return;
+    (window as unknown as { googleTranslateElementInit: () => void }).googleTranslateElementInit = () => {
+      const g = (window as unknown as { google?: { translate?: { TranslateElement: new (opts: unknown, el: string) => void; InlineLayout: { SIMPLE: unknown } } } }).google;
+      if (g?.translate) {
+        new g.translate.TranslateElement(
+          { pageLanguage: "en", autoDisplay: false, layout: g.translate.InlineLayout.SIMPLE },
+          "google_translate_element"
+        );
+      }
+    };
+    const s = document.createElement("script");
+    s.id = "google-translate-script";
+    s.src = "//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit";
+    s.async = true;
+    document.body.appendChild(s);
+  }, []);
 
   useEffect(() => {
     function onClick(e: MouseEvent) {
@@ -58,6 +97,7 @@ export function SiteNav() {
   }, []);
 
   const currentLang = languages.find((l) => l.code === lang) ?? languages[0];
+
 
 
   return (
@@ -123,9 +163,10 @@ export function SiteNav() {
                       role="option"
                       aria-selected={l.code === lang}
                       onClick={() => {
-                        setLang(l.code);
                         setLangOpen(false);
+                        setLanguage(l.code);
                       }}
+
                       className={`w-full text-left px-4 py-2 text-sm flex items-center justify-between hover:bg-brand-blue/5 ${
                         l.code === lang ? "text-brand-blue font-semibold" : "text-ink/80"
                       }`}
@@ -174,6 +215,8 @@ export function SiteNav() {
           </div>
         </div>
       )}
+      <div id="google_translate_element" style={{ display: "none" }} />
     </nav>
   );
 }
+

@@ -143,3 +143,12 @@
 @utility animate-fade-in {
   animation: fade-in 0.6s ease-out both;
 }
+
+/* Google Website Translator: hide banner + prevent body offset */
+.skiptranslate,
+.goog-te-banner-frame,
+iframe.goog-te-banner-frame { display: none !important; }
+body { top: 0 !important; position: static !important; }
+.goog-te-gadget { font-size: 0 !important; }
+.goog-te-gadget > span { display: none !important; }
+font { background: transparent !important; box-shadow: none !important; }
