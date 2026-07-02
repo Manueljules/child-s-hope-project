@@ -1,6 +1,25 @@
 import { Link } from "@tanstack/react-router";
-import { useState } from "react";
-import { Menu, X } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { Menu, X, Globe, ChevronDown } from "lucide-react";
+
+const languages = [
+  { code: "en", label: "English" },
+  { code: "es", label: "Español" },
+  { code: "fr", label: "Français" },
+  { code: "de", label: "Deutsch" },
+  { code: "it", label: "Italiano" },
+  { code: "pt", label: "Português" },
+  { code: "nl", label: "Nederlands" },
+  { code: "sv", label: "Svenska" },
+  { code: "ru", label: "Русский" },
+  { code: "zh", label: "中文" },
+  { code: "ja", label: "日本語" },
+  { code: "ko", label: "한국어" },
+  { code: "ar", label: "العربية" },
+  { code: "hi", label: "हिन्दी" },
+  { code: "sw", label: "Kiswahili" },
+  { code: "tr", label: "Türkçe" },
+] as const;
 
 const navItems = [
   { to: "/", label: "Home" },
@@ -14,6 +33,32 @@ const navItems = [
 
 export function SiteNav() {
   const [open, setOpen] = useState(false);
+  const [langOpen, setLangOpen] = useState(false);
+  const [lang, setLang] = useState<string>(() => {
+    if (typeof window === "undefined") return "en";
+    return window.localStorage.getItem("site.lang") ?? "en";
+  });
+  const langRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      window.localStorage.setItem("site.lang", lang);
+      document.documentElement.lang = lang;
+    }
+  }, [lang]);
+
+  useEffect(() => {
+    function onClick(e: MouseEvent) {
+      if (langRef.current && !langRef.current.contains(e.target as Node)) {
+        setLangOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", onClick);
+    return () => document.removeEventListener("mousedown", onClick);
+  }, []);
+
+  const currentLang = languages.find((l) => l.code === lang) ?? languages[0];
+
 
   return (
     <nav className="sticky top-0 z-50 w-full bg-background/95 backdrop-blur-md border-b border-brand-blue/10">
@@ -53,6 +98,48 @@ export function SiteNav() {
           >
             Donate Now
           </Link>
+          <div ref={langRef} className="relative">
+            <button
+              type="button"
+              onClick={() => setLangOpen((v) => !v)}
+              aria-haspopup="listbox"
+              aria-expanded={langOpen}
+              aria-label="Select language"
+              className="flex items-center gap-1.5 px-2.5 sm:px-3 py-3 border border-brand-blue/20 text-ink hover:text-brand-blue hover:border-brand-blue/50 font-display font-bold text-xs uppercase tracking-wider transition-colors"
+            >
+              <Globe className="size-4" />
+              <span className="hidden sm:inline">{currentLang.code.toUpperCase()}</span>
+              <ChevronDown className={`size-3.5 transition-transform ${langOpen ? "rotate-180" : ""}`} />
+            </button>
+            {langOpen && (
+              <ul
+                role="listbox"
+                className="absolute right-0 mt-2 w-56 max-h-80 overflow-y-auto bg-background border border-brand-blue/15 shadow-xl z-50 py-1"
+              >
+                {languages.map((l) => (
+                  <li key={l.code}>
+                    <button
+                      type="button"
+                      role="option"
+                      aria-selected={l.code === lang}
+                      onClick={() => {
+                        setLang(l.code);
+                        setLangOpen(false);
+                      }}
+                      className={`w-full text-left px-4 py-2 text-sm flex items-center justify-between hover:bg-brand-blue/5 ${
+                        l.code === lang ? "text-brand-blue font-semibold" : "text-ink/80"
+                      }`}
+                    >
+                      <span>{l.label}</span>
+                      <span className="text-[10px] font-mono uppercase tracking-widest text-ink/40">
+                        {l.code}
+                      </span>
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
           <button
             type="button"
             aria-label={open ? "Close menu" : "Open menu"}
