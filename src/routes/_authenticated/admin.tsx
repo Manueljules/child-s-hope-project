@@ -18,10 +18,17 @@ function AdminPage() {
   const [isAdmin, setIsAdmin] = useState<boolean | null>(null);
 
   useEffect(() => {
-    supabase.from("user_roles").select("role").eq("role", "admin").maybeSingle().then(({ data }) => {
+    (async () => {
+      const { data: userRes } = await supabase.auth.getUser();
+      const uid = userRes.user?.id;
+      if (!uid) { setIsAdmin(false); return; }
+      // ensure first user becomes admin
+      await supabase.rpc("claim_admin_if_first");
+      const { data } = await supabase.from("user_roles").select("role").eq("user_id", uid).eq("role", "admin").maybeSingle();
       setIsAdmin(!!data);
-    });
+    })();
   }, []);
+
 
   async function signOut() {
     await supabase.auth.signOut();
