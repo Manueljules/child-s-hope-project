@@ -132,281 +132,272 @@ function DonatePage() {
 
   return (
     <SiteLayout>
-      <PageHeader
-        eyebrow="Donate"
-        title="Help change a child's life today."
-        description="100% secure. Follow the steps and receive an instant downloadable receipt."
-      />
+      {/* Full-bleed hero with floating donation card */}
+      <section className="relative min-h-[calc(100vh-4rem)] w-full overflow-hidden">
+        {/* Background image */}
+        <img src={heroChildren} alt="" aria-hidden className="absolute inset-0 size-full object-cover" />
+        <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/30 to-black/10" />
 
-      <section className="py-16 bg-white">
-        <div className="max-w-6xl mx-auto px-6 grid lg:grid-cols-[1fr_240px] gap-8">
-          {/* MAIN WIZARD */}
-          <div className="min-w-0">
-            {/* progress bar */}
-            <div className="flex items-center gap-2 mb-8">
-              {STEPS.map((s) => (
-                <div key={s.id} className="flex-1 h-1 bg-ink/10 relative overflow-hidden">
-                  <div className={`absolute inset-y-0 left-0 ${step >= s.id ? "bg-brand-blue" : "bg-transparent"} transition-all`} style={{ width: step >= s.id ? "100%" : "0%" }} />
+        <div className="relative max-w-7xl mx-auto px-6 py-10 md:py-16 min-h-[calc(100vh-4rem)] flex items-center justify-end">
+          {/* Floating card */}
+          <div className="w-full max-w-xl bg-white shadow-2xl">
+            <div className="p-6 md:p-10 relative">
+              {/* Vertical step tab attached to left */}
+              <div className="hidden md:flex flex-col absolute -left-14 top-8 gap-2">
+                {STEPS.map((s) => {
+                  const active = s.id === step;
+                  const done = s.id < step;
+                  return (
+                    <button
+                      key={s.id}
+                      type="button"
+                      onClick={() => s.id < step && setStep(s.id)}
+                      disabled={s.id > step}
+                      title={s.title}
+                      className={`size-11 grid place-items-center font-display font-extrabold text-sm shadow-md transition-all ${
+                        done ? "bg-brand-gold text-ink" : active ? "bg-brand-blue text-white scale-110" : "bg-white/80 text-ink/50"
+                      }`}
+                    >
+                      {done ? "✓" : s.id}
+                    </button>
+                  );
+                })}
+              </div>
+
+              {/* Header inside card */}
+              {step === 1 && (
+                <div className="mb-6">
+                  <h1 className="font-display font-extrabold text-3xl md:text-4xl text-ink leading-tight">
+                    Make a child just better.
+                  </h1>
+                  <p className="mt-3 text-ink/70 text-sm md:text-base">
+                    Your compassion turns into food, school, healthcare and shelter for Uganda's most vulnerable children. Give securely below.
+                  </p>
                 </div>
-              ))}
-            </div>
+              )}
 
-            {/* Step 1 */}
-            {step === 1 && (
-              <div className="space-y-8 animate-fade-in">
-                <div>
-                  <p className="font-mono text-[11px] uppercase tracking-widest text-brand-blue mb-3">/ Donation type</p>
-                  <div className="grid sm:grid-cols-3 gap-2">
-                    {TYPES.map((t) => (
-                      <button
-                        type="button"
-                        key={t.id}
-                        onClick={() => setType(t.id)}
-                        className={`py-3 px-4 text-sm font-display font-extrabold uppercase tracking-widest border transition-all ${type === t.id ? "bg-ink text-white border-ink" : "border-brand-blue/20 text-ink/60 hover:border-brand-blue hover:text-brand-blue"}`}
-                      >
-                        {t.label}
-                      </button>
-                    ))}
+              {/* Step 1 */}
+              {step === 1 && (
+                <div className="space-y-6 animate-fade-in">
+                  {/* Frequency toggle — Give Monthly / Give Once */}
+                  <div className="grid grid-cols-2 border border-brand-blue/20">
+                    <button
+                      type="button"
+                      onClick={() => setFreq("monthly")}
+                      className={`py-4 font-display font-extrabold text-base flex items-center justify-center gap-2 transition ${freq === "monthly" ? "bg-brand-blue text-white" : "bg-white text-ink/60"}`}
+                    >
+                      Give Monthly {freq === "monthly" && <Heart className="size-4 fill-red-500 text-red-500" />}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setFreq("one")}
+                      className={`py-4 font-display font-extrabold text-base transition ${freq === "one" ? "bg-brand-blue text-white" : "bg-white text-ink/60"}`}
+                    >
+                      Give Once
+                    </button>
                   </div>
-                </div>
 
-                <div className="grid sm:grid-cols-2 gap-6">
-                  <div>
-                    <p className="font-mono text-[11px] uppercase tracking-widest text-brand-blue mb-3">/ Frequency</p>
-                    <div className="flex gap-2">
-                      {FREQS.map((f) => (
-                        <button type="button" key={f} onClick={() => setFreq(f)} className={`flex-1 py-3 text-xs font-display font-extrabold uppercase tracking-widest border ${freq === f ? "bg-brand-blue text-white border-brand-blue" : "border-brand-blue/20 text-ink/60"}`}>
-                          {f}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                  <div>
-                    <p className="font-mono text-[11px] uppercase tracking-widest text-brand-blue mb-3">/ Currency</p>
-                    <select value={currency} onChange={(e) => setCurrency(e.target.value)} className="w-full border border-brand-blue/20 px-4 py-3 font-display font-bold text-sm uppercase focus:border-brand-blue focus:outline-none">
-                      <option value="UGX">Uganda Shillings (UGX)</option>
-                      <option value="USD">US Dollars (USD)</option>
-                      <option value="EUR">Euros (EUR)</option>
-                      <option value="GBP">British Pounds (GBP)</option>
+                  <p className="text-brand-blue text-sm font-medium">
+                    {freq === "monthly"
+                      ? "Your priceless monthly gift can provide long-lasting change"
+                      : "One gift, immediate impact for a child in need"}
+                  </p>
+
+                  {/* Currency + Amount grid */}
+                  <div className="flex items-center gap-2 text-xs">
+                    <span className="font-mono uppercase tracking-widest text-ink/50">Currency:</span>
+                    <select value={currency} onChange={(e) => setCurrency(e.target.value)} className="border border-brand-blue/20 px-2 py-1 font-mono text-xs">
+                      <option>UGX</option><option>USD</option><option>EUR</option><option>GBP</option>
                     </select>
                   </div>
-                </div>
 
-                <div>
-                  <p className="font-mono text-[11px] uppercase tracking-widest text-brand-blue mb-3">/ Amount</p>
-                  <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mb-4">
-                    {AMOUNTS_UGX.map((a) => (
-                      <button type="button" key={a} onClick={() => { setAmount(a); setCustom(""); }} className={`py-4 border font-mono text-base ${!custom && amount === a ? "border-brand-blue bg-brand-blue/10 text-brand-blue" : "border-brand-blue/20 text-ink/70 hover:border-brand-blue"}`}>
-                        {a.toLocaleString()}
+                  <div className="grid grid-cols-4 gap-2">
+                    {[10, 25, 50].map((a) => (
+                      <button
+                        key={a}
+                        type="button"
+                        onClick={() => { setAmount(a); setCustom(""); }}
+                        className={`relative py-4 px-2 border text-center transition ${!custom && amount === a ? "bg-brand-blue text-white border-brand-blue" : "border-brand-blue/20 text-ink hover:border-brand-blue"}`}
+                      >
+                        <div className="font-display font-extrabold text-lg leading-none">{currency}{a}</div>
+                        <div className="text-[10px] mt-1 opacity-80">Per {freq === "monthly" ? "month" : "gift"}</div>
+                        {!custom && amount === a && (
+                          <span className="absolute left-1/2 -bottom-2 -translate-x-1/2 w-3 h-3 rotate-45 bg-brand-blue" />
+                        )}
+                      </button>
+                    ))}
+                    <div className="border border-brand-blue/20 flex items-center justify-center">
+                      <input
+                        type="number"
+                        placeholder="Other"
+                        value={custom}
+                        onChange={(e) => setCustom(e.target.value)}
+                        className="w-full h-full text-center font-display font-extrabold text-sm bg-transparent focus:outline-none placeholder:text-ink/50"
+                      />
+                    </div>
+                  </div>
+
+                  <p className="text-sm text-ink/70 leading-relaxed">
+                    Help more children in need wherever they are. By making a {freq === "monthly" ? "monthly" : "one-time"} gift to The Saints Childcare Foundation, you provide children in Uganda with relief, protection, and hope for a better future.
+                  </p>
+                </div>
+              )}
+
+              {/* Step 2 */}
+              {step === 2 && (
+                <div className="space-y-5 animate-fade-in">
+                  <h2 className="font-display font-extrabold text-2xl">Choose a payment method</h2>
+                  <div className="grid grid-cols-3 gap-3">
+                    {PAYMENT_METHODS.map((m) => (
+                      <button
+                        key={m.id}
+                        type="button"
+                        onClick={() => setMethod(m.id)}
+                        className={`aspect-[5/3] border flex items-center justify-center bg-white transition-all ${method === m.id ? "border-brand-blue ring-2 ring-brand-blue/30" : "border-brand-blue/20 hover:border-brand-blue"}`}
+                      >
+                        <m.Logo className="h-8 max-w-[75%]" />
                       </button>
                     ))}
                   </div>
-                  <input type="number" placeholder="Custom amount" value={custom} onChange={(e) => setCustom(e.target.value)} className="w-full border border-brand-blue/20 px-4 py-3 focus:border-brand-blue focus:outline-none text-sm" />
-                </div>
-              </div>
-            )}
-
-            {/* Step 2 */}
-            {step === 2 && (
-              <div className="space-y-6 animate-fade-in">
-                <div>
-                  <h2 className="font-display font-extrabold text-2xl mb-2">Choose a payment method</h2>
-                  <p className="text-ink/60 text-sm">Select one — we'll ask for the details on the next step.</p>
-                </div>
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                  {PAYMENT_METHODS.map((m) => (
-                    <button
-                      key={m.id}
-                      type="button"
-                      onClick={() => setMethod(m.id)}
-                      className={`aspect-[5/3] border flex items-center justify-center bg-white transition-all ${method === m.id ? "border-brand-blue ring-2 ring-brand-blue/30" : "border-brand-blue/20 hover:border-brand-blue"}`}
-                      aria-pressed={method === m.id}
-                    >
-                      <m.Logo className="h-8 max-w-[70%]" />
-                    </button>
-                  ))}
-                </div>
-                <div className="flex items-center gap-2 text-xs font-mono uppercase tracking-widest text-ink/50">
-                  <ShieldCheck className="size-4 text-brand-green" /> Encrypted end-to-end · PCI-compliant processing
-                </div>
-              </div>
-            )}
-
-            {/* Step 3 — Details + payment drawer */}
-            {step === 3 && methodMeta && (
-              <div className="grid md:grid-cols-2 gap-8 animate-fade-in">
-                <div className="space-y-6">
-                  <div>
-                    <h2 className="font-display font-extrabold text-2xl mb-2">Your details</h2>
-                    <p className="text-ink/60 text-sm">We'll email your receipt here.</p>
+                  <div className="flex items-center gap-2 text-[11px] font-mono uppercase tracking-widest text-ink/50">
+                    <ShieldCheck className="size-4 text-brand-green" /> Encrypted · PCI-compliant
                   </div>
-                  <label className="flex items-center gap-3 text-sm">
-                    <input type="checkbox" checked={anon} onChange={(e) => setAnon(e.target.checked)} />
-                    <span>Make my donation anonymous</span>
+                </div>
+              )}
+
+              {/* Step 3 */}
+              {step === 3 && methodMeta && (
+                <div className="space-y-5 animate-fade-in max-h-[70vh] overflow-y-auto pr-1">
+                  <div className="flex items-center justify-between border-b border-brand-blue/10 pb-3">
+                    <div>
+                      <p className="font-mono text-[10px] uppercase tracking-widest text-brand-blue">/ Paying with</p>
+                      <p className="font-display font-extrabold text-lg">{methodMeta.label}</p>
+                    </div>
+                    <methodMeta.Logo className="h-7" />
+                  </div>
+                  <h3 className="font-display font-extrabold text-lg">Your details</h3>
+                  <label className="flex items-center gap-2 text-sm">
+                    <input type="checkbox" checked={anon} onChange={(e) => setAnon(e.target.checked)} /> Make my donation anonymous
                   </label>
-                  {!anon && (
-                    <Field label="Full name" value={donor.name} onChange={(v) => setDonor({ ...donor, name: v })} required />
-                  )}
+                  {!anon && <Field label="Full name" value={donor.name} onChange={(v) => setDonor({ ...donor, name: v })} required />}
                   <Field label="Email" type="email" value={donor.email} onChange={(v) => setDonor({ ...donor, email: v })} required />
                   <Field label="Phone" type="tel" value={donor.phone} onChange={(v) => setDonor({ ...donor, phone: v })} />
                   <Field label="Country" value={donor.country} onChange={(v) => setDonor({ ...donor, country: v })} />
                   <Field label="Dedication (optional)" value={dedication} onChange={setDedication} placeholder="In honor of..." />
-                </div>
 
-                {/* Side drawer for payment method-specific fields */}
-                <aside className="bg-surface border border-brand-blue/10 p-6 md:p-8 space-y-5 self-start">
-                  <div className="flex items-center justify-between border-b border-brand-blue/10 pb-4">
-                    <div>
-                      <p className="font-mono text-[11px] uppercase tracking-widest text-brand-blue">/ Paying with</p>
-                      <p className="font-display font-extrabold text-lg mt-1">{methodMeta.label}</p>
-                    </div>
-                    <methodMeta.Logo className="h-8 max-w-[90px]" />
-                  </div>
-
-                  {methodMeta.kind === "card" && (
-                    <>
-                      <Field label="Card number" value={card.number} onChange={(v) => setCard({ ...card, number: v.replace(/[^0-9 ]/g, "").slice(0, 19) })} placeholder="1234 5678 9012 3456" required />
-                      <Field label="Name on card" value={card.name} onChange={(v) => setCard({ ...card, name: v })} required />
-                      <div className="grid grid-cols-2 gap-3">
-                        <Field label="Expiry" value={card.expiry} onChange={(v) => setCard({ ...card, expiry: v.slice(0, 5) })} placeholder="MM/YY" required />
-                        <Field label="CVC" value={card.cvc} onChange={(v) => setCard({ ...card, cvc: v.replace(/\D/g, "").slice(0, 4) })} placeholder="123" required />
-                      </div>
-                    </>
-                  )}
-                  {methodMeta.kind === "wallet" && (
-                    <>
-                      <p className="text-xs text-ink/60">You'll confirm the payment on your {methodMeta.label} device after clicking Donate.</p>
-                      <Field label="Phone linked to wallet" type="tel" value={walletPhone} onChange={setWalletPhone} placeholder="+256 ..." required />
-                    </>
-                  )}
-                  {methodMeta.kind === "paypal" && (
-                    <>
-                      <p className="text-xs text-ink/60">You'll be redirected to PayPal to authorise the payment.</p>
+                  <div className="border-t border-brand-blue/10 pt-4 space-y-3">
+                    <h3 className="font-display font-extrabold text-lg">Payment details</h3>
+                    {methodMeta.kind === "card" && (
+                      <>
+                        <Field label="Card number" value={card.number} onChange={(v) => setCard({ ...card, number: v.replace(/[^0-9 ]/g, "").slice(0, 19) })} placeholder="1234 5678 9012 3456" required />
+                        <Field label="Name on card" value={card.name} onChange={(v) => setCard({ ...card, name: v })} required />
+                        <div className="grid grid-cols-2 gap-3">
+                          <Field label="Expiry" value={card.expiry} onChange={(v) => setCard({ ...card, expiry: v.slice(0, 5) })} placeholder="MM/YY" required />
+                          <Field label="CVC" value={card.cvc} onChange={(v) => setCard({ ...card, cvc: v.replace(/\D/g, "").slice(0, 4) })} placeholder="123" required />
+                        </div>
+                      </>
+                    )}
+                    {methodMeta.kind === "wallet" && (
+                      <>
+                        <p className="text-xs text-ink/60">You'll confirm the payment on your {methodMeta.label} device.</p>
+                        <Field label="Phone linked to wallet" type="tel" value={walletPhone} onChange={setWalletPhone} required />
+                      </>
+                    )}
+                    {methodMeta.kind === "paypal" && (
                       <Field label="PayPal email" type="email" value={paypalEmail} onChange={setPaypalEmail} required />
-                    </>
-                  )}
-                  <div className="flex items-center gap-2 text-[11px] font-mono uppercase tracking-widest text-ink/50 pt-2">
-                    <Lock className="size-3" /> Details are encrypted in transit
+                    )}
+                    <div className="flex items-center gap-2 text-[10px] font-mono uppercase tracking-widest text-ink/50 pt-1">
+                      <Lock className="size-3" /> Encrypted in transit
+                    </div>
                   </div>
-                </aside>
-              </div>
-            )}
-
-            {/* Step 4 — Review */}
-            {step === 4 && (
-              <div className="space-y-6 animate-fade-in max-w-lg">
-                <h2 className="font-display font-extrabold text-2xl">Review your donation</h2>
-                <div className="bg-surface p-6 space-y-3">
-                  <Row k="Amount" v={`${currency} ${finalAmount.toLocaleString()}`} big />
-                  <Row k="Type" v={TYPES.find((t) => t.id === type)?.label ?? type} />
-                  <Row k="Frequency" v={freq === "one" ? "One-time" : freq} />
-                  <Row k="Payment" v={methodMeta?.label ?? "—"} />
-                  <Row k="Donor" v={anon ? "Anonymous" : donor.name} />
-                  <Row k="Email" v={donor.email} />
-                  {dedication && <Row k="Dedication" v={dedication} />}
                 </div>
-                {error && <p className="text-sm text-red-600">{error}</p>}
-              </div>
-            )}
+              )}
 
-            {/* Step 5 — Receipt */}
-            {step === 5 && receipt && (
-              <div className="text-center py-8 animate-fade-in max-w-md mx-auto">
-                <CheckCircle2 className="size-20 text-brand-green mx-auto mb-6" />
-                <h2 className="font-display font-extrabold text-3xl mb-2">Thank you!</h2>
-                <p className="text-ink/60 mb-2">Your donation of <strong>{receipt.currency} {receipt.amount.toLocaleString()}</strong> has been received.</p>
-                <p className="text-xs font-mono text-ink/50 mb-8">Reference {receipt.reference}</p>
-                <button
-                  onClick={() => generateReceiptPDF(receipt)}
-                  className="w-full bg-brand-orange text-white py-4 font-display font-extrabold uppercase tracking-widest text-sm hover:bg-brand-orange/90 inline-flex items-center justify-center gap-3"
-                >
-                  <Download className="size-4" /> Download Receipt (PDF)
-                </button>
-                <a href="/" className="mt-4 inline-block text-brand-blue font-mono text-[11px] uppercase tracking-widest hover:underline">Back to home</a>
-              </div>
-            )}
+              {/* Step 4 */}
+              {step === 4 && (
+                <div className="space-y-5 animate-fade-in">
+                  <h2 className="font-display font-extrabold text-2xl">Review your donation</h2>
+                  <div className="bg-surface p-5 space-y-3">
+                    <Row k="Amount" v={`${currency} ${finalAmount.toLocaleString()}`} big />
+                    <Row k="Type" v={TYPES.find((t) => t.id === type)?.label ?? type} />
+                    <Row k="Frequency" v={freq === "one" ? "One-time" : freq} />
+                    <Row k="Payment" v={methodMeta?.label ?? "—"} />
+                    <Row k="Donor" v={anon ? "Anonymous" : donor.name} />
+                    <Row k="Email" v={donor.email} />
+                    {dedication && <Row k="Dedication" v={dedication} />}
+                  </div>
+                  {error && <p className="text-sm text-red-600">{error}</p>}
+                </div>
+              )}
 
-            {/* Nav buttons */}
-            {step < 5 && (
-              <div className="flex items-center justify-between mt-10 pt-6 border-t border-brand-blue/10">
-                <button
-                  type="button"
-                  disabled={step === 1}
-                  onClick={() => setStep((s) => Math.max(1, s - 1))}
-                  className="inline-flex items-center gap-2 px-5 py-3 font-display font-extrabold uppercase tracking-widest text-xs text-ink/60 disabled:opacity-30 hover:text-brand-blue"
-                >
-                  <ChevronLeft className="size-4" /> Previous
-                </button>
-                {step < 4 ? (
+              {/* Step 5 */}
+              {step === 5 && receipt && (
+                <div className="text-center py-6 animate-fade-in">
+                  <CheckCircle2 className="size-16 text-brand-green mx-auto mb-4" />
+                  <h2 className="font-display font-extrabold text-3xl mb-2">Thank you!</h2>
+                  <p className="text-ink/70 mb-1">Your donation of <strong>{receipt.currency} {receipt.amount.toLocaleString()}</strong> has been received.</p>
+                  <p className="text-xs font-mono text-ink/50 mb-6">Ref {receipt.reference}</p>
+                  <button
+                    onClick={() => generateReceiptPDF(receipt)}
+                    className="w-full bg-brand-orange text-white py-4 font-display font-extrabold uppercase tracking-widest text-sm hover:bg-brand-orange/90 inline-flex items-center justify-center gap-3"
+                  >
+                    <Download className="size-4" /> Download Receipt (PDF)
+                  </button>
+                  <a href="/" className="mt-4 inline-block text-brand-blue font-mono text-[11px] uppercase tracking-widest hover:underline">Back to home</a>
+                </div>
+              )}
+
+              {/* Primary CTA / Nav */}
+              {step < 4 && (
+                <div className="mt-6 space-y-3">
                   <button
                     type="button"
                     disabled={!canAdvance}
                     onClick={() => setStep((s) => s + 1)}
-                    className="inline-flex items-center gap-2 bg-brand-blue text-white px-7 py-4 font-display font-extrabold uppercase tracking-widest text-sm disabled:opacity-40 hover:bg-brand-blue/90"
+                    className="w-full bg-brand-orange text-white py-4 font-display font-extrabold uppercase tracking-widest text-sm rounded-full hover:bg-brand-orange/90 disabled:opacity-40 inline-flex items-center justify-center gap-2"
                   >
-                    Next <ChevronRight className="size-4" />
+                    {step === 1
+                      ? `Give ${currency}${finalAmount.toLocaleString()} ${freq === "monthly" ? "Monthly" : freq === "annual" ? "Annually" : ""}`
+                      : <>Continue <ChevronRight className="size-4" /></>}
                   </button>
-                ) : (
+                  {step > 1 && (
+                    <button
+                      type="button"
+                      onClick={() => setStep((s) => Math.max(1, s - 1))}
+                      className="w-full inline-flex items-center justify-center gap-2 py-2 font-mono text-[11px] uppercase tracking-widest text-ink/60 hover:text-brand-blue"
+                    >
+                      <ChevronLeft className="size-3" /> Back
+                    </button>
+                  )}
+                </div>
+              )}
+              {step === 4 && (
+                <div className="mt-6 space-y-3">
                   <button
                     type="button"
                     disabled={submitting}
                     onClick={submitDonation}
-                    className="inline-flex items-center gap-2 bg-brand-orange text-white px-7 py-4 font-display font-extrabold uppercase tracking-widest text-sm disabled:opacity-60 hover:bg-brand-orange/90"
+                    className="w-full bg-brand-orange text-white py-4 font-display font-extrabold uppercase tracking-widest text-sm rounded-full hover:bg-brand-orange/90 disabled:opacity-60 inline-flex items-center justify-center gap-2"
                   >
                     <Heart className="size-4" /> {submitting ? "Processing…" : `Donate ${currency} ${finalAmount.toLocaleString()}`}
                   </button>
-                )}
-              </div>
-            )}
-          </div>
-
-          {/* VERTICAL STEP TAB (right) */}
-          <aside className="hidden lg:block sticky top-24 self-start rounded-none overflow-hidden">
-            <div className="relative">
-              <img src={heroChildren} alt="" aria-hidden className="absolute inset-0 size-full object-cover" />
-              <div className="absolute inset-0 bg-gradient-to-b from-brand-blue/95 via-brand-blue/85 to-ink/90" />
-              <div className="relative p-6 text-white">
-                <p className="font-mono text-[10px] uppercase tracking-widest text-brand-gold mb-6">/ Steps</p>
-                <ol className="space-y-5">
-                  {STEPS.map((s) => {
-                    const active = s.id === step;
-                    const done = s.id < step;
-                    return (
-                      <li key={s.id}>
-                        <button
-                          type="button"
-                          onClick={() => s.id < step && setStep(s.id)}
-                          disabled={s.id > step}
-                          className="w-full text-left flex gap-3 items-start disabled:cursor-not-allowed"
-                        >
-                          <span
-                            className={`size-7 shrink-0 rounded-full grid place-items-center font-display font-extrabold text-xs border ${
-                              done ? "bg-brand-gold text-ink border-brand-gold" : active ? "bg-white text-brand-blue border-white" : "border-white/40 text-white/60"
-                            }`}
-                          >
-                            {done ? "✓" : s.id}
-                          </span>
-                          <span className="min-w-0">
-                            <span className={`block font-display font-extrabold text-sm uppercase tracking-wide ${active ? "text-white" : done ? "text-white/90" : "text-white/60"}`}>
-                              {s.title}
-                            </span>
-                            <span className="block text-[11px] text-white/60 mt-0.5 leading-snug">
-                              {s.hint}
-                            </span>
-                          </span>
-                        </button>
-                      </li>
-                    );
-                  })}
-                </ol>
-              </div>
+                  <button
+                    type="button"
+                    onClick={() => setStep(3)}
+                    className="w-full inline-flex items-center justify-center gap-2 py-2 font-mono text-[11px] uppercase tracking-widest text-ink/60 hover:text-brand-blue"
+                  >
+                    <ChevronLeft className="size-3" /> Back
+                  </button>
+                </div>
+              )}
             </div>
-          </aside>
+          </div>
         </div>
       </section>
     </SiteLayout>
   );
 }
+
 
 function Field({
   label, value, onChange, type = "text", placeholder, required,
