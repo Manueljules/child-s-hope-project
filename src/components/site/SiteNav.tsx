@@ -33,26 +33,48 @@ const navItems = [
 
 function readGoogTrans(): string {
   if (typeof document === "undefined") return "en";
+  const fromStorage = window.localStorage.getItem("site.lang");
+  if (fromStorage) return fromStorage;
   const match = document.cookie.match(/(?:^|; )googtrans=([^;]+)/);
   if (!match) return "en";
   const parts = decodeURIComponent(match[1]).split("/");
   return parts[2] || "en";
 }
 
-function setLanguage(code: string) {
+function writeGoogTransCookie(code: string) {
   const host = window.location.hostname;
-  const domains = ["", host, "." + host, host.replace(/^www\./, "."), "." + host.split(".").slice(-2).join(".")];
-  // Clear existing cookie on all possible domains
+  const value = code && code !== "en" ? `/en/${code}` : "";
+  const expire = value ? "" : "; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+  const domains = ["", host, "." + host];
+  const parts = host.split(".");
+  if (parts.length > 1) domains.push("." + parts.slice(-2).join("."));
   for (const d of domains) {
-    document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/${d ? `; domain=${d}` : ""}`;
+    document.cookie = `googtrans=${value}${expire}; path=/${d ? `; domain=${d}` : ""}`;
   }
-  if (code && code !== "en") {
-    const value = `/en/${code}`;
-    document.cookie = `googtrans=${value}; path=/`;
-    document.cookie = `googtrans=${value}; path=/; domain=${host}`;
-    document.cookie = `googtrans=${value}; path=/; domain=.${host}`;
-  }
+}
+
+function triggerTranslate(code: string): boolean {
+  const select = document.querySelector<HTMLSelectElement>("select.goog-te-combo");
+  if (!select) return false;
+  select.value = code === "en" ? "" : code;
+  select.dispatchEvent(new Event("change"));
+  return true;
+}
+
+function setLanguage(code: string) {
   window.localStorage.setItem("site.lang", code);
+  writeGoogTransCookie(code);
+  // Try inline switch first; if the widget isn't ready or English restore
+  // is needed, hard reload to let Google Translate re-init from the cookie.
+  if (code !== "en" && triggerTranslate(code)) {
+    setTimeout(() => {
+      // Verify translation applied; otherwise reload as a fallback
+      if (!document.querySelector(".translated-ltr, .translated-rtl")) {
+        window.location.reload();
+      }
+    }, 600);
+    return;
+  }
   window.location.reload();
 }
 
