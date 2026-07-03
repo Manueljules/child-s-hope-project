@@ -112,7 +112,7 @@ export function SiteNav() {
           >
             Donate Now
           </Link>
-          <div ref={langRef} className="relative">
+          <div ref={langRef} className="relative" data-no-translate>
             <button
               type="button"
               onClick={() => setLangOpen((v) => !v)}
@@ -140,7 +140,7 @@ export function SiteNav() {
                         setLangOpen(false);
                         setStoredLang(l.code);
                         setLang(l.code);
-                        applyLanguage(l.code);
+                        void applyLanguage(l.code);
                       }}
 
 

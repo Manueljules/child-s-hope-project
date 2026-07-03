@@ -3,7 +3,7 @@
 // so a language persists across reloads without hitting the API again.
 
 const CACHE_PREFIX = "site.trans.";
-const ORIGINAL_ATTR = "data-orig-text";
+const originalTextByNode = new WeakMap<Text, string>();
 
 type Cache = Record<string, string>;
 
@@ -45,6 +45,16 @@ function collectTextNodes(root: Node): Text[] {
   return nodes;
 }
 
+function restoreTrackedTextNodes(root: ParentNode) {
+  const nodes = collectTextNodes(root);
+  for (const node of nodes) {
+    const original = originalTextByNode.get(node);
+    if (original !== undefined) {
+      node.nodeValue = original;
+    }
+  }
+}
+
 async function translateText(text: string, lang: string): Promise<string> {
   const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(
     text
@@ -60,14 +70,11 @@ let currentRun = 0;
 export async function applyLanguage(lang: string) {
   const run = ++currentRun;
 
-  // Restore originals first
-  document.querySelectorAll<HTMLElement>(`[${ORIGINAL_ATTR}]`).forEach((el) => {
-    const orig = el.getAttribute(ORIGINAL_ATTR);
-    if (orig !== null) el.textContent = orig;
-    el.removeAttribute(ORIGINAL_ATTR);
-  });
-
+  // Restore only text nodes we changed. Never replace an element's textContent,
+  // because that removes React-managed children and breaks controls like menus.
+  restoreTrackedTextNodes(document.body);
   document.documentElement.lang = lang;
+  document.documentElement.dir = lang === "ar" ? "rtl" : "ltr";
   if (!lang || lang === "en") return;
 
   const cache = loadCache(lang);
@@ -80,10 +87,7 @@ export async function applyLanguage(lang: string) {
     const trimmed = original.trim();
     if (!trimmed) continue;
     const cached = cache[trimmed];
-    const parent = node.parentElement;
-    if (parent && !parent.hasAttribute(ORIGINAL_ATTR)) {
-      parent.setAttribute(ORIGINAL_ATTR, parent.textContent ?? "");
-    }
+    if (!originalTextByNode.has(node)) originalTextByNode.set(node, original);
     if (cached) {
       node.nodeValue = original.replace(trimmed, cached);
     } else {
