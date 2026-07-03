@@ -1,6 +1,7 @@
-import { Link } from "@tanstack/react-router";
+import { Link, useRouterState } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { Menu, X, Globe, ChevronDown } from "lucide-react";
+import { applyLanguage, getStoredLang, setStoredLang } from "@/lib/translator";
 
 const languages = [
   { code: "en", label: "English" },
@@ -12,7 +13,7 @@ const languages = [
   { code: "nl", label: "Nederlands" },
   { code: "sv", label: "Svenska" },
   { code: "ru", label: "Русский" },
-  { code: "zh", label: "中文" },
+  { code: "zh-CN", label: "中文" },
   { code: "ja", label: "日本語" },
   { code: "ko", label: "한국어" },
   { code: "ar", label: "العربية" },
@@ -31,66 +32,33 @@ const navItems = [
   { to: "/contact", label: "Contact" },
 ] as const;
 
-function readGoogTrans(): string {
-  if (typeof document === "undefined") return "en";
-  const fromStorage = window.localStorage.getItem("site.lang");
-  if (fromStorage) return fromStorage;
-  const match = document.cookie.match(/(?:^|; )googtrans=([^;]+)/);
-  if (!match) return "en";
-  const parts = decodeURIComponent(match[1]).split("/");
-  return parts[2] || "en";
-}
-
-function writeGoogTransCookie(code: string) {
-  const host = window.location.hostname;
-  const value = code && code !== "en" ? `/en/${code}` : "";
-  const expire = value ? "" : "; expires=Thu, 01 Jan 1970 00:00:00 GMT";
-  const domains = ["", host, "." + host];
-  const parts = host.split(".");
-  if (parts.length > 1) domains.push("." + parts.slice(-2).join("."));
-  for (const d of domains) {
-    document.cookie = `googtrans=${value}${expire}; path=/${d ? `; domain=${d}` : ""}`;
-  }
-}
-
-
-function setLanguage(code: string) {
-  window.localStorage.setItem("site.lang", code);
-  writeGoogTransCookie(code);
-  // Reload so Google Translate re-initializes from the cookie.
-  // Inline switching via the widget's <select> is unreliable across origins/iframes.
-  window.location.reload();
-}
-
 export function SiteNav() {
   const [open, setOpen] = useState(false);
   const [langOpen, setLangOpen] = useState(false);
   const [lang, setLang] = useState<string>("en");
   const langRef = useRef<HTMLDivElement>(null);
+  const location = useRouterState({ select: (s) => s.location.pathname });
 
-  // Hydration-safe: read active language after mount
+  // Read stored language on mount and apply
   useEffect(() => {
-    setLang(readGoogTrans());
+    const stored = getStoredLang();
+    setLang(stored);
+    if (stored !== "en") {
+      // Delay so route content is mounted first
+      const t = setTimeout(() => applyLanguage(stored), 100);
+      return () => clearTimeout(t);
+    }
   }, []);
 
-  // Inject Google Website Translator once
+  // Re-apply on route change
   useEffect(() => {
-    if (document.getElementById("google-translate-script")) return;
-    (window as unknown as { googleTranslateElementInit: () => void }).googleTranslateElementInit = () => {
-      const g = (window as unknown as { google?: { translate?: { TranslateElement: new (opts: unknown, el: string) => void; InlineLayout: { SIMPLE: unknown } } } }).google;
-      if (g?.translate) {
-        new g.translate.TranslateElement(
-          { pageLanguage: "en", autoDisplay: false, layout: g.translate.InlineLayout.SIMPLE },
-          "google_translate_element"
-        );
-      }
-    };
-    const s = document.createElement("script");
-    s.id = "google-translate-script";
-    s.src = "//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit";
-    s.async = true;
-    document.body.appendChild(s);
-  }, []);
+    if (lang !== "en") {
+      const t = setTimeout(() => applyLanguage(lang), 150);
+      return () => clearTimeout(t);
+    }
+  }, [location, lang]);
+
+
 
   useEffect(() => {
     function onClick(e: MouseEvent) {
@@ -170,8 +138,11 @@ export function SiteNav() {
                       aria-selected={l.code === lang}
                       onClick={() => {
                         setLangOpen(false);
-                        setLanguage(l.code);
+                        setStoredLang(l.code);
+                        setLang(l.code);
+                        applyLanguage(l.code);
                       }}
+
 
                       className={`w-full text-left px-4 py-2 text-sm flex items-center justify-between hover:bg-brand-blue/5 ${
                         l.code === lang ? "text-brand-blue font-semibold" : "text-ink/80"
@@ -221,7 +192,7 @@ export function SiteNav() {
           </div>
         </div>
       )}
-      <div id="google_translate_element" style={{ display: "none" }} />
+      
     </nav>
   );
 }
