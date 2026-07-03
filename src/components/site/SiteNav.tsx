@@ -53,13 +53,6 @@ function writeGoogTransCookie(code: string) {
   }
 }
 
-function triggerTranslate(code: string): boolean {
-  const select = document.querySelector<HTMLSelectElement>("select.goog-te-combo");
-  if (!select) return false;
-  select.value = code === "en" ? "" : code;
-  select.dispatchEvent(new Event("change"));
-  return true;
-}
 
 function setLanguage(code: string) {
   window.localStorage.setItem("site.lang", code);
