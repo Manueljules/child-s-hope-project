@@ -64,17 +64,8 @@ function triggerTranslate(code: string): boolean {
 function setLanguage(code: string) {
   window.localStorage.setItem("site.lang", code);
   writeGoogTransCookie(code);
-  // Try inline switch first; if the widget isn't ready or English restore
-  // is needed, hard reload to let Google Translate re-init from the cookie.
-  if (code !== "en" && triggerTranslate(code)) {
-    setTimeout(() => {
-      // Verify translation applied; otherwise reload as a fallback
-      if (!document.querySelector(".translated-ltr, .translated-rtl")) {
-        window.location.reload();
-      }
-    }, 600);
-    return;
-  }
+  // Reload so Google Translate re-initializes from the cookie.
+  // Inline switching via the widget's <select> is unreliable across origins/iframes.
   window.location.reload();
 }
 
