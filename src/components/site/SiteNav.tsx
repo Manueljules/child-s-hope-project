@@ -58,9 +58,7 @@ export function SiteNav() {
     }
   }, [location, lang]);
 
-    s.async = true;
-    document.body.appendChild(s);
-  }, []);
+
 
   useEffect(() => {
     function onClick(e: MouseEvent) {
