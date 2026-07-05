@@ -1,56 +1,60 @@
 
-This is a big scope, so I'll ship it in **4 phases**. Each phase leaves the site working. Confirm and I'll start with Phase 1.
+# Phase 3 — Donations, receipts, newsletter, forms
 
-## Phase 1 — Data model + Admin foundation
-Move projects, stories, news, events, gallery, sponsored children, contact/volunteer messages, newsletter, and donation accounts out of hardcoded arrays and into the database.
+## 1. Payments: Pesapal + PayPal
 
-New tables (with RLS: public can read published rows, only admins can write; messages/subscribers/accounts admin-only):
-- `projects` — title, short_description, district, status, budget, raised, beneficiaries, cover_image
-- `project_media` — project_id, url, type (image/video), sort (max 50 enforced in UI)
-- `sponsored_children` — project_id, name, photo, story
-- `news_posts` — title, body, video_url, published_at
-- `news_media` — news_id, url, sort (max 5)
-- `events` — title, date, location
-- `stories` (already exists — extend with photo_url, edit UI)
-- `contact_messages` — name, email, phone, subject, message, read
-- `volunteer_applications` — name, email, phone, country, skills, availability, interest, cv_url, read
-- `newsletter_subscribers` — email, subscribed_at
-- `newsletter_template` — single row (subject, html body with `{{title}}` `{{excerpt}}` merge tags)
-- `donation_accounts` (already exists — gate the edit UI behind an admin PIN stored as hashed secret)
-- `donations` (already exists — add `project_id`, `frequency` [once/weekly/monthly])
-- `admin_pin` — hashed PIN for the "Payment Accounts" sub-tab
+**Pesapal** (best for Uganda — cards, MTN Mobile Money, Airtel Money, bank):
+- Uses a Consumer Key + Consumer Secret. Not a built-in Lovable connector, so I'll build the integration directly against Pesapal API v3.
+- Two secrets to add: `PESAPAL_CONSUMER_KEY`, `PESAPAL_CONSUMER_SECRET`. I'll also add `PESAPAL_ENV` (`sandbox` or `live`) so you can test first, then switch.
+- Server flow:
+  - `createServerFn` `createPesapalOrder` → gets OAuth token → submits order → returns `redirect_url` and stores donation row as `pending` with `provider='pesapal'` + `provider_ref`.
+  - Public server route `/api/public/webhooks/pesapal` (IPN) → verifies status via Pesapal's GetTransactionStatus → flips donation to `confirmed` (which fires the existing DB trigger that bumps the project's `raised` total and progress bar).
+  - Return route `/donate/thank-you?ref=…` → shows receipt with Download PDF (uses existing `receipt.ts`).
 
-A DB trigger increments `projects.raised` when a `donations` row is marked `confirmed`, so progress bars update automatically. Admin can also manually adjust `raised` (for cash / in-kind donations).
+**PayPal** (best for international donors):
+- Server-side REST API (Orders v2). Secrets: `PAYPAL_CLIENT_ID`, `PAYPAL_CLIENT_SECRET`, `PAYPAL_ENV`.
+- `createPaypalOrder` server fn creates the order; `capturePaypalOrder` finalizes it after approval; both update the same `donations` row. Same thank-you + receipt page.
 
-New admin tabs (inside `/admin`): Projects, Stories, News, Events, Sponsored Children, Messages (Contact + Volunteer, separated), Newsletter (subscribers list + template editor), Payment Accounts (PIN-gated).
+**Donate page UI:**
+- Frequency selector: Once / Weekly / Monthly (weekly & monthly = recurring, handled via Pesapal recurring subscriptions or PayPal subscription plans — recurring adds real complexity; if you want I can ship Once first and add recurring in a follow-up).
+- Project dropdown populated from `projects` table.
+- Amount presets + custom amount, currency (UGX default, USD for PayPal).
+- Provider picker: Pesapal (local) vs PayPal (international). Existing card logos row stays as marketing.
 
-## Phase 2 — Public pages wired to the DB
-- **Home**: pillars section merged visually with the images below it (single unified block, no gap). Sponsored-children strip reads from DB.
-- **Projects list**: reads DB. Click a card → **full-screen modal overlay** (not new route) with title, description, district, image/video slider (swipe on mobile), live progress bar, "Donate to this project" CTA. Admin gets Edit/Delete buttons on cards when signed in as admin.
-- **Story page**: reads DB, admin inline edit (name, story, one photo).
-- **Gallery**: auto-aggregates all `project_media` images — filter chips removed.
-- **News**: reads DB, 5-image slider per post, video autoplays with sound (muted fallback for browsers that block sound-on autoplay — required by Chrome/Safari policy; I'll add an unmute button).
-- **Events**: reads DB.
+**Admin:**
+- Donations tab shows every donation with status, provider, project, donor, amount, ref. Admin can manually mark `confirmed` for cash/bank transfers received off-platform.
 
-## Phase 3 — Donations, receipts, newsletter, forms
-- **Donate page**: frequency selector (Once / Weekly / Monthly), project dropdown (from DB), amount presets. On success → in-page receipt with Download PDF button (reuses existing `receipt.ts`). Confirmed donation updates the chosen project's progress bar via trigger.
-- **Sponsorship** on home: same flow, tied to a sponsored child.
-- **Contact & Volunteer forms**: on submit → insert into DB + show "Successfully submitted" state. Admin sees them in Messages tab, split into two sub-lists.
-- **Newsletter**: subscribe form inserts email. When admin publishes a news post, a server function sends the templated email to all subscribers via Lovable Emails (I'll set up the email domain in this phase). Admin can edit the template and remove subscribers.
-- **FAQ page** at `/faq`: static Q&A covering volunteering, donating, sponsorship, tax receipts, contact — linked from nav and volunteer page.
+## 2. Newsletter emails
+- Set up Lovable Emails on your domain (I'll show the email domain setup dialog — you'll pick a subdomain like `notify.thesaintschildcare.org` and add the DNS records at your registrar).
+- After the domain is verified, set up email infrastructure (queue + suppression + logging) and scaffold app email templates.
+- Admin "Newsletter" tab already has subscriber list + template editor. I'll add a **Send now** button that queues one email per subscriber using the current template's HTML with `{{title}}` / `{{excerpt}}` merge tags. Includes unsubscribe link (required for deliverability).
+- Optional auto-send: when admin publishes a new `news_posts` row, automatically send to subscribers.
 
-## Phase 4 — Mobile polish
-Audit every page at 375px and 747px widths (your current viewport). Fix nav, hero, pillars, project cards, modal slider, admin tables. No design language changes — same tokens, better breakpoints.
+## 3. Contact & Volunteer forms
+Already persist to DB. I'll add:
+- Explicit "✓ Successfully submitted" success card that replaces the form.
+- Zod validation with proper error messages on all fields.
+- Rate limit (1 submission per email per 10 min) to reduce spam.
 
-## Technical notes
-- Storage bucket `project-media` (public read) for images/videos; `story-photos` and `news-media` buckets too.
-- Admin PIN: stored as bcrypt hash in `admin_pin` table, verified in a `requireSupabaseAuth` + `has_role('admin')` server function before returning account details.
-- Email sending uses Lovable Emails (built-in). I'll run the domain setup when we reach Phase 3.
-- Video autoplay-with-sound: browsers block this globally; industry-standard fallback is muted autoplay + prominent unmute button. I'll implement that.
+## 4. Payment Accounts PIN
+- On first visit to Payment Accounts tab: prompt admin to create a 4–8 digit PIN. Stored as bcrypt hash in `admin_settings` (row already exists).
+- Subsequent visits: PIN prompt → 5 wrong attempts locks the tab for 15 min.
+- All account CRUD goes through a `requireSupabaseAuth` server fn that also verifies the PIN hash before returning secret fields (bank account numbers, mobile money numbers).
 
-## Open questions before I start
-1. **Admin PIN** — should I generate a random one and show it to you once, or do you want to set it yourself in the UI on first visit?
-2. **Payment confirmation** — right now donations aren't tied to a real payment processor. Should confirmed = admin marks it confirmed manually in the dashboard, or do you want me to enable Stripe/Paddle now so confirmation is automatic?
-3. **Email domain** — for the newsletter to actually send, we need to set up an email sender domain. Do you have a domain (e.g. thesaintschildcare.org) you can add DNS records to, or should the newsletter stay draft-only until you do?
+## 5. FAQ page (`/faq`)
+Already scaffolded — I'll flesh out Q&As covering: how donations work, tax receipts, sponsoring a child, volunteering process, contact.
 
-Answer those three and I'll start Phase 1.
+## What I need from you before / during build
+1. **Domain** — confirm you'd like `notify.thesaintschildcare.org` (or another subdomain) for the newsletter sender. I'll trigger the DNS setup UI when we get to that step.
+2. **Pesapal account** — sign up at pesapal.com (Uganda merchant account). Once approved, you'll get Consumer Key + Secret from their dashboard. I'll request them via the secure secrets flow when we reach that step. Sandbox keys work first so we can test without real money.
+3. **PayPal account** — a PayPal Business account. Client ID + Secret from developer.paypal.com. Same secure secrets flow, sandbox first.
+4. **Recurring donations** — should I ship "Once" only first and add weekly/monthly recurring in a follow-up, or build all three together (bigger scope, more testing)?
+
+## Build order
+1. Pesapal integration (secrets → server fn → webhook → donate UI → thank-you receipt).
+2. PayPal integration (parallel provider on same donate UI).
+3. Payment Accounts PIN gate.
+4. Email domain + newsletter sending.
+5. Form polish + FAQ content.
+
+Answer question 4 (recurring now or later) and I'll start.
