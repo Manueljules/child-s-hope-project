@@ -3,6 +3,8 @@ import { useQuery } from "@tanstack/react-query";
 import { SiteLayout, PageHeader } from "@/components/site/SiteLayout";
 import { CheckCircle2, Quote } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import augustineImg from "@/assets/augustine-sempagala.png.asset.json";
+import agnessImg from "@/assets/agness-namisango.png.asset.json";
 
 type Message = { name: string; title: string; body: string; image_url?: string };
 
