@@ -115,7 +115,7 @@ export function generateReceiptPDF(d: ReceiptData) {
   doc.rect(0, 800, W, 42, "F");
   doc.setTextColor(255, 255, 255);
   doc.setFontSize(9);
-  doc.text("thesaintschildcare.org  ·  hello@thesaintschildcare.org  ·  +256 700 000 000", W / 2, 826, { align: "center" });
+  doc.text("thesaintschildcare@gmail.com  ·  +256 700 339 231  ·  +256 769 027 058", W / 2, 826, { align: "center" });
 
   doc.save(`Saints-Foundation-Receipt-${d.reference}.pdf`);
 }
