@@ -385,9 +385,10 @@ function NewsEditor() {
 }
 function NewsMediaManager({ post, onClose }: { post: NewsPost; onClose: () => void }) {
   const qc = useQueryClient();
+  const nid = post.id!;
   const { data: media } = useQuery({
-    queryKey: ["news_media", post.id],
-    queryFn: async () => (await supabase.from("news_media").select("*").eq("news_id", post.id).order("sort_order")).data ?? [],
+    queryKey: ["news_media", nid],
+    queryFn: async () => (await supabase.from("news_media").select("*").eq("news_id", nid).order("sort_order")).data ?? [],
   });
   const list = (media ?? []) as Array<{ id: string; url: string; sort_order: number }>;
   const [busy, setBusy] = useState(false);
@@ -396,10 +397,11 @@ function NewsMediaManager({ post, onClose }: { post: NewsPost; onClose: () => vo
     setBusy(true);
     try {
       const url = await uploadToBucket("news-media", file);
-      await supabase.from("news_media").insert({ news_id: post.id, url, sort_order: list.length });
-      qc.invalidateQueries({ queryKey: ["news_media", post.id] });
+      await supabase.from("news_media").insert({ news_id: nid, url, sort_order: list.length });
+      qc.invalidateQueries({ queryKey: ["news_media", nid] });
     } finally { setBusy(false); }
   }
+
   async function remove(id: string) {
     if (!confirm("Delete this photo?")) return;
     await supabase.from("news_media").delete().eq("id", id);
