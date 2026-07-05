@@ -30,10 +30,10 @@ function FounderPage() {
           </div>
           <div className="lg:col-span-7 space-y-8">
             <h2 className="font-display font-extrabold text-4xl md:text-5xl tracking-tight">
-              [ Founder Name ]
+              Augustine Sempagala
             </h2>
             <p className="text-lg text-ink/70 leading-relaxed">
-              A passionate child rights advocate and community leader, [Founder Name]
+              A passionate child rights advocate and community leader, Augustine Sempagala
               established The Saint's Childcare Foundation Uganda to give voice and
               opportunity to children whose circumstances have left them invisible to
               the world.
