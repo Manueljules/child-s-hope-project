@@ -80,14 +80,14 @@ function VolunteerPage() {
               <p className="font-mono text-brand-blue text-sm uppercase tracking-widest">/ Volunteer Application</p>
               <h2 className="font-display font-extrabold text-3xl md:text-4xl tracking-tight mb-8">Tell us about yourself.</h2>
               <div className="grid md:grid-cols-2 gap-6">
-                <Field label="Full Name" value={form.name} onChange={(v) => setForm({ ...form, name: v })} required />
-                <Field label="Email" type="email" value={form.email} onChange={(v) => setForm({ ...form, email: v })} required />
-                <Field label="Phone" type="tel" value={form.phone} onChange={(v) => setForm({ ...form, phone: v })} />
-                <Field label="Country" value={form.country} onChange={(v) => setForm({ ...form, country: v })} required />
-                <Field label="Skills" value={form.skills} onChange={(v) => setForm({ ...form, skills: v })} placeholder="Teaching, medical, marketing..." />
-                <Field label="Availability" value={form.availability} onChange={(v) => setForm({ ...form, availability: v })} placeholder="Weekends, 2 months, full-time..." />
+                <Field label="Full Name" value={form.name} onChange={(v) => setForm({ ...form, name: v })} required error={fieldErrors.name} />
+                <Field label="Email" type="email" value={form.email} onChange={(v) => setForm({ ...form, email: v })} required error={fieldErrors.email} />
+                <Field label="Phone" type="tel" value={form.phone} onChange={(v) => setForm({ ...form, phone: v })} error={fieldErrors.phone} />
+                <Field label="Country" value={form.country} onChange={(v) => setForm({ ...form, country: v })} required error={fieldErrors.country} />
+                <Field label="Skills" value={form.skills} onChange={(v) => setForm({ ...form, skills: v })} placeholder="Teaching, medical, marketing..." error={fieldErrors.skills} />
+                <Field label="Availability" value={form.availability} onChange={(v) => setForm({ ...form, availability: v })} placeholder="Weekends, 2 months, full-time..." error={fieldErrors.availability} />
               </div>
-              <Field label="Areas of Interest" value={form.interest} onChange={(v) => setForm({ ...form, interest: v })} placeholder="Education, healthcare, child protection, fundraising..." />
+              <Field label="Areas of Interest" value={form.interest} onChange={(v) => setForm({ ...form, interest: v })} placeholder="Education, healthcare, child protection, fundraising..." error={fieldErrors.interest} />
               {error && <p className="text-sm text-red-600">{error}</p>}
               <button
                 type="submit"
@@ -105,7 +105,7 @@ function VolunteerPage() {
   );
 }
 
-function Field({ label, value, onChange, type = "text", required, placeholder }: { label: string; value: string; onChange: (v: string) => void; type?: string; required?: boolean; placeholder?: string }) {
+function Field({ label, value, onChange, type = "text", required, placeholder, error }: { label: string; value: string; onChange: (v: string) => void; type?: string; required?: boolean; placeholder?: string; error?: string }) {
   return (
     <div>
       <label className="block font-mono text-[11px] uppercase tracking-widest text-ink/60 mb-2">
@@ -117,8 +117,9 @@ function Field({ label, value, onChange, type = "text", required, placeholder }:
         type={type}
         required={required}
         placeholder={placeholder}
-        className="w-full border border-brand-blue/20 px-4 py-3 focus:border-brand-blue focus:outline-none text-sm"
+        className={`w-full border px-4 py-3 focus:outline-none text-sm ${error ? "border-red-500 focus:border-red-500" : "border-brand-blue/20 focus:border-brand-blue"}`}
       />
+      {error && <p className="mt-1 text-xs text-red-600">{error}</p>}
     </div>
   );
 }
