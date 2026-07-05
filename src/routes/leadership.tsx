@@ -1,6 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { SiteLayout, PageHeader } from "@/components/site/SiteLayout";
 import { Linkedin, Mail } from "lucide-react";
+import augustineImg from "@/assets/augustine-sempagala.png.asset.json";
+import agnessImg from "@/assets/agness-namisango.png.asset.json";
 
 export const Route = createFileRoute("/leadership")({
   head: () => ({
@@ -12,9 +14,9 @@ export const Route = createFileRoute("/leadership")({
   component: LeadershipPage,
 });
 
-const team = [
-  { name: "[ Name ]", role: "Executive Director", bio: "Provides strategic leadership and oversees all programs." },
-  { name: "[ Name ]", role: "Co-Founder", bio: "Partner in vision and operations since inception." },
+const team: { name: string; role: string; bio: string; image?: string }[] = [
+  { name: "Augustine Sempagala", role: "Founder & Executive Director", bio: "Provides strategic leadership and oversees all programs.", image: augustineImg.url },
+  { name: "Agness Claire Namisango", role: "Cofounder & Programs Director", bio: "Partner in vision and operations since inception.", image: agnessImg.url },
   { name: "[ Name ]", role: "Programs Director", bio: "Leads implementation of education and healthcare programs." },
   { name: "[ Name ]", role: "Finance & Operations", bio: "Ensures transparency and accountability in all financials." },
   { name: "[ Name ]", role: "Child Protection Lead", bio: "Safeguards child welfare across all field operations." },
