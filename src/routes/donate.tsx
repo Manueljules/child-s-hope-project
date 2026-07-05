@@ -27,7 +27,13 @@ const TYPES = [
 ];
 const FREQS = ["one", "weekly", "monthly", "annual"] as const;
 type Freq = (typeof FREQS)[number];
-const AMOUNTS_UGX = [20000, 50000, 100000, 250000, 500000, 1000000];
+const AMOUNTS: Record<string, number[]> = {
+  UGX: [20000, 50000, 100000, 250000],
+  USD: [10, 25, 50, 100],
+  EUR: [10, 25, 50, 100],
+  GBP: [10, 25, 50, 100],
+};
+const CURRENCY_SYMBOL: Record<string, string> = { UGX: "UGX ", USD: "$", EUR: "€", GBP: "£" };
 
 const STEPS = [
   { id: 1, title: "Amount", hint: "How much you'd like to give" },
@@ -60,6 +66,12 @@ function DonatePage() {
       setProjects((data ?? []) as Array<{ id: string; title: string }>);
     });
   }, []);
+
+  // Reset to a sensible default amount when currency changes
+  useEffect(() => {
+    setAmount((AMOUNTS[currency] ?? AMOUNTS.USD)[2]);
+    setCustom("");
+  }, [currency]);
 
 
   // step 2
@@ -238,15 +250,15 @@ function DonatePage() {
                   </div>
 
                   <div className="grid grid-cols-4 gap-2">
-                    {[10, 25, 50].map((a) => (
+                    {(AMOUNTS[currency] ?? AMOUNTS.USD).map((a) => (
                       <button
                         key={a}
                         type="button"
                         onClick={() => { setAmount(a); setCustom(""); }}
                         className={`relative py-4 px-2 border text-center transition ${!custom && amount === a ? "bg-brand-blue text-white border-brand-blue" : "border-brand-blue/20 text-ink hover:border-brand-blue"}`}
                       >
-                        <div className="font-display font-extrabold text-lg leading-none">{currency}{a}</div>
-                        <div className="text-[10px] mt-1 opacity-80">Per {freq === "monthly" ? "month" : "gift"}</div>
+                        <div className="font-display font-extrabold text-sm md:text-base leading-none whitespace-nowrap">{CURRENCY_SYMBOL[currency]}{a.toLocaleString()}</div>
+                        <div className="text-[10px] mt-1 opacity-80">Per {freq === "monthly" ? "month" : freq === "weekly" ? "week" : "gift"}</div>
                         {!custom && amount === a && (
                           <span className="absolute left-1/2 -bottom-2 -translate-x-1/2 w-3 h-3 rotate-45 bg-brand-blue" />
                         )}
@@ -383,7 +395,7 @@ function DonatePage() {
                     className="w-full bg-brand-orange text-white py-4 font-display font-extrabold uppercase tracking-widest text-sm rounded-full hover:bg-brand-orange/90 disabled:opacity-40 inline-flex items-center justify-center gap-2"
                   >
                     {step === 1
-                      ? `Give ${currency}${finalAmount.toLocaleString()} ${freq === "monthly" ? "Monthly" : freq === "annual" ? "Annually" : ""}`
+                      ? `Give ${CURRENCY_SYMBOL[currency]}${finalAmount.toLocaleString()} ${freq === "monthly" ? "Monthly" : freq === "weekly" ? "Weekly" : freq === "annual" ? "Annually" : ""}`
                       : <>Continue <ChevronRight className="size-4" /></>}
                   </button>
                   {step > 1 && (
