@@ -114,14 +114,15 @@ function ContactPage() {
                 <p className="font-mono text-brand-blue text-xs uppercase tracking-widest">/ Send a Message</p>
                 <h2 className="font-display font-extrabold text-3xl tracking-tight">Get in touch.</h2>
                 <div className="grid sm:grid-cols-2 gap-4">
-                  <Field label="Name" value={form.name} onChange={(v) => setForm({ ...form, name: v })} required />
-                  <Field label="Email" type="email" value={form.email} onChange={(v) => setForm({ ...form, email: v })} required />
+                  <Field label="Name" value={form.name} onChange={(v) => setForm({ ...form, name: v })} required error={fieldErrors.name} />
+                  <Field label="Email" type="email" value={form.email} onChange={(v) => setForm({ ...form, email: v })} required error={fieldErrors.email} />
                 </div>
-                <Field label="Phone" type="tel" value={form.phone} onChange={(v) => setForm({ ...form, phone: v })} />
-                <Field label="Subject" value={form.subject} onChange={(v) => setForm({ ...form, subject: v })} required />
+                <Field label="Phone" type="tel" value={form.phone} onChange={(v) => setForm({ ...form, phone: v })} error={fieldErrors.phone} />
+                <Field label="Subject" value={form.subject} onChange={(v) => setForm({ ...form, subject: v })} required error={fieldErrors.subject} />
                 <div>
                   <label className="block font-mono text-[11px] uppercase tracking-widest text-ink/60 mb-2">Message *</label>
                   <textarea rows={6} required value={form.message} onChange={(e) => setForm({ ...form, message: e.target.value })} className="w-full border border-brand-blue/20 px-4 py-3 bg-white focus:border-brand-blue focus:outline-none text-sm" />
+                  {fieldErrors.message && <p className="mt-1 text-xs text-red-600">{fieldErrors.message}</p>}
                 </div>
                 {error && <p className="text-sm text-red-600">{error}</p>}
                 <button type="submit" disabled={submitting} className="w-full bg-brand-orange text-white py-4 font-display font-extrabold uppercase tracking-[0.2em] hover:bg-brand-orange/90 disabled:opacity-60">
@@ -136,13 +137,14 @@ function ContactPage() {
   );
 }
 
-function Field({ label, value, onChange, type = "text", required }: { label: string; value: string; onChange: (v: string) => void; type?: string; required?: boolean }) {
+function Field({ label, value, onChange, type = "text", required, error }: { label: string; value: string; onChange: (v: string) => void; type?: string; required?: boolean; error?: string }) {
   return (
     <div>
       <label className="block font-mono text-[11px] uppercase tracking-widest text-ink/60 mb-2">
         {label}{required && " *"}
       </label>
-      <input type={type} value={value} onChange={(e) => onChange(e.target.value)} required={required} className="w-full border border-brand-blue/20 px-4 py-3 bg-white focus:border-brand-blue focus:outline-none text-sm" />
+      <input type={type} value={value} onChange={(e) => onChange(e.target.value)} required={required} className={`w-full border px-4 py-3 bg-white focus:outline-none text-sm ${error ? "border-red-500 focus:border-red-500" : "border-brand-blue/20 focus:border-brand-blue"}`} />
+      {error && <p className="mt-1 text-xs text-red-600">{error}</p>}
     </div>
   );
 }
