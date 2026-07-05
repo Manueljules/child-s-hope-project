@@ -35,8 +35,12 @@ function LeadershipPage() {
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-px bg-brand-blue/10 border border-brand-blue/10">
             {team.map((m) => (
               <article key={m.role} className="bg-white p-8 group">
-                <div className="aspect-square bg-surface mb-6 grid place-items-center text-ink/20 font-display font-extrabold text-5xl">
-                  {m.name.replace(/\[|\]| /g, "").charAt(0) || "·"}
+                <div className="aspect-square bg-surface mb-6 overflow-hidden grid place-items-center text-ink/20 font-display font-extrabold text-5xl">
+                  {m.image ? (
+                    <img src={m.image} alt={m.name} loading="lazy" className="size-full object-cover" />
+                  ) : (
+                    m.name.replace(/\[|\]| /g, "").charAt(0) || "·"
+                  )}
                 </div>
                 <h3 className="font-display font-extrabold text-xl mb-1">{m.name}</h3>
                 <p className="font-mono text-[11px] uppercase tracking-widest text-brand-blue mb-3">{m.role}</p>
