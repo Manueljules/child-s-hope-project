@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { SiteLayout, PageHeader } from "@/components/site/SiteLayout";
-import founderImg from "@/assets/founder.jpg";
+import founderImg from "@/assets/augustine-sempagala.png.asset.json";
 
 export const Route = createFileRoute("/founder")({
   head: () => ({
