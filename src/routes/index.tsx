@@ -185,8 +185,8 @@ function HomePage() {
         </div>
       </section>
 
-      {/* PROGRAMS */}
-      <section className="bg-surface py-24">
+      {/* PROGRAMS — pillars + images unified block */}
+      <section className="bg-surface pt-24">
         <div className="max-w-7xl mx-auto px-6">
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-16">
             <div>
@@ -205,14 +205,14 @@ function HomePage() {
             </Link>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-px bg-brand-blue/10 border border-brand-blue/10">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-px bg-brand-blue/10 border border-brand-blue/10 border-b-0">
             {[
-              { Icon: GraduationCap, abbr: "ED", title: "Education Support", desc: "School fees, supplies, and vocational training for orphaned youth.", color: "brand-blue" },
-              { Icon: Stethoscope, abbr: "HC", title: "Healthcare", desc: "Medical check-ups, emergency surgeries, and health education.", color: "brand-green" },
-              { Icon: Utensils, abbr: "NT", title: "Nutrition", desc: "Feeding programs ensuring two balanced meals daily.", color: "brand-gold" },
-              { Icon: HomeIcon, abbr: "SH", title: "Shelter", desc: "Safe homes and family-strengthening support for orphans.", color: "brand-orange" },
-              { Icon: Shield, abbr: "CP", title: "Child Protection", desc: "Safeguarding, counseling, and psychosocial support.", color: "brand-blue" },
-              { Icon: Sparkles, abbr: "EM", title: "Empowerment", desc: "Skills development, girls' programs, and youth livelihoods.", color: "brand-green" },
+              { Icon: GraduationCap, title: "Education Support", desc: "School fees, supplies, and vocational training for orphaned youth.", color: "brand-blue" },
+              { Icon: Stethoscope, title: "Healthcare", desc: "Medical check-ups, emergency surgeries, and health education.", color: "brand-green" },
+              { Icon: Utensils, title: "Nutrition", desc: "Feeding programs ensuring two balanced meals daily.", color: "brand-gold" },
+              { Icon: HomeIcon, title: "Shelter", desc: "Safe homes and family-strengthening support for orphans.", color: "brand-orange" },
+              { Icon: Shield, title: "Child Protection", desc: "Safeguarding, counseling, and psychosocial support.", color: "brand-blue" },
+              { Icon: Sparkles, title: "Empowerment", desc: "Skills development, girls' programs, and youth livelihoods.", color: "brand-green" },
             ].map((p) => (
               <div key={p.title} className="group bg-white p-8 md:p-10 hover:bg-surface transition-all">
                 <div className={`size-12 bg-${p.color}/10 text-${p.color} flex items-center justify-center font-display font-extrabold text-sm mb-6 group-hover:bg-${p.color} group-hover:text-white transition-colors`}>
@@ -230,11 +230,9 @@ function HomePage() {
             ))}
           </div>
         </div>
-      </section>
 
-      {/* PROGRAM IMAGE STRIP */}
-      <section className="bg-white">
-        <div className="grid md:grid-cols-3">
+        {/* Image strip flows directly beneath pillars — no gap, unified section */}
+        <div className="grid grid-cols-1 md:grid-cols-3 max-w-7xl mx-auto md:px-6">
           {[
             { src: programEducation, label: "Education" },
             { src: programHealth, label: "Healthcare" },
@@ -260,6 +258,7 @@ function HomePage() {
           ))}
         </div>
       </section>
+
 
       {/* DONATION + SPONSORSHIP */}
       <section className="py-24 bg-ink text-white">

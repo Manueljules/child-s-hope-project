@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { SiteLayout, PageHeader } from "@/components/site/SiteLayout";
 import { CheckCircle2 } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/volunteer")({
   head: () => ({
@@ -15,6 +16,33 @@ export const Route = createFileRoute("/volunteer")({
 
 function VolunteerPage() {
   const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [form, setForm] = useState({
+    name: "", email: "", phone: "", country: "", skills: "", availability: "", interest: "",
+  });
+
+  async function onSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setSubmitting(true);
+    setError(null);
+    const { error: err } = await supabase.from("volunteer_applications").insert({
+      name: form.name,
+      email: form.email,
+      phone: form.phone || null,
+      country: form.country || null,
+      skills: form.skills || null,
+      availability: form.availability || null,
+      interest: form.interest || null,
+    });
+    setSubmitting(false);
+    if (err) {
+      setError("Could not submit application. Please try again.");
+      return;
+    }
+    setSubmitted(true);
+  }
+
   return (
     <SiteLayout>
       <PageHeader eyebrow="Volunteer" title="Give what you have. Change a life." description="Join a community of volunteers transforming the lives of vulnerable children across Uganda." />
@@ -24,35 +52,31 @@ function VolunteerPage() {
           {submitted ? (
             <div className="text-center py-16">
               <CheckCircle2 className="size-16 text-brand-green mx-auto mb-6" />
-              <h2 className="font-display font-extrabold text-3xl mb-3">Application received!</h2>
-              <p className="text-ink/60">We'll reach out within 5 business days.</p>
+              <h2 className="font-display font-extrabold text-3xl mb-3">Successfully submitted</h2>
+              <p className="text-ink/60">Thank you {form.name || "friend"} — we'll reach out within 5 business days.</p>
             </div>
           ) : (
-            <form
-              onSubmit={(e) => { e.preventDefault(); setSubmitted(true); }}
-              className="space-y-6"
-            >
+            <form onSubmit={onSubmit} className="space-y-6">
               <p className="font-mono text-brand-blue text-sm uppercase tracking-widest">/ Volunteer Application</p>
               <h2 className="font-display font-extrabold text-3xl md:text-4xl tracking-tight mb-8">Tell us about yourself.</h2>
               <div className="grid md:grid-cols-2 gap-6">
-                <Field label="Full Name" name="name" required />
-                <Field label="Email" name="email" type="email" required />
-                <Field label="Phone" name="phone" type="tel" />
-                <Field label="Country" name="country" required />
-                <Field label="Skills" name="skills" placeholder="Teaching, medical, marketing..." />
-                <Field label="Availability" name="availability" placeholder="Weekends, 2 months, full-time..." />
+                <Field label="Full Name" value={form.name} onChange={(v) => setForm({ ...form, name: v })} required />
+                <Field label="Email" type="email" value={form.email} onChange={(v) => setForm({ ...form, email: v })} required />
+                <Field label="Phone" type="tel" value={form.phone} onChange={(v) => setForm({ ...form, phone: v })} />
+                <Field label="Country" value={form.country} onChange={(v) => setForm({ ...form, country: v })} required />
+                <Field label="Skills" value={form.skills} onChange={(v) => setForm({ ...form, skills: v })} placeholder="Teaching, medical, marketing..." />
+                <Field label="Availability" value={form.availability} onChange={(v) => setForm({ ...form, availability: v })} placeholder="Weekends, 2 months, full-time..." />
               </div>
-              <Field label="Areas of Interest" name="interest" placeholder="Education, healthcare, child protection, fundraising..." />
-              <div>
-                <label className="block font-mono text-[11px] uppercase tracking-widest text-ink/60 mb-2">Upload CV (optional)</label>
-                <input type="file" className="block w-full text-sm border border-brand-blue/20 p-3 file:mr-4 file:py-2 file:px-4 file:border-0 file:bg-brand-blue file:text-white file:font-display file:font-bold file:uppercase file:text-xs" />
-              </div>
+              <Field label="Areas of Interest" value={form.interest} onChange={(v) => setForm({ ...form, interest: v })} placeholder="Education, healthcare, child protection, fundraising..." />
+              {error && <p className="text-sm text-red-600">{error}</p>}
               <button
                 type="submit"
-                className="w-full bg-brand-orange text-white py-5 font-display font-extrabold uppercase tracking-[0.2em] hover:bg-brand-orange/90"
+                disabled={submitting}
+                className="w-full bg-brand-orange text-white py-5 font-display font-extrabold uppercase tracking-[0.2em] hover:bg-brand-orange/90 disabled:opacity-60"
               >
-                Submit Application
+                {submitting ? "Submitting…" : "Submit Application"}
               </button>
+              <p className="text-xs text-ink/50 text-center">Have questions first? See our <a href="/faq" className="text-brand-blue underline">FAQ</a>.</p>
             </form>
           )}
         </div>
@@ -61,15 +85,15 @@ function VolunteerPage() {
   );
 }
 
-function Field({ label, name, type = "text", required, placeholder }: { label: string; name: string; type?: string; required?: boolean; placeholder?: string }) {
+function Field({ label, value, onChange, type = "text", required, placeholder }: { label: string; value: string; onChange: (v: string) => void; type?: string; required?: boolean; placeholder?: string }) {
   return (
     <div>
-      <label htmlFor={name} className="block font-mono text-[11px] uppercase tracking-widest text-ink/60 mb-2">
+      <label className="block font-mono text-[11px] uppercase tracking-widest text-ink/60 mb-2">
         {label}{required && " *"}
       </label>
       <input
-        id={name}
-        name={name}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
         type={type}
         required={required}
         placeholder={placeholder}

@@ -1,7 +1,26 @@
 import { Link } from "@tanstack/react-router";
+import { useState } from "react";
 import { Facebook, Instagram, Twitter, Linkedin, Youtube, Mail } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 export function SiteFooter() {
+  const [email, setEmail] = useState("");
+  const [state, setState] = useState<"idle" | "sending" | "done" | "error">("idle");
+
+  async function subscribe(e: React.FormEvent) {
+    e.preventDefault();
+    if (!email) return;
+    setState("sending");
+    const { error } = await supabase.from("newsletter_subscribers").insert({ email });
+    // Duplicate email is fine — treat as success
+    if (error && !error.message.toLowerCase().includes("duplicate")) {
+      setState("error");
+      return;
+    }
+    setState("done");
+    setEmail("");
+  }
+
   return (
     <footer className="bg-white pt-20 pb-10 border-t border-brand-blue/10">
       <div className="max-w-7xl mx-auto px-6">
@@ -73,24 +92,27 @@ export function SiteFooter() {
             <p className="text-sm text-ink/60 mb-4">
               Receive quarterly impact reports and stories from the field.
             </p>
-            <form
-              onSubmit={(e) => e.preventDefault()}
-              className="flex items-center border-b border-ink/15 pb-2"
-            >
+            <form onSubmit={subscribe} className="flex items-center border-b border-ink/15 pb-2">
               <Mail className="size-4 text-ink/40 mr-2 shrink-0" />
               <input
                 type="email"
                 required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 placeholder="you@example.com"
                 className="bg-transparent text-sm w-full focus:outline-none placeholder:text-ink/40"
               />
               <button
                 type="submit"
-                className="text-brand-blue font-bold uppercase text-xs tracking-wider hover:text-brand-orange transition-colors"
+                disabled={state === "sending"}
+                className="text-brand-blue font-bold uppercase text-xs tracking-wider hover:text-brand-orange transition-colors disabled:opacity-60"
               >
-                Join
+                {state === "sending" ? "…" : state === "done" ? "✓" : "Join"}
               </button>
             </form>
+            {state === "done" && <p className="text-xs text-brand-green mt-2">Subscribed. Thank you!</p>}
+            {state === "error" && <p className="text-xs text-red-600 mt-2">Could not subscribe. Try again.</p>}
+
             <p className="mt-6 text-xs text-ink/50 leading-relaxed">
               Plot 24, Kampala Road
               <br />
