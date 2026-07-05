@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { ArrowRight, Heart, GraduationCap, Stethoscope, Utensils, Home as HomeIcon, Shield, Sparkles } from "lucide-react";
 import { SiteLayout } from "@/components/site/SiteLayout";
+import { supabase } from "@/integrations/supabase/client";
 import heroChildren from "@/assets/hero-children.jpg";
 import brian from "@/assets/sponsor-brian.jpg";
 import storySarah from "@/assets/story-sarah.jpg";
