@@ -67,6 +67,12 @@ function DonatePage() {
     });
   }, []);
 
+  // Reset to a sensible default amount when currency changes
+  useEffect(() => {
+    setAmount((AMOUNTS[currency] ?? AMOUNTS.USD)[2]);
+    setCustom("");
+  }, [currency]);
+
 
   // step 2
   const [method, setMethod] = useState<string | null>(null);
