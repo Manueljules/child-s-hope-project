@@ -33,7 +33,7 @@ function ContactPage() {
                 <div key={c.l} className="bg-white p-6">
                   <c.Icon className="size-5 text-brand-blue mb-3" />
                   <p className="font-mono text-[10px] uppercase tracking-widest text-ink/40 mb-1">{c.l}</p>
-                  <p className="font-display font-extrabold text-sm break-all">{c.v}</p>
+                  <p className={`font-display font-extrabold text-sm break-all ${"highlight" in c && c.highlight ? "text-brand-blue" : ""}`}>{c.v}</p>
                 </div>
               ))}
             </div>
