@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
+import { z } from "zod";
 import { SiteLayout, PageHeader } from "@/components/site/SiteLayout";
 import { CheckCircle2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
@@ -14,26 +15,45 @@ export const Route = createFileRoute("/volunteer")({
   component: VolunteerPage,
 });
 
+const volunteerSchema = z.object({
+  name: z.string().trim().min(2, "Please enter your name").max(100),
+  email: z.string().trim().email("Please enter a valid email").max(255),
+  phone: z.string().trim().max(30).optional().or(z.literal("")),
+  country: z.string().trim().min(2, "Please enter your country").max(80),
+  skills: z.string().trim().max(500).optional().or(z.literal("")),
+  availability: z.string().trim().max(200).optional().or(z.literal("")),
+  interest: z.string().trim().max(500).optional().or(z.literal("")),
+});
+
 function VolunteerPage() {
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const [form, setForm] = useState({
     name: "", email: "", phone: "", country: "", skills: "", availability: "", interest: "",
   });
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
-    setSubmitting(true);
     setError(null);
+    setFieldErrors({});
+    const parsed = volunteerSchema.safeParse(form);
+    if (!parsed.success) {
+      const errs: Record<string, string> = {};
+      for (const issue of parsed.error.issues) errs[String(issue.path[0])] = issue.message;
+      setFieldErrors(errs);
+      return;
+    }
+    setSubmitting(true);
     const { error: err } = await supabase.from("volunteer_applications").insert({
-      name: form.name,
-      email: form.email,
-      phone: form.phone || null,
-      country: form.country || null,
-      skills: form.skills || null,
-      availability: form.availability || null,
-      interest: form.interest || null,
+      name: parsed.data.name,
+      email: parsed.data.email,
+      phone: parsed.data.phone || null,
+      country: parsed.data.country,
+      skills: parsed.data.skills || null,
+      availability: parsed.data.availability || null,
+      interest: parsed.data.interest || null,
     });
     setSubmitting(false);
     if (err) {
