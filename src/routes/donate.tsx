@@ -395,7 +395,7 @@ function DonatePage() {
                     className="w-full bg-brand-orange text-white py-4 font-display font-extrabold uppercase tracking-widest text-sm rounded-full hover:bg-brand-orange/90 disabled:opacity-40 inline-flex items-center justify-center gap-2"
                   >
                     {step === 1
-                      ? `Give ${currency}${finalAmount.toLocaleString()} ${freq === "monthly" ? "Monthly" : freq === "annual" ? "Annually" : ""}`
+                      ? `Give ${CURRENCY_SYMBOL[currency]}${finalAmount.toLocaleString()} ${freq === "monthly" ? "Monthly" : freq === "weekly" ? "Weekly" : freq === "annual" ? "Annually" : ""}`
                       : <>Continue <ChevronRight className="size-4" /></>}
                   </button>
                   {step > 1 && (
