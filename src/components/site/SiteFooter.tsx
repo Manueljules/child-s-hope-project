@@ -13,7 +13,7 @@ export function SiteFooter() {
               </div>
               <div className="leading-none">
                 <span className="block font-display font-extrabold text-base tracking-tight uppercase">
-                  The Saints
+                  The Saint's
                 </span>
                 <span className="block text-[10px] font-mono uppercase tracking-widest text-brand-blue">
                   Childcare Foundation Uganda
