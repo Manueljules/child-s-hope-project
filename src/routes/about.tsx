@@ -37,35 +37,26 @@ export const Route = createFileRoute("/about")({
 
 function LeaderCard({ msgKey, accent, fallback }: { msgKey: "founder_message" | "cofounder_message"; accent: "blue" | "orange"; fallback: Message }) {
   const { data } = useLeaderMessage(msgKey, fallback);
-  // Always use the canonical name / title / photo from `fallback` so that stale
-  // DB placeholder rows can't override them. Only the message body is DB-driven.
-  const name = fallback.name;
-  const title = fallback.title;
-  const image = fallback.image_url;
-  const body = data.body;
   const border = accent === "blue" ? "border-brand-blue" : "border-brand-orange";
   const text = accent === "blue" ? "text-brand-blue" : "text-brand-orange";
   return (
-    <article className={`bg-white border-t-4 ${border} shadow-sm overflow-hidden flex flex-col`}>
-      {image ? (
-        <div className="aspect-[4/3] w-full overflow-hidden bg-surface">
-          <img
-            src={image}
-            alt={name}
-            loading="lazy"
-            className="size-full object-cover object-center"
-          />
+    <article className={`bg-white border-t-4 ${border} p-8 md:p-10 shadow-sm`}>
+      <Quote className={`size-8 ${text} mb-4`} />
+      <p className="font-display text-lg md:text-xl leading-relaxed text-ink/80 mb-6 whitespace-pre-line">
+        {data.body}
+      </p>
+      <div className="flex items-center gap-4 pt-6 border-t border-ink/10">
+        {data.image_url ? (
+          <img src={data.image_url} alt={data.name} className="size-14 rounded-full object-cover" />
+        ) : (
+          <div className={`size-14 rounded-full ${accent === "blue" ? "bg-brand-blue" : "bg-brand-orange"} text-white grid place-items-center font-display font-extrabold text-lg`}>
+            {data.name.split(" ").map((s) => s[0]).slice(0, 2).join("")}
+          </div>
+        )}
+        <div>
+          <p className="font-display font-extrabold text-lg">{data.name}</p>
+          <p className={`font-mono text-[11px] uppercase tracking-widest ${text}`}>{data.title}</p>
         </div>
-      ) : null}
-      <div className="p-8 md:p-10 flex flex-col flex-1">
-        <div className="mb-6">
-          <p className={`font-mono text-[11px] uppercase tracking-widest ${text} mb-1`}>{title}</p>
-          <h3 className="font-display font-extrabold text-2xl md:text-3xl tracking-tight">{name}</h3>
-        </div>
-        <Quote className={`size-8 ${text} mb-4`} />
-        <p className="font-display text-lg md:text-xl leading-relaxed text-ink/80 whitespace-pre-line">
-          {body}
-        </p>
       </div>
     </article>
   );
