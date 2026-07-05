@@ -5,9 +5,9 @@ import founderImg from "@/assets/founder.jpg";
 export const Route = createFileRoute("/founder")({
   head: () => ({
     meta: [
-      { title: "Founder — The Saints Childcare Foundation Uganda" },
-      { name: "description", content: "Meet the founder of The Saints Childcare Foundation Uganda and read their message of hope and commitment to vulnerable children." },
-      { property: "og:title", content: "Founder — The Saints Childcare Foundation Uganda" },
+      { title: "Founder — The Saint's Childcare Foundation Uganda" },
+      { name: "description", content: "Meet the founder of The Saint's Childcare Foundation Uganda and read their message of hope and commitment to vulnerable children." },
+      { property: "og:title", content: "Founder — The Saint's Childcare Foundation Uganda" },
     ],
   }),
   component: FounderPage,
@@ -34,7 +34,7 @@ function FounderPage() {
             </h2>
             <p className="text-lg text-ink/70 leading-relaxed">
               A passionate child rights advocate and community leader, [Founder Name]
-              established The Saints Childcare Foundation Uganda to give voice and
+              established The Saint's Childcare Foundation Uganda to give voice and
               opportunity to children whose circumstances have left them invisible to
               the world.
             </p>
@@ -87,7 +87,7 @@ function FounderPage() {
           <div className="border-t border-white/10 pt-6">
             <p className="font-display italic text-2xl text-brand-gold">— [ Founder Signature ]</p>
             <p className="font-mono text-xs uppercase tracking-widest text-white/40 mt-2">
-              Founder · The Saints Childcare Foundation Uganda
+              Founder · The Saint's Childcare Foundation Uganda
             </p>
           </div>
         </div>

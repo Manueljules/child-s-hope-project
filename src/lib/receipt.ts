@@ -106,7 +106,7 @@ export function generateReceiptPDF(d: ReceiptData) {
   y += 20;
   doc.setTextColor(120, 120, 120);
   doc.setFontSize(9);
-  doc.text("The Saints Childcare Foundation Uganda is a registered non-profit organization.", M, y);
+  doc.text("The Saint's Childcare Foundation Uganda is a registered non-profit organization.", M, y);
   y += 12;
   doc.text("This receipt confirms your contribution. Please retain for your records.", M, y);
 

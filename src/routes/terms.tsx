@@ -4,8 +4,8 @@ import { SiteLayout, PageHeader } from "@/components/site/SiteLayout";
 export const Route = createFileRoute("/terms")({
   head: () => ({
     meta: [
-      { title: "Terms of Use — The Saints Childcare Foundation Uganda" },
-      { name: "description", content: "Terms and conditions for using the website of The Saints Childcare Foundation Uganda." },
+      { title: "Terms of Use — The Saint's Childcare Foundation Uganda" },
+      { name: "description", content: "Terms and conditions for using the website of The Saint's Childcare Foundation Uganda." },
     ],
   }),
   component: () => (
@@ -18,7 +18,7 @@ export const Route = createFileRoute("/terms")({
           <h2 className="font-display font-extrabold text-2xl text-ink">Donations</h2>
           <p>All donations are non-refundable except as required by law. Receipts are issued by email.</p>
           <h2 className="font-display font-extrabold text-2xl text-ink">Intellectual property</h2>
-          <p>All content remains the property of The Saints Childcare Foundation Uganda and may not be reused without permission.</p>
+          <p>All content remains the property of The Saint's Childcare Foundation Uganda and may not be reused without permission.</p>
           <p className="pt-6"><Link to="/contact" className="text-brand-blue underline">Contact us</Link> with any questions.</p>
         </div>
       </section>

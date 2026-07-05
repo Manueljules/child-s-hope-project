@@ -102,7 +102,7 @@ export function SiteFooter() {
         </div>
 
         <div className="pt-8 border-t border-brand-blue/10 flex flex-col md:flex-row justify-between gap-4 text-[10px] font-mono uppercase tracking-widest text-ink/40">
-          <span>© {new Date().getFullYear()} The Saints Childcare Foundation Uganda. All Rights Reserved.</span>
+          <span>© {new Date().getFullYear()} The Saint's Childcare Foundation Uganda. All Rights Reserved.</span>
           <div className="flex gap-6">
             <Link to="/privacy" className="hover:text-brand-blue">Privacy</Link>
             <Link to="/terms" className="hover:text-brand-blue">Terms</Link>

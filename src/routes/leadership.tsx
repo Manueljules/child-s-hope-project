@@ -5,8 +5,8 @@ import { Linkedin, Mail } from "lucide-react";
 export const Route = createFileRoute("/leadership")({
   head: () => ({
     meta: [
-      { title: "Leadership Team — The Saints Childcare Foundation Uganda" },
-      { name: "description", content: "Meet the leadership team driving The Saints Childcare Foundation Uganda's mission to support vulnerable children." },
+      { title: "Leadership Team — The Saint's Childcare Foundation Uganda" },
+      { name: "description", content: "Meet the leadership team driving The Saint's Childcare Foundation Uganda's mission to support vulnerable children." },
     ],
   }),
   component: LeadershipPage,

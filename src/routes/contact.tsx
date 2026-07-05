@@ -6,8 +6,8 @@ import { Phone, Mail, MapPin, Clock, MessageCircle, CheckCircle2 } from "lucide-
 export const Route = createFileRoute("/contact")({
   head: () => ({
     meta: [
-      { title: "Contact — The Saints Childcare Foundation Uganda" },
-      { name: "description", content: "Get in touch with The Saints Childcare Foundation Uganda. Phone, email, office location and contact form." },
+      { title: "Contact — The Saint's Childcare Foundation Uganda" },
+      { name: "description", content: "Get in touch with The Saint's Childcare Foundation Uganda. Phone, email, office location and contact form." },
     ],
   }),
   component: ContactPage,

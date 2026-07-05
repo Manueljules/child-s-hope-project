@@ -20,13 +20,13 @@ function useLeaderMessage(key: "founder_message" | "cofounder_message", fallback
 export const Route = createFileRoute("/about")({
   head: () => ({
     meta: [
-      { title: "About Us — The Saints Childcare Foundation Uganda" },
+      { title: "About Us — The Saint's Childcare Foundation Uganda" },
       {
         name: "description",
         content:
-          "Learn about The Saints Childcare Foundation Uganda — our mission, vision, values, priority focus groups and where we operate across Uganda.",
+          "Learn about The Saint's Childcare Foundation Uganda — our mission, vision, values, priority focus groups and where we operate across Uganda.",
       },
-      { property: "og:title", content: "About — The Saints Childcare Foundation Uganda" },
+      { property: "og:title", content: "About — The Saint's Childcare Foundation Uganda" },
       { property: "og:description", content: "Our mission, vision and values." },
     ],
   }),
@@ -83,7 +83,7 @@ function AboutPage() {
               fallback={{
                 name: "Founder Name",
                 title: "Founder & Executive Director",
-                body: "When I founded The Saints Childcare Foundation Uganda, I made a promise to every orphaned and vulnerable child we would meet: you will not be forgotten.",
+                body: "When I founded The Saint's Childcare Foundation Uganda, I made a promise to every orphaned and vulnerable child we would meet: you will not be forgotten.",
               }}
             />
             <LeaderCard
