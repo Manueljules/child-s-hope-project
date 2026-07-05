@@ -405,7 +405,7 @@ function NewsMediaManager({ post, onClose }: { post: NewsPost; onClose: () => vo
   async function remove(id: string) {
     if (!confirm("Delete this photo?")) return;
     await supabase.from("news_media").delete().eq("id", id);
-    qc.invalidateQueries({ queryKey: ["news_media", post.id] });
+    qc.invalidateQueries({ queryKey: ["news_media", nid] });
   }
   return (
     <div className="space-y-4">
