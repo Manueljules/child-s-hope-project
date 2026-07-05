@@ -244,15 +244,15 @@ function DonatePage() {
                   </div>
 
                   <div className="grid grid-cols-4 gap-2">
-                    {[10, 25, 50].map((a) => (
+                    {(AMOUNTS[currency] ?? AMOUNTS.USD).map((a) => (
                       <button
                         key={a}
                         type="button"
                         onClick={() => { setAmount(a); setCustom(""); }}
                         className={`relative py-4 px-2 border text-center transition ${!custom && amount === a ? "bg-brand-blue text-white border-brand-blue" : "border-brand-blue/20 text-ink hover:border-brand-blue"}`}
                       >
-                        <div className="font-display font-extrabold text-lg leading-none">{currency}{a}</div>
-                        <div className="text-[10px] mt-1 opacity-80">Per {freq === "monthly" ? "month" : "gift"}</div>
+                        <div className="font-display font-extrabold text-sm md:text-base leading-none whitespace-nowrap">{CURRENCY_SYMBOL[currency]}{a.toLocaleString()}</div>
+                        <div className="text-[10px] mt-1 opacity-80">Per {freq === "monthly" ? "month" : freq === "weekly" ? "week" : "gift"}</div>
                         {!custom && amount === a && (
                           <span className="absolute left-1/2 -bottom-2 -translate-x-1/2 w-3 h-3 rotate-45 bg-brand-blue" />
                         )}
