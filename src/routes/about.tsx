@@ -81,18 +81,20 @@ function AboutPage() {
               msgKey="founder_message"
               accent="blue"
               fallback={{
-                name: "Founder Name",
+                name: "Augustine Sempagala",
                 title: "Founder & Executive Director",
                 body: "When I founded The Saint's Childcare Foundation Uganda, I made a promise to every orphaned and vulnerable child we would meet: you will not be forgotten.",
+                image_url: augustineImg.url,
               }}
             />
             <LeaderCard
               msgKey="cofounder_message"
               accent="orange"
               fallback={{
-                name: "Cofounder Name",
+                name: "Agness Claire Namisango",
                 title: "Cofounder & Programs Director",
                 body: "Change is stubborn work. It happens one child, one family, one village at a time.",
+                image_url: agnessImg.url,
               }}
             />
           </div>
