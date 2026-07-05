@@ -22,7 +22,7 @@ function FounderPage() {
         <div className="max-w-7xl mx-auto px-6 grid lg:grid-cols-12 gap-12 items-start">
           <div className="lg:col-span-5">
             <div className="aspect-[4/5] overflow-hidden bg-surface">
-              <img src={founderImg} alt="Founder portrait" loading="lazy" className="size-full object-cover" />
+              <img src={founderImg.url} alt="Augustine Sempagala, Founder" loading="lazy" className="size-full object-cover" />
             </div>
             <div className="mt-4 font-mono text-xs uppercase tracking-widest text-brand-blue">
               / Founder &amp; Executive Director
