@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import { SiteNav } from "./SiteNav";
 import { SiteFooter } from "./SiteFooter";
+import { WhatsAppWidget } from "./WhatsAppWidget";
 
 export function SiteLayout({ children }: { children: ReactNode }) {
   return (
@@ -8,6 +9,7 @@ export function SiteLayout({ children }: { children: ReactNode }) {
       <SiteNav />
       <main className="flex-1">{children}</main>
       <SiteFooter />
+      <WhatsAppWidget />
     </div>
   );
 }

@@ -1,20 +1,22 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { SiteLayout, PageHeader } from "@/components/site/SiteLayout";
 import { Linkedin, Mail } from "lucide-react";
+import augustineImg from "@/assets/augustine-sempagala.png.asset.json";
+import agnessImg from "@/assets/agness-namisango.png.asset.json";
 
 export const Route = createFileRoute("/leadership")({
   head: () => ({
     meta: [
-      { title: "Leadership Team — The Saints Childcare Foundation Uganda" },
-      { name: "description", content: "Meet the leadership team driving The Saints Childcare Foundation Uganda's mission to support vulnerable children." },
+      { title: "Leadership Team — The Saint's Childcare Foundation Uganda" },
+      { name: "description", content: "Meet the leadership team driving The Saint's Childcare Foundation Uganda's mission to support vulnerable children." },
     ],
   }),
   component: LeadershipPage,
 });
 
-const team = [
-  { name: "[ Name ]", role: "Executive Director", bio: "Provides strategic leadership and oversees all programs." },
-  { name: "[ Name ]", role: "Co-Founder", bio: "Partner in vision and operations since inception." },
+const team: { name: string; role: string; bio: string; image?: string }[] = [
+  { name: "Augustine Sempagala", role: "Founder & Executive Director", bio: "Provides strategic leadership and oversees all programs.", image: augustineImg.url },
+  { name: "Agness Claire Namisango", role: "Cofounder & Programs Director", bio: "Partner in vision and operations since inception.", image: agnessImg.url },
   { name: "[ Name ]", role: "Programs Director", bio: "Leads implementation of education and healthcare programs." },
   { name: "[ Name ]", role: "Finance & Operations", bio: "Ensures transparency and accountability in all financials." },
   { name: "[ Name ]", role: "Child Protection Lead", bio: "Safeguards child welfare across all field operations." },
@@ -33,8 +35,12 @@ function LeadershipPage() {
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-px bg-brand-blue/10 border border-brand-blue/10">
             {team.map((m) => (
               <article key={m.role} className="bg-white p-8 group">
-                <div className="aspect-square bg-surface mb-6 grid place-items-center text-ink/20 font-display font-extrabold text-5xl">
-                  {m.name.replace(/\[|\]| /g, "").charAt(0) || "·"}
+                <div className="aspect-square bg-surface mb-6 overflow-hidden grid place-items-center text-ink/20 font-display font-extrabold text-5xl">
+                  {m.image ? (
+                    <img src={m.image} alt={m.name} loading="lazy" className="size-full object-cover" />
+                  ) : (
+                    m.name.replace(/\[|\]| /g, "").charAt(0) || "·"
+                  )}
                 </div>
                 <h3 className="font-display font-extrabold text-xl mb-1">{m.name}</h3>
                 <p className="font-mono text-[11px] uppercase tracking-widest text-brand-blue mb-3">{m.role}</p>

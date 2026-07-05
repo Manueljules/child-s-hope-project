@@ -77,14 +77,14 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "The Saints Childcare Foundation Uganda — Make a Child Just Better" },
+      { title: "The Saint's Childcare Foundation Uganda — Make a Child Just Better" },
       {
         name: "description",
         content:
           "Non-profit transforming the lives of orphaned and vulnerable children in Uganda through education, healthcare, nutrition, shelter and community empowerment.",
       },
-      { name: "author", content: "The Saints Childcare Foundation Uganda" },
-      { property: "og:title", content: "The Saints Childcare Foundation Uganda" },
+      { name: "author", content: "The Saint's Childcare Foundation Uganda" },
+      { property: "og:title", content: "The Saint's Childcare Foundation Uganda" },
       {
         property: "og:description",
         content: "Make a Child Just Better — join us in transforming vulnerable children's lives across Uganda.",

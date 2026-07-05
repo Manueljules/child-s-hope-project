@@ -106,7 +106,7 @@ export function generateReceiptPDF(d: ReceiptData) {
   y += 20;
   doc.setTextColor(120, 120, 120);
   doc.setFontSize(9);
-  doc.text("The Saints Childcare Foundation Uganda is a registered non-profit organization.", M, y);
+  doc.text("The Saint's Childcare Foundation Uganda is a registered non-profit organization.", M, y);
   y += 12;
   doc.text("This receipt confirms your contribution. Please retain for your records.", M, y);
 
@@ -115,7 +115,7 @@ export function generateReceiptPDF(d: ReceiptData) {
   doc.rect(0, 800, W, 42, "F");
   doc.setTextColor(255, 255, 255);
   doc.setFontSize(9);
-  doc.text("thesaintschildcare.org  ·  hello@thesaintschildcare.org  ·  +256 700 000 000", W / 2, 826, { align: "center" });
+  doc.text("thesaintschildcare@gmail.com  ·  +256 700 339 231  ·  +256 769 027 058", W / 2, 826, { align: "center" });
 
   doc.save(`Saints-Foundation-Receipt-${d.reference}.pdf`);
 }

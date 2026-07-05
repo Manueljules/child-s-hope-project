@@ -13,7 +13,7 @@ import founder from "@/assets/founder.jpg";
 export const Route = createFileRoute("/gallery")({
   head: () => ({
     meta: [
-      { title: "Gallery — The Saints Childcare Foundation Uganda" },
+      { title: "Gallery — The Saint's Childcare Foundation Uganda" },
       { name: "description", content: "Photos and videos from our programs, events, community outreach, education, and health activities." },
     ],
   }),

@@ -6,7 +6,7 @@ import { SiteLayout, PageHeader } from "@/components/site/SiteLayout";
 import { Save, Plus, Trash2, LogOut, Edit3, Landmark, Image as ImageIcon, MessageSquare, Wallet, Users } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/admin")({
-  head: () => ({ meta: [{ title: "Admin Dashboard — The Saints Childcare Foundation" }] }),
+  head: () => ({ meta: [{ title: "Admin Dashboard — The Saint's Childcare Foundation" }] }),
   component: AdminPage,
 });
 

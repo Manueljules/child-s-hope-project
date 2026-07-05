@@ -8,8 +8,8 @@ import nutrition from "@/assets/program-nutrition.jpg";
 export const Route = createFileRoute("/news")({
   head: () => ({
     meta: [
-      { title: "News & Events — The Saints Childcare Foundation Uganda" },
-      { name: "description", content: "Latest news, events, fundraising campaigns and community updates from The Saints Childcare Foundation Uganda." },
+      { title: "News & Events — The Saint's Childcare Foundation Uganda" },
+      { name: "description", content: "Latest news, events, fundraising campaigns and community updates from The Saint's Childcare Foundation Uganda." },
     ],
   }),
   component: NewsPage,

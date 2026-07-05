@@ -6,8 +6,8 @@ import { CheckCircle2 } from "lucide-react";
 export const Route = createFileRoute("/volunteer")({
   head: () => ({
     meta: [
-      { title: "Volunteer — The Saints Childcare Foundation Uganda" },
-      { name: "description", content: "Apply to volunteer with The Saints Childcare Foundation Uganda. Lend your skills to help vulnerable children." },
+      { title: "Volunteer — The Saint's Childcare Foundation Uganda" },
+      { name: "description", content: "Apply to volunteer with The Saint's Childcare Foundation Uganda. Lend your skills to help vulnerable children." },
     ],
   }),
   component: VolunteerPage,

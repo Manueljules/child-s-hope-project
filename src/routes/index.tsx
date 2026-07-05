@@ -13,13 +13,13 @@ import programNutrition from "@/assets/program-nutrition.jpg";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "The Saints Childcare Foundation Uganda — Make a Child Just Better" },
+      { title: "The Saint's Childcare Foundation Uganda — Make a Child Just Better" },
       {
         name: "description",
         content:
           "Transforming the lives of orphaned and vulnerable children in Uganda through education, healthcare, nutrition, shelter, and community empowerment. Donate, sponsor or volunteer today.",
       },
-      { property: "og:title", content: "Make a Child Just Better — The Saints Childcare Foundation Uganda" },
+      { property: "og:title", content: "Make a Child Just Better — The Saint's Childcare Foundation Uganda" },
       {
         property: "og:description",
         content: "Join us in transforming vulnerable children's lives across Uganda.",
@@ -64,7 +64,7 @@ function HomePage() {
         <div className="relative max-w-7xl mx-auto px-6 py-28 z-10 w-full">
           <div className="max-w-3xl animate-slide-up">
             <p className="font-mono text-brand-gold text-xs uppercase tracking-[0.3em] mb-6">
-              / The Saints Childcare Foundation Uganda
+              / The Saint's Childcare Foundation Uganda
             </p>
             <h1 className="font-display font-extrabold text-[clamp(2.75rem,8vw,6rem)] leading-[0.9] tracking-tighter mb-8">
               MAKE A CHILD <span className="text-brand-gold italic">JUST</span> BETTER.

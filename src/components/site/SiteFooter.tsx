@@ -13,7 +13,7 @@ export function SiteFooter() {
               </div>
               <div className="leading-none">
                 <span className="block font-display font-extrabold text-base tracking-tight uppercase">
-                  The Saints
+                  The Saint's
                 </span>
                 <span className="block text-[10px] font-mono uppercase tracking-widest text-brand-blue">
                   Childcare Foundation Uganda
@@ -96,13 +96,17 @@ export function SiteFooter() {
               <br />
               Kampala, Uganda
               <br />
-              +256 700 000 000
+              +256 700 339 231
+              <br />
+              +256 769 027 058
+              <br />
+              thesaintschildcare@gmail.com
             </p>
           </div>
         </div>
 
         <div className="pt-8 border-t border-brand-blue/10 flex flex-col md:flex-row justify-between gap-4 text-[10px] font-mono uppercase tracking-widest text-ink/40">
-          <span>© {new Date().getFullYear()} The Saints Childcare Foundation Uganda. All Rights Reserved.</span>
+          <span>© {new Date().getFullYear()} The Saint's Childcare Foundation Uganda. All Rights Reserved.</span>
           <div className="flex gap-6">
             <Link to="/privacy" className="hover:text-brand-blue">Privacy</Link>
             <Link to="/terms" className="hover:text-brand-blue">Terms</Link>

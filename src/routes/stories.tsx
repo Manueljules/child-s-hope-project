@@ -8,7 +8,7 @@ import nutrition from "@/assets/program-nutrition.jpg";
 export const Route = createFileRoute("/stories")({
   head: () => ({
     meta: [
-      { title: "Success Stories — The Saints Childcare Foundation Uganda" },
+      { title: "Success Stories — The Saint's Childcare Foundation Uganda" },
       { name: "description", content: "Real stories of children whose lives have been transformed through education, healthcare and community support." },
     ],
   }),

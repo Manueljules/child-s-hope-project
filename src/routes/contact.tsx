@@ -6,8 +6,8 @@ import { Phone, Mail, MapPin, Clock, MessageCircle, CheckCircle2 } from "lucide-
 export const Route = createFileRoute("/contact")({
   head: () => ({
     meta: [
-      { title: "Contact — The Saints Childcare Foundation Uganda" },
-      { name: "description", content: "Get in touch with The Saints Childcare Foundation Uganda. Phone, email, office location and contact form." },
+      { title: "Contact — The Saint's Childcare Foundation Uganda" },
+      { name: "description", content: "Get in touch with The Saint's Childcare Foundation Uganda. Phone, email, office location and contact form." },
     ],
   }),
   component: ContactPage,
@@ -24,21 +24,22 @@ function ContactPage() {
           <div className="space-y-8">
             <div className="grid sm:grid-cols-2 gap-px bg-brand-blue/10 border border-brand-blue/10">
               {[
-                { Icon: Phone, l: "Phone", v: "+256 700 000 000" },
-                { Icon: Mail, l: "Email", v: "hello@saintsfoundation.ug" },
+                { Icon: Phone, l: "Phone", v: "+256 700 339 231" },
+                { Icon: Phone, l: "Alt. Phone", v: "+256 769 027 058" },
+                { Icon: Mail, l: "Email", v: "thesaintschildcare@gmail.com" },
                 { Icon: MapPin, l: "Office", v: "Plot 24, Kampala Road" },
                 { Icon: Clock, l: "Hours", v: "Mon–Fri, 9am–5pm EAT" },
               ].map((c) => (
                 <div key={c.l} className="bg-white p-6">
                   <c.Icon className="size-5 text-brand-blue mb-3" />
                   <p className="font-mono text-[10px] uppercase tracking-widest text-ink/40 mb-1">{c.l}</p>
-                  <p className="font-display font-extrabold text-sm">{c.v}</p>
+                  <p className="font-display font-extrabold text-sm break-all">{c.v}</p>
                 </div>
               ))}
             </div>
 
             <a
-              href="https://wa.me/256700000000"
+              href="https://wa.me/256700339231"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-3 bg-brand-green text-white px-6 py-4 font-display font-extrabold uppercase text-sm tracking-widest hover:bg-brand-green/90"
