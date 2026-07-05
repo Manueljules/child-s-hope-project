@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
+import { z } from "zod";
 import { SiteLayout, PageHeader } from "@/components/site/SiteLayout";
 import { Phone, Mail, MapPin, Clock, MessageCircle, CheckCircle2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
@@ -14,22 +15,39 @@ export const Route = createFileRoute("/contact")({
   component: ContactPage,
 });
 
+const contactSchema = z.object({
+  name: z.string().trim().min(2, "Please enter your name").max(100),
+  email: z.string().trim().email("Please enter a valid email").max(255),
+  phone: z.string().trim().max(30).optional().or(z.literal("")),
+  subject: z.string().trim().min(2, "Please add a subject").max(150),
+  message: z.string().trim().min(10, "Message is a bit short").max(2000),
+});
+
 function ContactPage() {
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const [form, setForm] = useState({ name: "", email: "", phone: "", subject: "", message: "" });
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
-    setSubmitting(true);
     setError(null);
+    setFieldErrors({});
+    const parsed = contactSchema.safeParse(form);
+    if (!parsed.success) {
+      const errs: Record<string, string> = {};
+      for (const issue of parsed.error.issues) errs[String(issue.path[0])] = issue.message;
+      setFieldErrors(errs);
+      return;
+    }
+    setSubmitting(true);
     const { error: err } = await supabase.from("contact_messages").insert({
-      name: form.name,
-      email: form.email,
-      phone: form.phone || null,
-      subject: form.subject || null,
-      message: form.message,
+      name: parsed.data.name,
+      email: parsed.data.email,
+      phone: parsed.data.phone || null,
+      subject: parsed.data.subject,
+      message: parsed.data.message,
     });
     setSubmitting(false);
     if (err) {
