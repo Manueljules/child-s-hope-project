@@ -84,6 +84,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           "Non-profit transforming the lives of orphaned and vulnerable children in Uganda through education, healthcare, nutrition, shelter and community empowerment.",
       },
       { name: "author", content: "The Saint's Childcare Foundation Uganda" },
+      { name: "theme-color", content: "#1e3a8a" },
+      { property: "og:site_name", content: "The Saint's Childcare Foundation Uganda" },
       { property: "og:title", content: "The Saint's Childcare Foundation Uganda" },
       {
         property: "og:description",
@@ -91,14 +93,41 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "The Saint's Childcare Foundation Uganda" },
+      {
+        name: "twitter:description",
+        content: "Make a Child Just Better — support vulnerable children across Uganda.",
+      },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
+      { rel: "preconnect", href: "https://translate.googleapis.com", crossOrigin: "anonymous" },
       {
         rel: "stylesheet",
         href: "https://fonts.googleapis.com/css2?family=Inter+Tight:ital,wght@0,400;0,600;0,700;0,800;1,800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap",
+      },
+    ],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "NGO",
+          name: "The Saint's Childcare Foundation Uganda",
+          alternateName: "The Saint's Childcare Foundation",
+          description:
+            "Non-profit transforming the lives of orphaned and vulnerable children in Uganda through education, healthcare, nutrition, shelter and community empowerment.",
+          founder: [
+            { "@type": "Person", name: "Augustine Sempagala", jobTitle: "Founder & Executive Director" },
+            { "@type": "Person", name: "Agness Claire Namisango", jobTitle: "Cofounder & Programs Director" },
+          ],
+          areaServed: { "@type": "Country", name: "Uganda" },
+          email: "thesaintschildcare@gmail.com",
+          telephone: ["+256700339231", "+256769027058"],
+          sameAs: [],
+        }),
       },
     ],
   }),
