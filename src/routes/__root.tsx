@@ -125,7 +125,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           ],
           areaServed: { "@type": "Country", name: "Uganda" },
           email: "thesaintschildcare@gmail.com",
-          telephone: ["+256700339231", "+256769027058"],
+          telephone: ["+256700339231", "+256769027758"],
           sameAs: [],
         }),
       },

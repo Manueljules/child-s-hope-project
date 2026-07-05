@@ -98,9 +98,9 @@ export function SiteFooter() {
               <br />
               +256 700 339 231
               <br />
-              +256 769 027 058
+              +256 769 027 758
               <br />
-              thesaintschildcare@gmail.com
+              <span className="text-brand-blue font-semibold">thesaintschildcare@gmail.com</span>
             </p>
           </div>
         </div>
