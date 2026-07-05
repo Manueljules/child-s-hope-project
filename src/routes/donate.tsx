@@ -27,7 +27,13 @@ const TYPES = [
 ];
 const FREQS = ["one", "weekly", "monthly", "annual"] as const;
 type Freq = (typeof FREQS)[number];
-const AMOUNTS_UGX = [20000, 50000, 100000, 250000, 500000, 1000000];
+const AMOUNTS: Record<string, number[]> = {
+  UGX: [20000, 50000, 100000, 250000],
+  USD: [10, 25, 50, 100],
+  EUR: [10, 25, 50, 100],
+  GBP: [10, 25, 50, 100],
+};
+const CURRENCY_SYMBOL: Record<string, string> = { UGX: "UGX ", USD: "$", EUR: "€", GBP: "£" };
 
 const STEPS = [
   { id: 1, title: "Amount", hint: "How much you'd like to give" },
