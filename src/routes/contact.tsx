@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { SiteLayout, PageHeader } from "@/components/site/SiteLayout";
 import { Phone, Mail, MapPin, Clock, MessageCircle, CheckCircle2 } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/contact")({
   head: () => ({
@@ -15,6 +16,29 @@ export const Route = createFileRoute("/contact")({
 
 function ContactPage() {
   const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [form, setForm] = useState({ name: "", email: "", phone: "", subject: "", message: "" });
+
+  async function onSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setSubmitting(true);
+    setError(null);
+    const { error: err } = await supabase.from("contact_messages").insert({
+      name: form.name,
+      email: form.email,
+      phone: form.phone || null,
+      subject: form.subject || null,
+      message: form.message,
+    });
+    setSubmitting(false);
+    if (err) {
+      setError("Could not send message. Please try again or email us directly.");
+      return;
+    }
+    setSubmitted(true);
+  }
+
   return (
     <SiteLayout>
       <PageHeader eyebrow="Contact" title="We'd love to hear from you." description="Whether you're a donor, partner, volunteer or simply curious — we're here." />
@@ -64,24 +88,26 @@ function ContactPage() {
             {submitted ? (
               <div className="bg-surface p-12 text-center">
                 <CheckCircle2 className="size-16 text-brand-green mx-auto mb-6" />
-                <h2 className="font-display font-extrabold text-2xl mb-3">Message received</h2>
-                <p className="text-ink/60">We'll get back to you within 2 business days.</p>
+                <h2 className="font-display font-extrabold text-2xl mb-3">Successfully submitted</h2>
+                <p className="text-ink/60">Thank you {form.name || "friend"} — we'll get back to you within 2 business days.</p>
               </div>
             ) : (
-              <form onSubmit={(e) => { e.preventDefault(); setSubmitted(true); }} className="space-y-6 bg-surface p-8 md:p-10">
+              <form onSubmit={onSubmit} className="space-y-6 bg-surface p-8 md:p-10">
                 <p className="font-mono text-brand-blue text-xs uppercase tracking-widest">/ Send a Message</p>
                 <h2 className="font-display font-extrabold text-3xl tracking-tight">Get in touch.</h2>
                 <div className="grid sm:grid-cols-2 gap-4">
-                  <Field label="Name" name="name" required />
-                  <Field label="Email" name="email" type="email" required />
+                  <Field label="Name" value={form.name} onChange={(v) => setForm({ ...form, name: v })} required />
+                  <Field label="Email" type="email" value={form.email} onChange={(v) => setForm({ ...form, email: v })} required />
                 </div>
-                <Field label="Subject" name="subject" required />
+                <Field label="Phone" type="tel" value={form.phone} onChange={(v) => setForm({ ...form, phone: v })} />
+                <Field label="Subject" value={form.subject} onChange={(v) => setForm({ ...form, subject: v })} required />
                 <div>
                   <label className="block font-mono text-[11px] uppercase tracking-widest text-ink/60 mb-2">Message *</label>
-                  <textarea rows={6} required className="w-full border border-brand-blue/20 px-4 py-3 bg-white focus:border-brand-blue focus:outline-none text-sm" />
+                  <textarea rows={6} required value={form.message} onChange={(e) => setForm({ ...form, message: e.target.value })} className="w-full border border-brand-blue/20 px-4 py-3 bg-white focus:border-brand-blue focus:outline-none text-sm" />
                 </div>
-                <button type="submit" className="w-full bg-brand-orange text-white py-4 font-display font-extrabold uppercase tracking-[0.2em] hover:bg-brand-orange/90">
-                  Send Message
+                {error && <p className="text-sm text-red-600">{error}</p>}
+                <button type="submit" disabled={submitting} className="w-full bg-brand-orange text-white py-4 font-display font-extrabold uppercase tracking-[0.2em] hover:bg-brand-orange/90 disabled:opacity-60">
+                  {submitting ? "Sending…" : "Send Message"}
                 </button>
               </form>
             )}
@@ -92,13 +118,13 @@ function ContactPage() {
   );
 }
 
-function Field({ label, name, type = "text", required }: { label: string; name: string; type?: string; required?: boolean }) {
+function Field({ label, value, onChange, type = "text", required }: { label: string; value: string; onChange: (v: string) => void; type?: string; required?: boolean }) {
   return (
     <div>
-      <label htmlFor={name} className="block font-mono text-[11px] uppercase tracking-widest text-ink/60 mb-2">
+      <label className="block font-mono text-[11px] uppercase tracking-widest text-ink/60 mb-2">
         {label}{required && " *"}
       </label>
-      <input id={name} name={name} type={type} required={required} className="w-full border border-brand-blue/20 px-4 py-3 bg-white focus:border-brand-blue focus:outline-none text-sm" />
+      <input type={type} value={value} onChange={(e) => onChange(e.target.value)} required={required} className="w-full border border-brand-blue/20 px-4 py-3 bg-white focus:border-brand-blue focus:outline-none text-sm" />
     </div>
   );
 }

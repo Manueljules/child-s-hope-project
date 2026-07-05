@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { SiteLayout, PageHeader } from "@/components/site/SiteLayout";
 import { Heart, Lock, CheckCircle2, ChevronLeft, ChevronRight, Download, ShieldCheck } from "lucide-react";
 import { PAYMENT_METHODS } from "@/components/donate/PaymentLogos";
@@ -25,7 +25,7 @@ const TYPES = [
   { id: "emergency", label: "Emergency Appeal" },
   { id: "project", label: "Specific Project" },
 ];
-const FREQS = ["one", "monthly", "annual"] as const;
+const FREQS = ["one", "weekly", "monthly", "annual"] as const;
 type Freq = (typeof FREQS)[number];
 const AMOUNTS_UGX = [20000, 50000, 100000, 250000, 500000, 1000000];
 
@@ -43,6 +43,7 @@ function newRef() {
   return `SCF-${t}-${r}`;
 }
 
+
 function DonatePage() {
   const [step, setStep] = useState(1);
 
@@ -52,6 +53,14 @@ function DonatePage() {
   const [currency, setCurrency] = useState("UGX");
   const [amount, setAmount] = useState(100000);
   const [custom, setCustom] = useState("");
+  const [projectId, setProjectId] = useState<string | "">("");
+  const [projects, setProjects] = useState<Array<{ id: string; title: string }>>([]);
+  useEffect(() => {
+    supabase.from("projects").select("id,title").eq("is_published", true).order("sort_order").then(({ data }) => {
+      setProjects((data ?? []) as Array<{ id: string; title: string }>);
+    });
+  }, []);
+
 
   // step 2
   const [method, setMethod] = useState<string | null>(null);
@@ -102,10 +111,12 @@ function DonatePage() {
         frequency: freq,
         donation_type: type,
         payment_method: methodMeta?.label ?? method,
-        status: "completed", // simulated success (Stripe wiring next)
+        status: "confirmed", // simulated success (Stripe wiring next); trigger updates project.raised
         anonymous: anon,
         dedication: dedication || null,
+        project_id: projectId || null,
         metadata: { simulated: true },
+
       };
       const { error: err } = await supabase.from("donations").insert(payload);
       if (err) throw err;
@@ -179,29 +190,44 @@ function DonatePage() {
               {/* Step 1 */}
               {step === 1 && (
                 <div className="space-y-6 animate-fade-in">
-                  {/* Frequency toggle — Give Monthly / Give Once */}
-                  <div className="grid grid-cols-2 border border-brand-blue/20">
-                    <button
-                      type="button"
-                      onClick={() => setFreq("monthly")}
-                      className={`py-4 font-display font-extrabold text-base flex items-center justify-center gap-2 transition ${freq === "monthly" ? "bg-brand-blue text-white" : "bg-white text-ink/60"}`}
-                    >
-                      Give Monthly {freq === "monthly" && <Heart className="size-4 fill-red-500 text-red-500" />}
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setFreq("one")}
-                      className={`py-4 font-display font-extrabold text-base transition ${freq === "one" ? "bg-brand-blue text-white" : "bg-white text-ink/60"}`}
-                    >
-                      Give Once
-                    </button>
+                  {/* Frequency toggle — Once / Weekly / Monthly */}
+                  <div className="grid grid-cols-3 border border-brand-blue/20">
+                    {([
+                      { id: "one", label: "Give Once" },
+                      { id: "weekly", label: "Weekly" },
+                      { id: "monthly", label: "Monthly" },
+                    ] as Array<{ id: Freq; label: string }>).map((f) => (
+                      <button
+                        key={f.id}
+                        type="button"
+                        onClick={() => setFreq(f.id)}
+                        className={`py-4 font-display font-extrabold text-sm md:text-base flex items-center justify-center gap-2 transition ${freq === f.id ? "bg-brand-blue text-white" : "bg-white text-ink/60"}`}
+                      >
+                        {f.label} {freq === f.id && f.id !== "one" && <Heart className="size-4 fill-red-500 text-red-500" />}
+                      </button>
+                    ))}
                   </div>
 
                   <p className="text-brand-blue text-sm font-medium">
-                    {freq === "monthly"
-                      ? "Your priceless monthly gift can provide long-lasting change"
-                      : "One gift, immediate impact for a child in need"}
+                    {freq === "monthly" ? "Your priceless monthly gift can provide long-lasting change" : freq === "weekly" ? "A small weekly gift adds up to real change" : "One gift, immediate impact for a child in need"}
                   </p>
+
+                  {/* Project allocation */}
+                  <div>
+                    <label className="block font-mono text-[11px] uppercase tracking-widest text-ink/60 mb-2">Choose a project (optional)</label>
+                    <select
+                      value={projectId}
+                      onChange={(e) => setProjectId(e.target.value)}
+                      className="w-full border border-brand-blue/20 px-3 py-3 text-sm bg-white focus:outline-none focus:border-brand-blue"
+                    >
+                      <option value="">Where it's needed most</option>
+                      {projects.map((p) => (
+                        <option key={p.id} value={p.id}>{p.title}</option>
+                      ))}
+                    </select>
+                    {projectId && <p className="mt-2 text-xs text-brand-green">Your gift will fund this project — its progress bar updates once payment is confirmed.</p>}
+                  </div>
+
 
                   {/* Currency + Amount grid */}
                   <div className="flex items-center gap-2 text-xs">

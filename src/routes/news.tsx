@@ -1,9 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
 import { SiteLayout, PageHeader } from "@/components/site/SiteLayout";
-import edu from "@/assets/program-education.jpg";
-import health from "@/assets/program-health.jpg";
-import water from "@/assets/story-water.jpg";
-import nutrition from "@/assets/program-nutrition.jpg";
+import { supabase } from "@/integrations/supabase/client";
+import { ChevronLeft, ChevronRight, Volume2, VolumeX } from "lucide-react";
+
+type Post = { id: string; title: string; tag: string | null; excerpt: string | null; body: string | null; video_url: string | null; published_at: string };
+type NewsMedia = { id: string; news_id: string; url: string };
+type EventItem = { id: string; title: string; event_date: string; location: string | null };
 
 export const Route = createFileRoute("/news")({
   head: () => ({
@@ -15,79 +18,111 @@ export const Route = createFileRoute("/news")({
   component: NewsPage,
 });
 
-const posts = [
-  { img: edu, tag: "Announcement", date: "Mar 12, 2026", title: "Hope Primary expansion reaches 64% completion", excerpt: "The new four-classroom block will open in time for Term 2, welcoming 420 additional pupils." },
-  { img: water, tag: "Impact", date: "Feb 28, 2026", title: "Kiboga borehole now serves 1,200 community members", excerpt: "A milestone for our clean water initiative — and a model we plan to replicate in three more villages." },
-  { img: health, tag: "Event", date: "Feb 14, 2026", title: "Mobile health clinic launches in Northern Uganda", excerpt: "Our partnership with a regional hospital brings essential pediatric care to remote villages." },
-  { img: nutrition, tag: "Campaign", date: "Jan 30, 2026", title: "School feeding campaign closes 92% of target", excerpt: "Thanks to 1,240 donors, no child in our partner schools will go hungry this term." },
-];
-
-const events = [
-  { date: "Apr 18", title: "Annual Hope Gala — Kampala", loc: "Serena Hotel, Kampala" },
-  { date: "May 04", title: "Run for the Children 10K", loc: "Lugogo Bypass, Kampala" },
-  { date: "Jun 12", title: "Community Outreach — Mubende", loc: "Mubende District" },
-];
-
 function NewsPage() {
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [media, setMedia] = useState<NewsMedia[]>([]);
+  const [events, setEvents] = useState<EventItem[]>([]);
+
+  useEffect(() => {
+    supabase.from("news_posts").select("*").eq("is_published", true).order("published_at", { ascending: false }).then(({ data }) => {
+      const list = (data ?? []) as Post[];
+      setPosts(list);
+      if (list.length > 0) {
+        supabase.from("news_media").select("*").in("news_id", list.map((p) => p.id)).order("sort_order").then(({ data: m }) => {
+          setMedia((m ?? []) as NewsMedia[]);
+        });
+      }
+    });
+    supabase.from("events").select("*").gte("event_date", new Date().toISOString().slice(0, 10)).order("event_date").then(({ data }) => {
+      setEvents((data ?? []) as EventItem[]);
+    });
+  }, []);
+
   return (
     <SiteLayout>
       <PageHeader eyebrow="News & Events" title="Updates from the field." description="Follow our campaigns, milestones and upcoming community events." />
 
       <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-6 grid lg:grid-cols-3 gap-12">
-          <div className="lg:col-span-2 space-y-12">
-            <div>
-              <p className="font-mono text-brand-blue text-sm uppercase tracking-widest mb-4">/ Latest News</p>
-              <h2 className="font-display font-extrabold text-3xl md:text-4xl tracking-tight mb-8">From our blog</h2>
-              <div className="grid sm:grid-cols-2 gap-8">
-                {posts.map((p) => (
-                  <article key={p.title} className="group">
-                    <div className="aspect-[4/3] overflow-hidden bg-surface mb-4">
-                      <img src={p.img} alt={p.title} loading="lazy" className="size-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                    </div>
-                    <div className="flex items-center gap-3 font-mono text-[10px] uppercase tracking-widest text-ink/40 mb-2">
-                      <span className="text-brand-orange">{p.tag}</span>
-                      <span>·</span>
-                      <span>{p.date}</span>
-                    </div>
-                    <h3 className="font-display font-extrabold text-xl mb-2 leading-tight">{p.title}</h3>
-                    <p className="text-ink/60 text-sm leading-relaxed">{p.excerpt}</p>
-                  </article>
-                ))}
-              </div>
-            </div>
+          <div className="lg:col-span-2 space-y-16">
+            {posts.length === 0 && <p className="text-ink/50">No news yet. Check back soon.</p>}
+            {posts.map((p) => (
+              <NewsCard key={p.id} post={p} media={media.filter((m) => m.news_id === p.id)} />
+            ))}
           </div>
 
           <aside className="space-y-12">
             <div>
               <p className="font-mono text-brand-orange text-sm uppercase tracking-widest mb-4">/ Upcoming Events</p>
+              {events.length === 0 && <p className="text-ink/50 text-sm">No upcoming events.</p>}
               <ul className="space-y-px bg-brand-blue/10 border border-brand-blue/10">
-                {events.map((e) => (
-                  <li key={e.title} className="bg-white p-6 flex gap-4">
-                    <div className="shrink-0 size-14 bg-brand-blue text-white grid place-items-center font-display font-extrabold text-sm leading-tight text-center">
-                      {e.date}
-                    </div>
-                    <div className="min-w-0">
-                      <h3 className="font-display font-extrabold text-base leading-tight">{e.title}</h3>
-                      <p className="text-ink/50 text-xs mt-1 truncate">{e.loc}</p>
-                    </div>
-                  </li>
-                ))}
+                {events.map((e) => {
+                  const d = new Date(e.event_date);
+                  return (
+                    <li key={e.id} className="bg-white p-6 flex gap-4">
+                      <div className="shrink-0 size-14 bg-brand-blue text-white grid place-items-center font-display font-extrabold text-sm leading-tight text-center">
+                        {d.toLocaleDateString("en", { month: "short", day: "numeric" })}
+                      </div>
+                      <div className="min-w-0">
+                        <h3 className="font-display font-extrabold text-base leading-tight">{e.title}</h3>
+                        {e.location && <p className="text-ink/50 text-xs mt-1 truncate">{e.location}</p>}
+                      </div>
+                    </li>
+                  );
+                })}
               </ul>
-            </div>
-
-            <div className="bg-ink text-white p-8">
-              <p className="font-mono text-brand-gold text-xs uppercase tracking-widest mb-4">/ Subscribe</p>
-              <h3 className="font-display font-extrabold text-2xl mb-4">Newsletter</h3>
-              <p className="text-white/60 text-sm mb-6">Get quarterly impact reports.</p>
-              <form onSubmit={(e) => e.preventDefault()} className="flex border-b border-white/20 pb-2">
-                <input type="email" placeholder="you@example.com" required className="bg-transparent text-sm w-full focus:outline-none placeholder:text-white/40" />
-                <button className="font-display font-extrabold text-sm uppercase tracking-widest text-brand-gold">Join</button>
-              </form>
             </div>
           </aside>
         </div>
       </section>
     </SiteLayout>
+  );
+}
+
+function NewsCard({ post, media }: { post: Post; media: NewsMedia[] }) {
+  const [slide, setSlide] = useState(0);
+  const [muted, setMuted] = useState(true); // browsers block autoplay-with-sound; start muted, let user unmute
+  const slides = media;
+
+  return (
+    <article>
+      {post.video_url && (
+        <div className="relative aspect-video bg-black mb-4">
+          <video
+            src={post.video_url}
+            autoPlay
+            loop
+            muted={muted}
+            playsInline
+            controls={false}
+            className="size-full object-cover"
+          />
+          <button onClick={() => setMuted((m) => !m)} className="absolute bottom-3 right-3 size-10 bg-white/90 grid place-items-center hover:bg-white">
+            {muted ? <VolumeX className="size-4" /> : <Volume2 className="size-4" />}
+          </button>
+        </div>
+      )}
+      {slides.length > 0 && !post.video_url && (
+        <div className="relative aspect-video bg-surface mb-4 overflow-hidden">
+          <img src={slides[slide].url} alt="" className="size-full object-cover" />
+          {slides.length > 1 && (
+            <>
+              <button onClick={() => setSlide((slide - 1 + slides.length) % slides.length)} className="absolute left-2 top-1/2 -translate-y-1/2 size-9 bg-white/90 grid place-items-center"><ChevronLeft className="size-4" /></button>
+              <button onClick={() => setSlide((slide + 1) % slides.length)} className="absolute right-2 top-1/2 -translate-y-1/2 size-9 bg-white/90 grid place-items-center"><ChevronRight className="size-4" /></button>
+              <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1">
+                {slides.map((_, i) => <button key={i} onClick={() => setSlide(i)} className={`size-2 rounded-full ${i === slide ? "bg-white" : "bg-white/40"}`} />)}
+              </div>
+            </>
+          )}
+        </div>
+      )}
+      <div className="flex items-center gap-3 font-mono text-[10px] uppercase tracking-widest text-ink/40 mb-2">
+        {post.tag && <><span className="text-brand-orange">{post.tag}</span><span>·</span></>}
+        <span>{new Date(post.published_at).toLocaleDateString()}</span>
+      </div>
+      <h3 className="font-display font-extrabold text-2xl md:text-3xl mb-3 leading-tight">{post.title}</h3>
+      {post.excerpt && <p className="text-ink/60 leading-relaxed mb-3">{post.excerpt}</p>}
+      {post.body && <p className="text-ink/70 leading-relaxed whitespace-pre-line">{post.body}</p>}
+    </article>
   );
 }

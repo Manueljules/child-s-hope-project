@@ -14,6 +14,57 @@ export type Database = {
   }
   public: {
     Tables: {
+      admin_settings: {
+        Row: {
+          key: string
+          updated_at: string
+          value: string
+        }
+        Insert: {
+          key: string
+          updated_at?: string
+          value: string
+        }
+        Update: {
+          key?: string
+          updated_at?: string
+          value?: string
+        }
+        Relationships: []
+      }
+      contact_messages: {
+        Row: {
+          created_at: string
+          email: string
+          id: string
+          is_read: boolean
+          message: string
+          name: string
+          phone: string | null
+          subject: string | null
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          id?: string
+          is_read?: boolean
+          message: string
+          name: string
+          phone?: string | null
+          subject?: string | null
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          id?: string
+          is_read?: boolean
+          message?: string
+          name?: string
+          phone?: string | null
+          subject?: string | null
+        }
+        Relationships: []
+      }
       donation_accounts: {
         Row: {
           account_name: string | null
@@ -81,7 +132,9 @@ export type Database = {
           id: string
           metadata: Json | null
           payment_method: string | null
+          project_id: string | null
           reference: string
+          sponsored_child_id: string | null
           status: string
         }
         Insert: {
@@ -99,7 +152,9 @@ export type Database = {
           id?: string
           metadata?: Json | null
           payment_method?: string | null
+          project_id?: string | null
           reference: string
+          sponsored_child_id?: string | null
           status?: string
         }
         Update: {
@@ -117,8 +172,257 @@ export type Database = {
           id?: string
           metadata?: Json | null
           payment_method?: string | null
+          project_id?: string | null
           reference?: string
+          sponsored_child_id?: string | null
           status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "donations_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "donations_sponsored_child_id_fkey"
+            columns: ["sponsored_child_id"]
+            isOneToOne: false
+            referencedRelation: "sponsored_children"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      events: {
+        Row: {
+          created_at: string
+          description: string | null
+          event_date: string
+          id: string
+          location: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          event_date: string
+          id?: string
+          location?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          event_date?: string
+          id?: string
+          location?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      news_media: {
+        Row: {
+          created_at: string
+          id: string
+          news_id: string
+          sort_order: number
+          url: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          news_id: string
+          sort_order?: number
+          url: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          news_id?: string
+          sort_order?: number
+          url?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "news_media_news_id_fkey"
+            columns: ["news_id"]
+            isOneToOne: false
+            referencedRelation: "news_posts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      news_posts: {
+        Row: {
+          body: string | null
+          created_at: string
+          excerpt: string | null
+          id: string
+          is_published: boolean
+          published_at: string
+          tag: string | null
+          title: string
+          updated_at: string
+          video_url: string | null
+        }
+        Insert: {
+          body?: string | null
+          created_at?: string
+          excerpt?: string | null
+          id?: string
+          is_published?: boolean
+          published_at?: string
+          tag?: string | null
+          title: string
+          updated_at?: string
+          video_url?: string | null
+        }
+        Update: {
+          body?: string | null
+          created_at?: string
+          excerpt?: string | null
+          id?: string
+          is_published?: boolean
+          published_at?: string
+          tag?: string | null
+          title?: string
+          updated_at?: string
+          video_url?: string | null
+        }
+        Relationships: []
+      }
+      newsletter_subscribers: {
+        Row: {
+          created_at: string
+          email: string
+          id: string
+          is_active: boolean
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          id?: string
+          is_active?: boolean
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          id?: string
+          is_active?: boolean
+        }
+        Relationships: []
+      }
+      newsletter_template: {
+        Row: {
+          html_body: string
+          id: number
+          subject: string
+          updated_at: string
+        }
+        Insert: {
+          html_body?: string
+          id?: number
+          subject?: string
+          updated_at?: string
+        }
+        Update: {
+          html_body?: string
+          id?: number
+          subject?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      project_media: {
+        Row: {
+          created_at: string
+          id: string
+          media_type: string
+          project_id: string
+          sort_order: number
+          url: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          media_type?: string
+          project_id: string
+          sort_order?: number
+          url: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          media_type?: string
+          project_id?: string
+          sort_order?: number
+          url?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "project_media_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      projects: {
+        Row: {
+          beneficiaries: number
+          budget: number
+          cover_image: string | null
+          created_at: string
+          description: string | null
+          district: string | null
+          id: string
+          is_published: boolean
+          raised: number
+          short_description: string | null
+          slug: string | null
+          sort_order: number
+          status: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          beneficiaries?: number
+          budget?: number
+          cover_image?: string | null
+          created_at?: string
+          description?: string | null
+          district?: string | null
+          id?: string
+          is_published?: boolean
+          raised?: number
+          short_description?: string | null
+          slug?: string | null
+          sort_order?: number
+          status?: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          beneficiaries?: number
+          budget?: number
+          cover_image?: string | null
+          created_at?: string
+          description?: string | null
+          district?: string | null
+          id?: string
+          is_published?: boolean
+          raised?: number
+          short_description?: string | null
+          slug?: string | null
+          sort_order?: number
+          status?: string
+          title?: string
+          updated_at?: string
         }
         Relationships: []
       }
@@ -142,6 +446,62 @@ export type Database = {
           value?: Json
         }
         Relationships: []
+      }
+      sponsored_children: {
+        Row: {
+          age: number | null
+          created_at: string
+          id: string
+          is_published: boolean
+          is_sponsored: boolean
+          location: string | null
+          monthly_amount: number | null
+          name: string
+          photo_url: string | null
+          project_id: string | null
+          sort_order: number
+          story: string | null
+          updated_at: string
+        }
+        Insert: {
+          age?: number | null
+          created_at?: string
+          id?: string
+          is_published?: boolean
+          is_sponsored?: boolean
+          location?: string | null
+          monthly_amount?: number | null
+          name: string
+          photo_url?: string | null
+          project_id?: string | null
+          sort_order?: number
+          story?: string | null
+          updated_at?: string
+        }
+        Update: {
+          age?: number | null
+          created_at?: string
+          id?: string
+          is_published?: boolean
+          is_sponsored?: boolean
+          location?: string | null
+          monthly_amount?: number | null
+          name?: string
+          photo_url?: string | null
+          project_id?: string | null
+          sort_order?: number
+          story?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sponsored_children_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       stories: {
         Row: {
@@ -200,6 +560,48 @@ export type Database = {
           id?: string
           role?: Database["public"]["Enums"]["app_role"]
           user_id?: string
+        }
+        Relationships: []
+      }
+      volunteer_applications: {
+        Row: {
+          availability: string | null
+          country: string | null
+          created_at: string
+          cv_url: string | null
+          email: string
+          id: string
+          interest: string | null
+          is_read: boolean
+          name: string
+          phone: string | null
+          skills: string | null
+        }
+        Insert: {
+          availability?: string | null
+          country?: string | null
+          created_at?: string
+          cv_url?: string | null
+          email: string
+          id?: string
+          interest?: string | null
+          is_read?: boolean
+          name: string
+          phone?: string | null
+          skills?: string | null
+        }
+        Update: {
+          availability?: string | null
+          country?: string | null
+          created_at?: string
+          cv_url?: string | null
+          email?: string
+          id?: string
+          interest?: string | null
+          is_read?: boolean
+          name?: string
+          phone?: string | null
+          skills?: string | null
         }
         Relationships: []
       }

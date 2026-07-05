@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { ArrowRight, Heart, GraduationCap, Stethoscope, Utensils, Home as HomeIcon, Shield, Sparkles } from "lucide-react";
 import { SiteLayout } from "@/components/site/SiteLayout";
+import { supabase } from "@/integrations/supabase/client";
 import heroChildren from "@/assets/hero-children.jpg";
 import brian from "@/assets/sponsor-brian.jpg";
 import storySarah from "@/assets/story-sarah.jpg";
@@ -185,8 +186,8 @@ function HomePage() {
         </div>
       </section>
 
-      {/* PROGRAMS */}
-      <section className="bg-surface py-24">
+      {/* PROGRAMS — pillars + images unified block */}
+      <section className="bg-surface pt-24">
         <div className="max-w-7xl mx-auto px-6">
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-16">
             <div>
@@ -205,14 +206,14 @@ function HomePage() {
             </Link>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-px bg-brand-blue/10 border border-brand-blue/10">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-px bg-brand-blue/10 border border-brand-blue/10 border-b-0">
             {[
-              { Icon: GraduationCap, abbr: "ED", title: "Education Support", desc: "School fees, supplies, and vocational training for orphaned youth.", color: "brand-blue" },
-              { Icon: Stethoscope, abbr: "HC", title: "Healthcare", desc: "Medical check-ups, emergency surgeries, and health education.", color: "brand-green" },
-              { Icon: Utensils, abbr: "NT", title: "Nutrition", desc: "Feeding programs ensuring two balanced meals daily.", color: "brand-gold" },
-              { Icon: HomeIcon, abbr: "SH", title: "Shelter", desc: "Safe homes and family-strengthening support for orphans.", color: "brand-orange" },
-              { Icon: Shield, abbr: "CP", title: "Child Protection", desc: "Safeguarding, counseling, and psychosocial support.", color: "brand-blue" },
-              { Icon: Sparkles, abbr: "EM", title: "Empowerment", desc: "Skills development, girls' programs, and youth livelihoods.", color: "brand-green" },
+              { Icon: GraduationCap, title: "Education Support", desc: "School fees, supplies, and vocational training for orphaned youth.", color: "brand-blue" },
+              { Icon: Stethoscope, title: "Healthcare", desc: "Medical check-ups, emergency surgeries, and health education.", color: "brand-green" },
+              { Icon: Utensils, title: "Nutrition", desc: "Feeding programs ensuring two balanced meals daily.", color: "brand-gold" },
+              { Icon: HomeIcon, title: "Shelter", desc: "Safe homes and family-strengthening support for orphans.", color: "brand-orange" },
+              { Icon: Shield, title: "Child Protection", desc: "Safeguarding, counseling, and psychosocial support.", color: "brand-blue" },
+              { Icon: Sparkles, title: "Empowerment", desc: "Skills development, girls' programs, and youth livelihoods.", color: "brand-green" },
             ].map((p) => (
               <div key={p.title} className="group bg-white p-8 md:p-10 hover:bg-surface transition-all">
                 <div className={`size-12 bg-${p.color}/10 text-${p.color} flex items-center justify-center font-display font-extrabold text-sm mb-6 group-hover:bg-${p.color} group-hover:text-white transition-colors`}>
@@ -230,11 +231,9 @@ function HomePage() {
             ))}
           </div>
         </div>
-      </section>
 
-      {/* PROGRAM IMAGE STRIP */}
-      <section className="bg-white">
-        <div className="grid md:grid-cols-3">
+        {/* Image strip flows directly beneath pillars — no gap, unified section */}
+        <div className="grid grid-cols-1 md:grid-cols-3 max-w-7xl mx-auto md:px-6">
           {[
             { src: programEducation, label: "Education" },
             { src: programHealth, label: "Healthcare" },
@@ -261,6 +260,7 @@ function HomePage() {
         </div>
       </section>
 
+
       {/* DONATION + SPONSORSHIP */}
       <section className="py-24 bg-ink text-white">
         <div className="max-w-7xl mx-auto px-6 grid lg:grid-cols-5 gap-12 lg:gap-16">
@@ -279,31 +279,9 @@ function HomePage() {
           </div>
 
           <div className="lg:col-span-2 space-y-8">
-            <div className="bg-white/5 border border-white/10 p-8">
-              <p className="font-mono text-brand-gold text-[11px] uppercase tracking-widest mb-6">
-                / Featured Sponsorship
-              </p>
-              <div className="aspect-square bg-ink mb-6 overflow-hidden">
-                <img
-                  src={brian}
-                  alt="Portrait of Brian"
-                  loading="lazy"
-                  className="size-full object-cover"
-                />
-              </div>
-              <h3 className="font-display font-extrabold text-2xl mb-2">Meet Brian, 8</h3>
-              <p className="text-white/60 text-sm mb-6 leading-relaxed">
-                Brian dreams of becoming a doctor. His education is currently halted due
-                to lack of school fees. UGX 100,000/month sends him back to class.
-              </p>
-              <Link
-                to="/donate"
-                className="block w-full text-center border border-white/30 py-4 font-display font-bold uppercase tracking-widest text-xs hover:bg-white/10"
-              >
-                Donate for Brian
-              </Link>
-            </div>
+            <FeaturedChild />
           </div>
+
         </div>
       </section>
 
@@ -452,6 +430,37 @@ function DonationWidget() {
       <p className="text-[11px] font-mono uppercase tracking-widest text-white/40 text-center">
         Secured payments · Visa · Mastercard · PayPal · Apple &amp; Google Pay
       </p>
+    </div>
+  );
+}
+
+function FeaturedChild() {
+  const [child, setChild] = useState<{ id: string; name: string; age: number | null; photo_url: string | null; story: string | null; monthly_amount: number | null } | null>(null);
+  useEffect(() => {
+    supabase.from("sponsored_children").select("id,name,age,photo_url,story,monthly_amount").eq("is_published", true).eq("is_sponsored", false).order("sort_order").limit(1).maybeSingle().then(({ data }) => setChild(data));
+  }, []);
+  if (!child) {
+    return (
+      <div className="bg-white/5 border border-white/10 p-8">
+        <p className="font-mono text-brand-gold text-[11px] uppercase tracking-widest mb-6">/ Sponsorship</p>
+        <img src={brian} alt="" className="aspect-square object-cover mb-6" />
+        <h3 className="font-display font-extrabold text-2xl mb-2">Sponsor a child</h3>
+        <p className="text-white/60 text-sm mb-6 leading-relaxed">Add children in the admin dashboard and they'll appear here for sponsorship.</p>
+        <Link to="/donate" className="block w-full text-center border border-white/30 py-4 font-display font-bold uppercase tracking-widest text-xs hover:bg-white/10">Donate</Link>
+      </div>
+    );
+  }
+  return (
+    <div className="bg-white/5 border border-white/10 p-8">
+      <p className="font-mono text-brand-gold text-[11px] uppercase tracking-widest mb-6">/ Featured Sponsorship</p>
+      <div className="aspect-square bg-ink mb-6 overflow-hidden">
+        {child.photo_url ? <img src={child.photo_url} alt={child.name} className="size-full object-cover" /> : <div className="size-full bg-white/5" />}
+      </div>
+      <h3 className="font-display font-extrabold text-2xl mb-2">Meet {child.name}{child.age ? `, ${child.age}` : ""}</h3>
+      {child.story && <p className="text-white/60 text-sm mb-6 leading-relaxed">{child.story}</p>}
+      <Link to="/donate" className="block w-full text-center border border-white/30 py-4 font-display font-bold uppercase tracking-widest text-xs hover:bg-white/10">
+        Sponsor {child.name}{child.monthly_amount ? ` · UGX ${Number(child.monthly_amount).toLocaleString()}/mo` : ""}
+      </Link>
     </div>
   );
 }
