@@ -278,31 +278,9 @@ function HomePage() {
           </div>
 
           <div className="lg:col-span-2 space-y-8">
-            <div className="bg-white/5 border border-white/10 p-8">
-              <p className="font-mono text-brand-gold text-[11px] uppercase tracking-widest mb-6">
-                / Featured Sponsorship
-              </p>
-              <div className="aspect-square bg-ink mb-6 overflow-hidden">
-                <img
-                  src={brian}
-                  alt="Portrait of Brian"
-                  loading="lazy"
-                  className="size-full object-cover"
-                />
-              </div>
-              <h3 className="font-display font-extrabold text-2xl mb-2">Meet Brian, 8</h3>
-              <p className="text-white/60 text-sm mb-6 leading-relaxed">
-                Brian dreams of becoming a doctor. His education is currently halted due
-                to lack of school fees. UGX 100,000/month sends him back to class.
-              </p>
-              <Link
-                to="/donate"
-                className="block w-full text-center border border-white/30 py-4 font-display font-bold uppercase tracking-widest text-xs hover:bg-white/10"
-              >
-                Donate for Brian
-              </Link>
-            </div>
+            <FeaturedChild />
           </div>
+
         </div>
       </section>
 
