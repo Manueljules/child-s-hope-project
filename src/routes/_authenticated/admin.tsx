@@ -190,9 +190,10 @@ function ProjectsEditor() {
 
 function MediaManager({ project, onClose }: { project: Project; onClose: () => void }) {
   const qc = useQueryClient();
+  const pid = project.id!;
   const { data: media } = useQuery({
-    queryKey: ["project_media", project.id],
-    queryFn: async () => (await supabase.from("project_media").select("*").eq("project_id", project.id).order("sort_order")).data ?? [],
+    queryKey: ["project_media", pid],
+    queryFn: async () => (await supabase.from("project_media").select("*").eq("project_id", pid).order("sort_order")).data ?? [],
   });
   const list = (media ?? []) as Array<{ id: string; url: string; media_type: string; sort_order: number }>;
   const [busy, setBusy] = useState(false);
@@ -203,11 +204,12 @@ function MediaManager({ project, onClose }: { project: Project; onClose: () => v
     try {
       const url = await uploadToBucket("project-media", file);
       const media_type = file.type.startsWith("video") ? "video" : "image";
-      await supabase.from("project_media").insert({ project_id: project.id, url, media_type, sort_order: list.length });
-      qc.invalidateQueries({ queryKey: ["project_media", project.id] });
+      await supabase.from("project_media").insert({ project_id: pid, url, media_type, sort_order: list.length });
+      qc.invalidateQueries({ queryKey: ["project_media", pid] });
     } catch (err) {
       alert("Upload failed: " + (err as Error).message);
     } finally { setBusy(false); }
+
   }
   async function remove(id: string) {
     if (!confirm("Delete this media?")) return;
