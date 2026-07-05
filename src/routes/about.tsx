@@ -40,23 +40,26 @@ function LeaderCard({ msgKey, accent, fallback }: { msgKey: "founder_message" | 
   const border = accent === "blue" ? "border-brand-blue" : "border-brand-orange";
   const text = accent === "blue" ? "text-brand-blue" : "text-brand-orange";
   return (
-    <article className={`bg-white border-t-4 ${border} p-8 md:p-10 shadow-sm`}>
-      <Quote className={`size-8 ${text} mb-4`} />
-      <p className="font-display text-lg md:text-xl leading-relaxed text-ink/80 mb-6 whitespace-pre-line">
-        {data.body}
-      </p>
-      <div className="flex items-center gap-4 pt-6 border-t border-ink/10">
-        {data.image_url ? (
-          <img src={data.image_url} alt={data.name} className="size-14 rounded-full object-cover" />
-        ) : (
-          <div className={`size-14 rounded-full ${accent === "blue" ? "bg-brand-blue" : "bg-brand-orange"} text-white grid place-items-center font-display font-extrabold text-lg`}>
-            {data.name.split(" ").map((s) => s[0]).slice(0, 2).join("")}
-          </div>
-        )}
-        <div>
-          <p className="font-display font-extrabold text-lg">{data.name}</p>
-          <p className={`font-mono text-[11px] uppercase tracking-widest ${text}`}>{data.title}</p>
+    <article className={`bg-white border-t-4 ${border} shadow-sm overflow-hidden flex flex-col`}>
+      {data.image_url ? (
+        <div className="aspect-[4/3] w-full overflow-hidden bg-surface">
+          <img
+            src={data.image_url}
+            alt={data.name}
+            loading="lazy"
+            className="size-full object-cover object-center"
+          />
         </div>
+      ) : null}
+      <div className="p-8 md:p-10 flex flex-col flex-1">
+        <div className="mb-6">
+          <p className={`font-mono text-[11px] uppercase tracking-widest ${text} mb-1`}>{data.title}</p>
+          <h3 className="font-display font-extrabold text-2xl md:text-3xl tracking-tight">{data.name}</h3>
+        </div>
+        <Quote className={`size-8 ${text} mb-4`} />
+        <p className="font-display text-lg md:text-xl leading-relaxed text-ink/80 whitespace-pre-line">
+          {data.body}
+        </p>
       </div>
     </article>
   );
