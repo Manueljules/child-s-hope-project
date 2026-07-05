@@ -39,23 +39,17 @@ export function SiteNav() {
   const langRef = useRef<HTMLDivElement>(null);
   const location = useRouterState({ select: (s) => s.location.pathname });
 
-  // Read stored language on mount and apply
+  // Read stored language on mount and apply immediately (cached hits are sync).
   useEffect(() => {
     const stored = getStoredLang();
     setLang(stored);
-    if (stored !== "en") {
-      // Delay so route content is mounted first
-      const t = setTimeout(() => applyLanguage(stored), 100);
-      return () => clearTimeout(t);
-    }
+    if (stored !== "en") void applyLanguage(stored);
   }, []);
 
-  // Re-apply on route change
+  // Re-apply on route change — no artificial delay; cached translations render
+  // instantly, only genuinely new strings hit the network.
   useEffect(() => {
-    if (lang !== "en") {
-      const t = setTimeout(() => applyLanguage(lang), 150);
-      return () => clearTimeout(t);
-    }
+    if (lang !== "en") void applyLanguage(lang);
   }, [location, lang]);
 
 
