@@ -25,15 +25,15 @@ function ContactPage() {
             <div className="grid sm:grid-cols-2 gap-px bg-brand-blue/10 border border-brand-blue/10">
               {[
                 { Icon: Phone, l: "Phone", v: "+256 700 339 231" },
-                { Icon: Phone, l: "Alt. Phone", v: "+256 769 027 058" },
-                { Icon: Mail, l: "Email", v: "thesaintschildcare@gmail.com" },
+                { Icon: Phone, l: "Alt. Phone", v: "+256 769 027 758" },
+                { Icon: Mail, l: "Email", v: "thesaintschildcare@gmail.com", highlight: true },
                 { Icon: MapPin, l: "Office", v: "Plot 24, Kampala Road" },
                 { Icon: Clock, l: "Hours", v: "Mon–Fri, 9am–5pm EAT" },
               ].map((c) => (
                 <div key={c.l} className="bg-white p-6">
                   <c.Icon className="size-5 text-brand-blue mb-3" />
                   <p className="font-mono text-[10px] uppercase tracking-widest text-ink/40 mb-1">{c.l}</p>
-                  <p className="font-display font-extrabold text-sm break-all">{c.v}</p>
+                  <p className={`font-display font-extrabold text-sm break-all ${"highlight" in c && c.highlight ? "text-brand-blue" : ""}`}>{c.v}</p>
                 </div>
               ))}
             </div>
