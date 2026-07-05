@@ -214,7 +214,7 @@ function MediaManager({ project, onClose }: { project: Project; onClose: () => v
   async function remove(id: string) {
     if (!confirm("Delete this media?")) return;
     await supabase.from("project_media").delete().eq("id", id);
-    qc.invalidateQueries({ queryKey: ["project_media", project.id] });
+    qc.invalidateQueries({ queryKey: ["project_media", pid] });
   }
 
   return (
