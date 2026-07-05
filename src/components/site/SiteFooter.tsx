@@ -96,7 +96,11 @@ export function SiteFooter() {
               <br />
               Kampala, Uganda
               <br />
-              +256 700 000 000
+              +256 700 339 231
+              <br />
+              +256 769 027 058
+              <br />
+              thesaintschildcare@gmail.com
             </p>
           </div>
         </div>
