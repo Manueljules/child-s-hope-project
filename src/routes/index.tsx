@@ -59,9 +59,11 @@ function HomePage() {
             alt="Ugandan school children smiling in a classroom"
             width={1920}
             height={1280}
-            className="size-full object-cover opacity-40"
+            className="size-full object-cover"
+            style={{ objectPosition: "center 30%" }}
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-brand-blue/80 via-brand-blue/50 to-brand-blue/30" />
+          <div className="absolute inset-0 bg-gradient-to-r from-brand-blue/80 via-brand-blue/45 to-brand-blue/10" />
+          <div className="absolute inset-0 bg-gradient-to-t from-brand-blue/70 via-transparent to-transparent" />
         </div>
         <div className="relative max-w-7xl mx-auto px-6 py-28 z-10 w-full">
           <div className="max-w-3xl animate-slide-up">
