@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { SiteLayout, PageHeader } from "@/components/site/SiteLayout";
 import { supabase } from "@/integrations/supabase/client";
+import heroGallery from "@/assets/hero-gallery.jpg.asset.json";
 
 export const Route = createFileRoute("/gallery")({
   head: () => ({
@@ -28,7 +29,7 @@ function GalleryPage() {
 
   return (
     <SiteLayout>
-      <PageHeader eyebrow="Gallery" title="Moments of hope." description="A visual record of lives changed, communities uplifted, and futures rewritten." />
+      <PageHeader eyebrow="Gallery" title="Moments of hope." description="A visual record of lives changed, communities uplifted, and futures rewritten." image={heroGallery.url} />
 
       <section className="py-12 bg-white">
         <div className="max-w-7xl mx-auto px-6">

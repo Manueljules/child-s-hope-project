@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { SiteLayout, PageHeader } from "@/components/site/SiteLayout";
 import { X, ChevronLeft, ChevronRight, MapPin } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import heroProjects from "@/assets/hero-projects.jpg.asset.json";
 
 export const Route = createFileRoute("/projects")({
   head: () => ({
@@ -61,7 +62,7 @@ function ProjectsPage() {
 
   return (
     <SiteLayout>
-      <PageHeader eyebrow="Our Projects" title="Where your support takes shape." description="Track every project — its budget, its beneficiaries, and how much funding is still needed." />
+      <PageHeader eyebrow="Our Projects" title="Where your support takes shape." description="Track every project — its budget, its beneficiaries, and how much funding is still needed." image={heroProjects.url} />
 
       <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-6">

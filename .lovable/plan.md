@@ -1,60 +1,60 @@
+# Plan
 
-# Phase 3 — Donations, receipts, newsletter, forms
+## 1. Upload the 6 real photos as CDN assets
+Upload each `/mnt/user-uploads/*.jpg` via `lovable-assets` into `src/assets/` as `.asset.json` pointers:
+- `hero-home.jpg` — image 2 (selfie with 3 kids in village) → **Homepage hero**
+- `hero-donate-bg.jpg` — image 6 (founder with group of ~10 children) → **Donate page background**
+- `hero-about.jpg` — image 1 (founder with 3 smiling children) → **About page hero**
+- `hero-projects.jpg` — image 5 (row of children against brick wall — emotive) → **Projects page hero**
+- `hero-stories.jpg` — image 3 (three kids in field) → **Stories page hero**
+- `hero-gallery.jpg` — image 4 (three kids close-up) → **Gallery page hero**
 
-## 1. Payments: Pesapal + PayPal
+Suggested placement rationale:
+- Image 5 (barefoot children) is the most emotionally powerful — best on Projects to drive donations to specific needs.
+- Image 1 (founder + kids smiling) humanizes About.
+- Images 3 & 4 are joyful — fit Stories/Gallery.
 
-**Pesapal** (best for Uganda — cards, MTN Mobile Money, Airtel Money, bank):
-- Uses a Consumer Key + Consumer Secret. Not a built-in Lovable connector, so I'll build the integration directly against Pesapal API v3.
-- Two secrets to add: `PESAPAL_CONSUMER_KEY`, `PESAPAL_CONSUMER_SECRET`. I'll also add `PESAPAL_ENV` (`sandbox` or `live`) so you can test first, then switch.
-- Server flow:
-  - `createServerFn` `createPesapalOrder` → gets OAuth token → submits order → returns `redirect_url` and stores donation row as `pending` with `provider='pesapal'` + `provider_ref`.
-  - Public server route `/api/public/webhooks/pesapal` (IPN) → verifies status via Pesapal's GetTransactionStatus → flips donation to `confirmed` (which fires the existing DB trigger that bumps the project's `raised` total and progress bar).
-  - Return route `/donate/thank-you?ref=…` → shows receipt with Download PDF (uses existing `receipt.ts`).
+Confirm this mapping or swap before I build.
 
-**PayPal** (best for international donors):
-- Server-side REST API (Orders v2). Secrets: `PAYPAL_CLIENT_ID`, `PAYPAL_CLIENT_SECRET`, `PAYPAL_ENV`.
-- `createPaypalOrder` server fn creates the order; `capturePaypalOrder` finalizes it after approval; both update the same `donations` row. Same thank-you + receipt page.
+## 2. Remove AI hero images
+Delete these AI-generated hero assets and their `.asset.json` pointers, replacing every hero-section reference with the new real photos:
+- `src/assets/hero-children.jpg` (currently on homepage + used as og:image)
+- Any other AI hero used at top of About/Projects/Stories/Gallery/Donate
 
-**Donate page UI:**
-- Frequency selector: Once / Weekly / Monthly (weekly & monthly = recurring, handled via Pesapal recurring subscriptions or PayPal subscription plans — recurring adds real complexity; if you want I can ship Once first and add recurring in a follow-up).
-- Project dropdown populated from `projects` table.
-- Amount presets + custom amount, currency (UGX default, USD for PayPal).
-- Provider picker: Pesapal (local) vs PayPal (international). Existing card logos row stays as marketing.
+Program/story thumbnails deeper in pages (education/health/nutrition/sarah/water) stay — user said "hero section" only.
 
-**Admin:**
-- Donations tab shows every donation with status, provider, project, donor, amount, ref. Admin can manually mark `confirmed` for cash/bank transfers received off-platform.
+Homepage `og:image` will be updated to the new `hero-home.jpg`.
 
-## 2. Newsletter emails
-- Set up Lovable Emails on your domain (I'll show the email domain setup dialog — you'll pick a subdomain like `notify.thesaintschildcare.org` and add the DNS records at your registrar).
-- After the domain is verified, set up email infrastructure (queue + suppression + logging) and scaffold app email templates.
-- Admin "Newsletter" tab already has subscriber list + template editor. I'll add a **Send now** button that queues one email per subscriber using the current template's HTML with `{{title}}` / `{{excerpt}}` merge tags. Includes unsubscribe link (required for deliverability).
-- Optional auto-send: when admin publishes a new `news_posts` row, automatically send to subscribers.
+## 3. Donate page background
+Replace the current donate hero background with `hero-donate-bg.jpg`, keep the floating white wizard card, add a darker gradient overlay so the card stays readable over the busier photo.
 
-## 3. Contact & Volunteer forms
-Already persist to DB. I'll add:
-- Explicit "✓ Successfully submitted" success card that replaces the form.
-- Zod validation with proper error messages on all fields.
-- Rate limit (1 submission per email per 10 min) to reduce spam.
+## 4. Fix "Agnes" spelling
+Global rename `Agness` → `Agnes` (Agness Claire Namisango → Agnes Claire Namisango):
+- `src/routes/about.tsx`, `src/routes/leadership.tsx`, DB `site_content` row for cofounder, any other references (search whole repo).
 
-## 4. Payment Accounts PIN
-- On first visit to Payment Accounts tab: prompt admin to create a 4–8 digit PIN. Stored as bcrypt hash in `admin_settings` (row already exists).
-- Subsequent visits: PIN prompt → 5 wrong attempts locks the tab for 15 min.
-- All account CRUD goes through a `requireSupabaseAuth` server fn that also verifies the PIN hash before returning secret fields (bank account numbers, mobile money numbers).
+## 5. Fix language switcher — trim to 6 & make it reliable
 
-## 5. FAQ page (`/faq`)
-Already scaffolded — I'll flesh out Q&As covering: how donations work, tax receipts, sponsoring a child, volunteering process, contact.
+**Trim the list** in `SiteNav.tsx` to only:
+English (en), Deutsch (de), Italiano (it), Français (fr), Русский (ru), Kiswahili (sw).
 
-## What I need from you before / during build
-1. **Domain** — confirm you'd like `notify.thesaintschildcare.org` (or another subdomain) for the newsletter sender. I'll trigger the DNS setup UI when we get to that step.
-2. **Pesapal account** — sign up at pesapal.com (Uganda merchant account). Once approved, you'll get Consumer Key + Secret from their dashboard. I'll request them via the secure secrets flow when we reach that step. Sandbox keys work first so we can test without real money.
-3. **PayPal account** — a PayPal Business account. Client ID + Secret from developer.paypal.com. Same secure secrets flow, sandbox first.
-4. **Recurring donations** — should I ship "Once" only first and add weekly/monthly recurring in a follow-up, or build all three together (bigger scope, more testing)?
+**Fix the lag / missed words on the homepage.** Root causes in current `src/lib/translator.ts`:
+- Counters animate every frame → constantly rewrites text nodes → translator races against React and misses updates.
+- Route changes re-render before translator re-walks the DOM.
+- MyMemory/Google free endpoint is called per text-node chunk → homepage has many nodes → some requests fail silently.
 
-## Build order
-1. Pesapal integration (secrets → server fn → webhook → donate UI → thank-you receipt).
-2. PayPal integration (parallel provider on same donate UI).
-3. Payment Accounts PIN gate.
-4. Email domain + newsletter sending.
-5. Form polish + FAQ content.
+Fix:
+- Batch ALL untranslated strings on the page into a single request (chunk to endpoint limit), translate, then apply — one pass instead of dozens.
+- Cache translations per (lang + source string) in `localStorage`; skip network for cached strings so re-walks are instant.
+- Use a `MutationObserver` that debounces (250 ms) and re-translates only newly added/changed text nodes — so counters ticking don't spam translations, and dynamic content (Featured Child, admin data) still gets translated.
+- Skip nodes inside the counter (`<Counter>` component) by marking the count span `translate="no"` — numbers don't need translating and this stops the observer churn.
+- Skip the language dropdown itself (already done) and any element with `data-no-translate`.
+- Re-apply on TanStack route change via a router subscription so the new page translates immediately, not after user interaction.
 
-Answer question 4 (recurring now or later) and I'll start.
+## Technical notes
+- `lovable-assets create --file /mnt/user-uploads/<name> --filename hero-*.jpg > src/assets/hero-*.jpg.asset.json` for each photo.
+- Import pointers as `import heroHome from "@/assets/hero-home.jpg.asset.json"` then `<img src={heroHome.url} />`.
+- Delete removed AI assets with `lovable-assets delete --file <pointer>`.
+- DB update: `UPDATE site_content SET value = jsonb_set(value, '{name}', '"Agnes Claire Namisango"') WHERE key = 'cofounder_message'` (exact key confirmed at build time).
+
+## Question before I build
+Is the image→page mapping above correct, or do you want to reassign any of images 1/3/4/5 to different tabs?

@@ -16,7 +16,7 @@ export const Route = createFileRoute("/leadership")({
 
 const team: { name: string; role: string; bio: string; image?: string }[] = [
   { name: "Augustine Sempagala", role: "Founder & Executive Director", bio: "Provides strategic leadership and oversees all programs.", image: augustineImg.url },
-  { name: "Agness Claire Namisango", role: "Cofounder & Programs Director", bio: "Partner in vision and operations since inception.", image: agnessImg.url },
+  { name: "Agnes Claire Namisango", role: "Cofounder & Programs Director", bio: "Partner in vision and operations since inception.", image: agnessImg.url },
   { name: "[ Name ]", role: "Programs Director", bio: "Leads implementation of education and healthcare programs." },
   { name: "[ Name ]", role: "Finance & Operations", bio: "Ensures transparency and accountability in all financials." },
   { name: "[ Name ]", role: "Child Protection Lead", bio: "Safeguards child welfare across all field operations." },

@@ -5,6 +5,7 @@ import { CheckCircle2, Quote } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import augustineImg from "@/assets/augustine-sempagala.png.asset.json";
 import agnessImg from "@/assets/agness-namisango.png.asset.json";
+import heroAbout from "@/assets/hero-about.jpg.asset.json";
 
 type Message = { name: string; title: string; body: string; image_url?: string };
 
@@ -69,7 +70,9 @@ function AboutPage() {
         eyebrow="About Us"
         title="Holistic care for Uganda's most vulnerable children."
         description="A non-profit organization dedicated to transforming the lives of orphaned and vulnerable children through education, healthcare, shelter, nutrition, counseling, empowerment, and community development."
+        image={heroAbout.url}
       />
+
 
       {/* Leadership messages */}
       <section className="py-20 bg-surface">
@@ -93,7 +96,7 @@ function AboutPage() {
               msgKey="cofounder_message"
               accent="orange"
               fallback={{
-                name: "Agness Claire Namisango",
+                name: "Agnes Claire Namisango",
                 title: "Cofounder & Programs Director",
                 body: "Change is stubborn work. It happens one child, one family, one village at a time.",
                 image_url: agnessImg.url,
