@@ -33,9 +33,11 @@ export function PageHeader({
             src={image}
             alt=""
             aria-hidden
-            className="absolute inset-0 size-full object-cover opacity-45"
+            className="absolute inset-0 size-full object-cover"
+            style={{ objectPosition: "center 28%" }}
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-brand-blue/85 via-brand-blue/60 to-brand-blue/30" />
+          <div className="absolute inset-0 bg-gradient-to-r from-brand-blue/80 via-brand-blue/45 to-brand-blue/15" />
+          <div className="absolute inset-0 bg-gradient-to-t from-brand-blue/70 via-transparent to-transparent" />
         </>
       )}
       <div className="relative max-w-7xl mx-auto px-6 py-20 md:py-28">
