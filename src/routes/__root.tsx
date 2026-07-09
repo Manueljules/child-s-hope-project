@@ -121,7 +121,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
             "Non-profit transforming the lives of orphaned and vulnerable children in Uganda through education, healthcare, nutrition, shelter and community empowerment.",
           founder: [
             { "@type": "Person", name: "Augustine Sempagala", jobTitle: "Founder & Executive Director" },
-            { "@type": "Person", name: "Agness Claire Namisango", jobTitle: "Cofounder & Programs Director" },
+            { "@type": "Person", name: "Agnes Claire Namisango", jobTitle: "Cofounder & Programs Director" },
           ],
           areaServed: { "@type": "Country", name: "Uganda" },
           email: "thesaintschildcare@gmail.com",

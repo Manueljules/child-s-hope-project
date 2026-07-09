@@ -93,7 +93,7 @@ function AboutPage() {
               msgKey="cofounder_message"
               accent="orange"
               fallback={{
-                name: "Agness Claire Namisango",
+                name: "Agnes Claire Namisango",
                 title: "Cofounder & Programs Director",
                 body: "Change is stubborn work. It happens one child, one family, one village at a time.",
                 image_url: agnessImg.url,

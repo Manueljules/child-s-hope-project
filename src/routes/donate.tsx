@@ -5,7 +5,8 @@ import { Heart, Lock, CheckCircle2, ChevronLeft, ChevronRight, Download, ShieldC
 import { PAYMENT_METHODS } from "@/components/donate/PaymentLogos";
 import { generateReceiptPDF, type ReceiptData } from "@/lib/receipt";
 import { supabase } from "@/integrations/supabase/client";
-import heroChildren from "@/assets/hero-children.jpg";
+import heroDonateAsset from "@/assets/hero-donate-bg.jpg.asset.json";
+const heroChildren = heroDonateAsset.url;
 
 export const Route = createFileRoute("/donate")({
   head: () => ({

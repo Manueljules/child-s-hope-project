@@ -5,21 +5,11 @@ import { applyLanguage, getStoredLang, setStoredLang } from "@/lib/translator";
 
 const languages = [
   { code: "en", label: "English" },
-  { code: "es", label: "Español" },
-  { code: "fr", label: "Français" },
   { code: "de", label: "Deutsch" },
   { code: "it", label: "Italiano" },
-  { code: "pt", label: "Português" },
-  { code: "nl", label: "Nederlands" },
-  { code: "sv", label: "Svenska" },
+  { code: "fr", label: "Français" },
   { code: "ru", label: "Русский" },
-  { code: "zh-CN", label: "中文" },
-  { code: "ja", label: "日本語" },
-  { code: "ko", label: "한국어" },
-  { code: "ar", label: "العربية" },
-  { code: "hi", label: "हिन्दी" },
   { code: "sw", label: "Kiswahili" },
-  { code: "tr", label: "Türkçe" },
 ] as const;
 
 const navItems = [
