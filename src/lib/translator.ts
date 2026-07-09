@@ -82,9 +82,16 @@ async function batchTranslate(texts: string[], lang: string): Promise<string[]> 
   }
   if (buf.length) chunks.push(buf);
 
+  const reCase = (src: string, out: string): string => {
+    if (!out) return src;
+    if (src === src.toUpperCase() && src.toLowerCase() !== src.toUpperCase()) return out.toUpperCase();
+    return out;
+  };
+
   await Promise.all(
     chunks.map(async (chunk) => {
-      const joined = chunk.map((c) => c.t).join(SEP);
+      // Send lowercased text so Google actually translates short uppercase words like "JUST".
+      const joined = chunk.map((c) => c.t.toLowerCase()).join(SEP);
       const url =
         `https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&dt=t&tl=${encodeURIComponent(lang)}&q=${encodeURIComponent(joined)}`;
       try {
@@ -98,7 +105,11 @@ async function batchTranslate(texts: string[], lang: string): Promise<string[]> 
           for (const c of chunk) results[c.i] = c.t;
           return;
         }
-        for (let k = 0; k < chunk.length; k++) results[chunk[k].i] = parts[k].trim() || chunk[k].t;
+        for (let k = 0; k < chunk.length; k++) {
+          const src = chunk[k].t;
+          const out = parts[k].trim();
+          results[chunk[k].i] = out ? reCase(src, out) : src;
+        }
       } catch {
         for (const c of chunk) results[c.i] = c.t;
       }
