@@ -1,7 +1,7 @@
 // Fast, batched client-side translator with persistent cache and a
 // MutationObserver that translates newly-added text without spamming the API.
 
-const CACHE_PREFIX = "site.trans.";
+const CACHE_PREFIX = "site.trans.v2.";
 const SEP = "\n@@LT@@\n";
 const originalTextByNode = new WeakMap<Text, string>();
 const translatedByNode = new WeakMap<Text, string>();
