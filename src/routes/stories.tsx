@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { SiteLayout, PageHeader } from "@/components/site/SiteLayout";
 import { supabase } from "@/integrations/supabase/client";
+import heroStories from "@/assets/hero-stories.jpg.asset.json";
 
 type Story = { id: string; title: string; tag: string | null; excerpt: string | null; body: string | null; image_url: string | null };
 
@@ -25,7 +26,7 @@ function StoriesPage() {
 
   return (
     <SiteLayout>
-      <PageHeader eyebrow="Success Stories" title="Lives, transformed." description="Behind every statistic is a child, a family, and a future rewritten." />
+      <PageHeader eyebrow="Success Stories" title="Lives, transformed." description="Behind every statistic is a child, a family, and a future rewritten." image={heroStories.url} />
 
       <section className="py-20 bg-white">
         <div className="max-w-6xl mx-auto px-6 space-y-24">
