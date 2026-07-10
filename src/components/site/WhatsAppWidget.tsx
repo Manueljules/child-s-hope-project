@@ -26,10 +26,8 @@ export function WhatsAppWidget() {
     sessionStorage.setItem("wa.nudge", "1");
   };
 
-  const sendToWhatsApp = () => {
-    const url = `https://wa.me/${PHONE}?text=${encodeURIComponent(message)}`;
-    window.open(url, "_blank", "noopener,noreferrer");
-  };
+  const waUrl = `https://wa.me/${PHONE}?text=${encodeURIComponent(message)}`;
+
 
   return (
     <div data-no-translate className="fixed bottom-5 right-5 z-[60] flex flex-col items-end gap-3">
@@ -94,12 +92,14 @@ export function WhatsAppWidget() {
             />
             <div className="flex items-center justify-between mt-2">
               <span className="text-[10px] text-ink/50">{DISPLAY_PHONE}</span>
-              <button
-                onClick={sendToWhatsApp}
+              <a
+                href={waUrl}
+                target="_blank"
+                rel="noopener noreferrer"
                 className="inline-flex items-center gap-1.5 bg-brand-green text-white text-xs font-bold px-3 py-1.5 rounded-md hover:bg-brand-green/90"
               >
                 <Send className="size-3" /> Send
-              </button>
+              </a>
             </div>
           </div>
         </div>

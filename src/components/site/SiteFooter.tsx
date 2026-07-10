@@ -45,12 +45,20 @@ export function SiteFooter() {
               empowerment programs.
             </p>
             <div className="flex gap-3">
-              {[Facebook, Instagram, Twitter, Linkedin, Youtube].map((Icon, i) => (
+              {[
+                { Icon: Facebook, label: "Facebook", href: "https://facebook.com", color: "hover:bg-[#1877F2] hover:border-[#1877F2]" },
+                { Icon: Instagram, label: "Instagram", href: "https://instagram.com", color: "hover:bg-gradient-to-br hover:from-[#F58529] hover:via-[#DD2A7B] hover:to-[#8134AF] hover:border-transparent" },
+                { Icon: Twitter, label: "Twitter / X", href: "https://twitter.com", color: "hover:bg-black hover:border-black" },
+                { Icon: Linkedin, label: "LinkedIn", href: "https://linkedin.com", color: "hover:bg-[#0A66C2] hover:border-[#0A66C2]" },
+                { Icon: Youtube, label: "YouTube", href: "https://youtube.com", color: "hover:bg-[#FF0000] hover:border-[#FF0000]" },
+              ].map(({ Icon, label, href, color }) => (
                 <a
-                  key={i}
-                  href="#"
-                  aria-label="Social media link"
-                  className="size-10 border border-ink/10 grid place-items-center text-ink/60 hover:text-brand-blue hover:border-brand-blue transition-colors"
+                  key={label}
+                  href={href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={label}
+                  className={`size-10 border border-ink/10 grid place-items-center text-ink/60 hover:text-white transition-all duration-300 hover:-translate-y-1 hover:shadow-lg ${color}`}
                 >
                   <Icon className="size-4" />
                 </a>
