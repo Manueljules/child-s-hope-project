@@ -8,7 +8,7 @@ export function WhatsAppWidget() {
   const [open, setOpen] = useState(false);
   const [showBubble, setShowBubble] = useState(false);
   const [message, setMessage] = useState(
-    "Hello The Saint's Childcare Foundation, I'd like to know more about how I can help."
+    "Hello Masembe Childcare Foundation, I'd like to know more about how I can help."
   );
 
   useEffect(() => {
@@ -68,7 +68,7 @@ export function WhatsAppWidget() {
                 <MessageCircle className="size-4" />
               </div>
               <div className="leading-tight">
-                <p className="text-sm font-bold">The Saint's Childcare</p>
+                <p className="text-sm font-bold">Masembe Childcare</p>
                 <p className="text-[10px] opacity-80">Typically replies in minutes</p>
               </div>
             </div>
@@ -78,7 +78,7 @@ export function WhatsAppWidget() {
           </div>
           <div className="p-3 bg-[url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2260%22 height=%2260%22><rect width=%2260%22 height=%2260%22 fill=%22%23e5ddd5%22/></svg>')] min-h-[110px]">
             <div className="bg-white rounded-lg rounded-tl-none px-3 py-2 shadow-sm max-w-[85%]">
-              <p className="text-[11px] font-semibold text-brand-green mb-0.5">The Saint's Team</p>
+              <p className="text-[11px] font-semibold text-brand-green mb-0.5">Masembe Team</p>
               <p className="text-xs text-ink">
                 Hi there! 👋 How can we help you today? Send us a message and we'll reply on WhatsApp.
               </p>

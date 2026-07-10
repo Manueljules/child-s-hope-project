@@ -8,8 +8,8 @@ import heroProjects from "@/assets/hero-projects.jpg.asset.json";
 export const Route = createFileRoute("/projects")({
   head: () => ({
     meta: [
-      { title: "Projects — The Saint's Childcare Foundation Uganda" },
-      { name: "description", content: "Current, completed and upcoming projects of The Saint's Childcare Foundation Uganda — see budgets, progress and beneficiaries." },
+      { title: "Projects — Masembe Childcare Foundation Uganda" },
+      { name: "description", content: "Current, completed and upcoming projects of Masembe Childcare Foundation Uganda — see budgets, progress and beneficiaries." },
     ],
   }),
   component: ProjectsPage,

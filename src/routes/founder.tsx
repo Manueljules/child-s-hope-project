@@ -5,9 +5,9 @@ import founderImg from "@/assets/augustine-sempagala.png.asset.json";
 export const Route = createFileRoute("/founder")({
   head: () => ({
     meta: [
-      { title: "Founder — The Saint's Childcare Foundation Uganda" },
-      { name: "description", content: "Meet the founder of The Saint's Childcare Foundation Uganda and read their message of hope and commitment to vulnerable children." },
-      { property: "og:title", content: "Founder — The Saint's Childcare Foundation Uganda" },
+      { title: "Founder — Masembe Childcare Foundation Uganda" },
+      { name: "description", content: "Meet the founder of Masembe Childcare Foundation Uganda and read their message of hope and commitment to vulnerable children." },
+      { property: "og:title", content: "Founder — Masembe Childcare Foundation Uganda" },
     ],
   }),
   component: FounderPage,
@@ -34,7 +34,7 @@ function FounderPage() {
             </h2>
             <p className="text-lg text-ink/70 leading-relaxed">
               A passionate child rights advocate and community leader, Augustine Sempagala
-              established The Saint's Childcare Foundation Uganda to give voice and
+              established Masembe Childcare Foundation Uganda to give voice and
               opportunity to children whose circumstances have left them invisible to
               the world.
             </p>
@@ -87,7 +87,7 @@ function FounderPage() {
           <div className="border-t border-white/10 pt-6">
             <p className="font-display italic text-2xl text-brand-gold">— Augustine Sempagala</p>
             <p className="font-mono text-xs uppercase tracking-widest text-white/40 mt-2">
-              Founder · The Saint's Childcare Foundation Uganda
+              Founder · Masembe Childcare Foundation Uganda
             </p>
           </div>
         </div>

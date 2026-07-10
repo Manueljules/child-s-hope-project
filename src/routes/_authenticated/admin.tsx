@@ -7,7 +7,7 @@ import { uploadToBucket } from "@/lib/upload";
 import { Save, Plus, Trash2, LogOut, Edit3, Landmark, Image as ImageIcon, MessageSquare, Wallet, Users, FolderKanban, Newspaper, CalendarDays, Baby, Mail, Lock, Upload } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/admin")({
-  head: () => ({ meta: [{ title: "Admin Dashboard — The Saint's Childcare Foundation" }] }),
+  head: () => ({ meta: [{ title: "Admin Dashboard — Masembe Childcare Foundation" }] }),
   component: AdminPage,
 });
 

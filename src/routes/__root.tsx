@@ -77,23 +77,23 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "The Saint's Childcare Foundation Uganda — Make a Child Just Better" },
+      { title: "Masembe Childcare Foundation Uganda — Make a Child Just Better" },
       {
         name: "description",
         content:
           "Non-profit transforming the lives of orphaned and vulnerable children in Uganda through education, healthcare, nutrition, shelter and community empowerment.",
       },
-      { name: "author", content: "The Saint's Childcare Foundation Uganda" },
+      { name: "author", content: "Masembe Childcare Foundation Uganda" },
       { name: "theme-color", content: "#1e3a8a" },
-      { property: "og:site_name", content: "The Saint's Childcare Foundation Uganda" },
-      { property: "og:title", content: "The Saint's Childcare Foundation Uganda" },
+      { property: "og:site_name", content: "Masembe Childcare Foundation Uganda" },
+      { property: "og:title", content: "Masembe Childcare Foundation Uganda" },
       {
         property: "og:description",
         content: "Make a Child Just Better — join us in transforming vulnerable children's lives across Uganda.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: "The Saint's Childcare Foundation Uganda" },
+      { name: "twitter:title", content: "Masembe Childcare Foundation Uganda" },
       {
         name: "twitter:description",
         content: "Make a Child Just Better — support vulnerable children across Uganda.",
@@ -115,8 +115,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         children: JSON.stringify({
           "@context": "https://schema.org",
           "@type": "NGO",
-          name: "The Saint's Childcare Foundation Uganda",
-          alternateName: "The Saint's Childcare Foundation",
+          name: "Masembe Childcare Foundation Uganda",
+          alternateName: "Masembe Childcare Foundation",
           description:
             "Non-profit transforming the lives of orphaned and vulnerable children in Uganda through education, healthcare, nutrition, shelter and community empowerment.",
           founder: [

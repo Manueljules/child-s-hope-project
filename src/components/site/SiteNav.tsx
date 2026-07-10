@@ -68,7 +68,7 @@ export function SiteNav() {
           </div>
           <div className="leading-none min-w-0">
             <span className="block font-display font-extrabold text-base sm:text-lg tracking-tight uppercase truncate">
-              The Saint's
+              Masembe
             </span>
             <span className="block text-[10px] font-mono uppercase tracking-widest text-brand-blue truncate">
               Childcare Foundation

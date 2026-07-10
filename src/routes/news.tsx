@@ -11,8 +11,8 @@ type EventItem = { id: string; title: string; event_date: string; location: stri
 export const Route = createFileRoute("/news")({
   head: () => ({
     meta: [
-      { title: "News & Events — The Saint's Childcare Foundation Uganda" },
-      { name: "description", content: "Latest news, events, fundraising campaigns and community updates from The Saint's Childcare Foundation Uganda." },
+      { title: "News & Events — Masembe Childcare Foundation Uganda" },
+      { name: "description", content: "Latest news, events, fundraising campaigns and community updates from Masembe Childcare Foundation Uganda." },
     ],
   }),
   component: NewsPage,

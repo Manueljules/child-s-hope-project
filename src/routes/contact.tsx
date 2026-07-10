@@ -8,8 +8,8 @@ import { supabase } from "@/integrations/supabase/client";
 export const Route = createFileRoute("/contact")({
   head: () => ({
     meta: [
-      { title: "Contact — The Saint's Childcare Foundation Uganda" },
-      { name: "description", content: "Get in touch with The Saint's Childcare Foundation Uganda. Phone, email, office location and contact form." },
+      { title: "Contact — Masembe Childcare Foundation Uganda" },
+      { name: "description", content: "Get in touch with Masembe Childcare Foundation Uganda. Phone, email, office location and contact form." },
     ],
   }),
   component: ContactPage,
