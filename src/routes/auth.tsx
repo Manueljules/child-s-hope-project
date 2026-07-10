@@ -5,7 +5,7 @@ import { SiteLayout } from "@/components/site/SiteLayout";
 import { Lock, Mail } from "lucide-react";
 
 export const Route = createFileRoute("/auth")({
-  head: () => ({ meta: [{ title: "Admin Sign in — The Saint's Childcare Foundation" }] }),
+  head: () => ({ meta: [{ title: "Admin Sign in — Masembe Childcare Foundation" }] }),
   component: AuthPage,
 });
 

@@ -7,7 +7,7 @@ import heroGallery from "@/assets/hero-gallery.jpg.asset.json";
 export const Route = createFileRoute("/gallery")({
   head: () => ({
     meta: [
-      { title: "Gallery — The Saint's Childcare Foundation Uganda" },
+      { title: "Gallery — Masembe Childcare Foundation Uganda" },
       { name: "description", content: "Photos from our programs, events, community outreach, education, and health activities." },
     ],
   }),

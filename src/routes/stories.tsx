@@ -9,7 +9,7 @@ type Story = { id: string; title: string; tag: string | null; excerpt: string | 
 export const Route = createFileRoute("/stories")({
   head: () => ({
     meta: [
-      { title: "Success Stories — The Saint's Childcare Foundation Uganda" },
+      { title: "Success Stories — Masembe Childcare Foundation Uganda" },
       { name: "description", content: "Real stories of children whose lives have been transformed through education, healthcare and community support." },
     ],
   }),

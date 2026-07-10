@@ -11,7 +11,7 @@ const heroChildren = heroDonateAsset.url;
 export const Route = createFileRoute("/donate")({
   head: () => ({
     meta: [
-      { title: "Donate — The Saint's Childcare Foundation Uganda" },
+      { title: "Donate — Masembe Childcare Foundation Uganda" },
       { name: "description", content: "Support vulnerable children in Uganda. Give securely with Visa, Mastercard, Amex, Apple Pay, Google Pay or PayPal — and download an instant receipt." },
     ],
   }),
@@ -277,7 +277,7 @@ function DonatePage() {
                   </div>
 
                   <p className="text-sm text-ink/70 leading-relaxed">
-                    Help more children in need wherever they are. By making a {freq === "monthly" ? "monthly" : "one-time"} gift to The Saint's Childcare Foundation, you provide children in Uganda with relief, protection, and hope for a better future.
+                    Help more children in need wherever they are. By making a {freq === "monthly" ? "monthly" : "one-time"} gift to Masembe Childcare Foundation, you provide children in Uganda with relief, protection, and hope for a better future.
                   </p>
                 </div>
               )}

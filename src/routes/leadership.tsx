@@ -7,8 +7,8 @@ import agnessImg from "@/assets/agness-namisango.png.asset.json";
 export const Route = createFileRoute("/leadership")({
   head: () => ({
     meta: [
-      { title: "Leadership Team — The Saint's Childcare Foundation Uganda" },
-      { name: "description", content: "Meet the leadership team driving The Saint's Childcare Foundation Uganda's mission to support vulnerable children." },
+      { title: "Leadership Team — Masembe Childcare Foundation Uganda" },
+      { name: "description", content: "Meet the leadership team driving Masembe Childcare Foundation Uganda's mission to support vulnerable children." },
     ],
   }),
   component: LeadershipPage,

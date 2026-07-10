@@ -6,8 +6,8 @@ import { ChevronDown } from "lucide-react";
 export const Route = createFileRoute("/faq")({
   head: () => ({
     meta: [
-      { title: "FAQ — The Saint's Childcare Foundation Uganda" },
-      { name: "description", content: "Answers to common questions about donating, volunteering, sponsorship, and partnering with The Saint's Childcare Foundation Uganda." },
+      { title: "FAQ — Masembe Childcare Foundation Uganda" },
+      { name: "description", content: "Answers to common questions about donating, volunteering, sponsorship, and partnering with Masembe Childcare Foundation Uganda." },
     ],
   }),
   component: FaqPage,
