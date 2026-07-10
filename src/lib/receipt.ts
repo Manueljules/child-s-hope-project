@@ -25,7 +25,7 @@ export function generateReceiptPDF(d: ReceiptData) {
   doc.setTextColor(255, 255, 255);
   doc.setFont("helvetica", "bold");
   doc.setFontSize(20);
-  doc.text("THE SAINTS CHILDCARE FOUNDATION", M, 42);
+  doc.text("MASEMBE CHILDCARE FOUNDATION", M, 42);
   doc.setFontSize(10);
   doc.setFont("helvetica", "normal");
   doc.text("Uganda · Registered Non-Profit", M, 60);
