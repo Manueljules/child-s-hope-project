@@ -28,7 +28,7 @@ export function SiteFooter() {
           <div className="md:col-span-5">
             <div className="flex items-center gap-2 mb-6">
               <div className="size-10 bg-brand-blue grid place-items-center font-display font-extrabold text-white text-xl">
-                S
+                M
               </div>
               <div className="leading-none">
                 <span className="block font-display font-extrabold text-base tracking-tight uppercase">

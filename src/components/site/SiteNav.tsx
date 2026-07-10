@@ -64,7 +64,7 @@ export function SiteNav() {
       <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between gap-4">
         <Link to="/" className="flex items-center gap-3 min-w-0">
           <div className="size-10 bg-brand-blue grid place-items-center font-display font-extrabold text-white text-xl shrink-0">
-            S
+            M
           </div>
           <div className="leading-none min-w-0">
             <span className="block font-display font-extrabold text-base sm:text-lg tracking-tight uppercase truncate">
