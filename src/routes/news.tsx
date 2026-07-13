@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { SiteLayout, PageHeader } from "@/components/site/SiteLayout";
 import { supabase } from "@/integrations/supabase/client";
 import { ChevronLeft, ChevronRight, Volume2, VolumeX } from "lucide-react";
+import { M, V } from "@/lib/media";
 
 type Post = { id: string; title: string; tag: string | null; excerpt: string | null; body: string | null; video_url: string | null; published_at: string };
 type NewsMedia = { id: string; news_id: string; url: string };
@@ -88,7 +89,7 @@ function NewsCard({ post, media }: { post: Post; media: NewsMedia[] }) {
     <article>
       {post.video_url && (
         <div className="relative aspect-video bg-black mb-4">
-          <video
+          <V
             src={post.video_url}
             autoPlay
             loop
@@ -104,7 +105,7 @@ function NewsCard({ post, media }: { post: Post; media: NewsMedia[] }) {
       )}
       {slides.length > 0 && !post.video_url && (
         <div className="relative aspect-video bg-surface mb-4 overflow-hidden">
-          <img src={slides[slide].url} alt="" className="size-full object-cover" />
+          <M src={slides[slide].url} alt="" className="size-full object-cover" />
           {slides.length > 1 && (
             <>
               <button onClick={() => setSlide((slide - 1 + slides.length) % slides.length)} className="absolute left-2 top-1/2 -translate-y-1/2 size-9 bg-white/90 grid place-items-center"><ChevronLeft className="size-4" /></button>

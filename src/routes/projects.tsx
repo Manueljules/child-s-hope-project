@@ -4,6 +4,7 @@ import { SiteLayout, PageHeader } from "@/components/site/SiteLayout";
 import { X, ChevronLeft, ChevronRight, MapPin } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import heroProjects from "@/assets/hero-projects.jpg.asset.json";
+import { M, V } from "@/lib/media";
 
 export const Route = createFileRoute("/projects")({
   head: () => ({
@@ -76,7 +77,7 @@ function ProjectsPage() {
               return (
                 <button key={p.id} onClick={() => setOpen(p)} className="text-left border border-brand-blue/10 bg-white flex flex-col hover:border-brand-blue transition-colors">
                   <div className="aspect-video overflow-hidden bg-surface">
-                    {p.cover_image ? <img src={p.cover_image} alt={p.title} loading="lazy" className="size-full object-cover" /> : <div className="size-full bg-brand-blue/10" />}
+                    {p.cover_image ? <M src={p.cover_image} alt={p.title} loading="lazy" className="size-full object-cover" /> : <div className="size-full bg-brand-blue/10" />}
                   </div>
                   <div className="p-6 flex flex-col flex-1">
                     <span className={`self-start font-mono text-[10px] uppercase tracking-widest border px-2 py-1 mb-4 ${statusColor[p.status] ?? "border-brand-blue/30 text-brand-blue"}`}>
@@ -156,9 +157,9 @@ function ProjectModal({ project, media, children, slide, setSlide, onClose }: {
           <div className="relative aspect-video bg-ink overflow-hidden">
             {cur ? (
               cur.media_type === "video" ? (
-                <video src={cur.url} controls className="size-full object-contain bg-black" />
+                <V src={cur.url} controls className="size-full object-contain bg-black" />
               ) : (
-                <img src={cur.url} alt={project.title} className="size-full object-cover" />
+                <M src={cur.url} alt={project.title} className="size-full object-cover" />
               )
             ) : (
               <div className="size-full grid place-items-center text-white/40 text-sm">No media yet</div>
@@ -210,7 +211,7 @@ function ProjectModal({ project, media, children, slide, setSlide, onClose }: {
                   {children.map((c) => (
                     <div key={c.id} className="flex items-center gap-3 border border-brand-blue/10 pr-4">
                       <div className="size-12 bg-brand-blue/10 overflow-hidden shrink-0">
-                        {c.photo_url && <img src={c.photo_url} alt={c.name} className="size-full object-cover" />}
+                        {c.photo_url && <M src={c.photo_url} alt={c.name} className="size-full object-cover" />}
                       </div>
                       <div>
                         <p className="font-display font-extrabold text-sm">{c.name}</p>

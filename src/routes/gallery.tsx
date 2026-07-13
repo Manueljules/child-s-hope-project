@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { SiteLayout, PageHeader } from "@/components/site/SiteLayout";
 import { supabase } from "@/integrations/supabase/client";
 import heroGallery from "@/assets/hero-gallery.jpg.asset.json";
+import { M } from "@/lib/media";
 
 export const Route = createFileRoute("/gallery")({
   head: () => ({
@@ -39,7 +40,7 @@ function GalleryPage() {
             <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
               {images.map((it) => (
                 <button key={it.id} onClick={() => setLightbox(it.url)} className="relative aspect-square overflow-hidden bg-surface group">
-                  <img src={it.url} alt="" loading="lazy" className="size-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                  <M src={it.url} alt="" loading="lazy" className="size-full object-cover group-hover:scale-105 transition-transform duration-500" />
                 </button>
               ))}
             </div>
@@ -49,7 +50,7 @@ function GalleryPage() {
 
       {lightbox && (
         <div className="fixed inset-0 z-50 bg-ink/95 grid place-items-center p-6" onClick={() => setLightbox(null)}>
-          <img src={lightbox} alt="" className="max-h-[90vh] max-w-full object-contain" />
+          <M src={lightbox} alt="" className="max-h-[90vh] max-w-full object-contain" />
           <button onClick={() => setLightbox(null)} className="absolute top-6 right-6 text-white font-mono text-xs uppercase tracking-widest border border-white/30 px-4 py-2">Close</button>
         </div>
       )}
