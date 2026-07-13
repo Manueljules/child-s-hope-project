@@ -3,14 +3,9 @@ import { useEffect, useState } from "react";
 import { ArrowRight, Heart, GraduationCap, Stethoscope, Utensils, Home as HomeIcon, Shield, Sparkles } from "lucide-react";
 import { SiteLayout } from "@/components/site/SiteLayout";
 import { supabase } from "@/integrations/supabase/client";
+import { M } from "@/lib/media";
 import heroHomeAsset from "@/assets/hero-home.jpg.asset.json";
 const heroChildren = heroHomeAsset.url;
-import brian from "@/assets/sponsor-brian.jpg";
-import storySarah from "@/assets/story-sarah.jpg";
-import storyWater from "@/assets/story-water.jpg";
-import programEducation from "@/assets/program-education.jpg";
-import programHealth from "@/assets/program-health.jpg";
-import programNutrition from "@/assets/program-nutrition.jpg";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -49,6 +44,18 @@ function Counter({ end, suffix = "", duration = 2000 }: { end: number; suffix?: 
 }
 
 function HomePage() {
+  const [stats, setStats] = useState<{ children_served: number; meals_provided: number; schools_assisted: number; districts_reached: number }>({ children_served: 0, meals_provided: 0, schools_assisted: 0, districts_reached: 0 });
+  useEffect(() => {
+    supabase.from("site_content").select("value").eq("key", "impact_stats").maybeSingle().then(({ data }) => {
+      if (data?.value) setStats(data.value as typeof stats);
+    });
+  }, []);
+  const statCards = [
+    { label: "Children Served", value: Number(stats.children_served) || 0, suffix: "+" },
+    { label: "Meals Provided", value: Number(stats.meals_provided) || 0, suffix: "+" },
+    { label: "Schools Assisted", value: Number(stats.schools_assisted) || 0, suffix: "" },
+    { label: "Districts Reached", value: Number(stats.districts_reached) || 0, suffix: "" },
+  ];
   return (
     <SiteLayout>
       {/* HERO */}
@@ -109,12 +116,7 @@ function HomePage() {
 
         {/* Impact bar */}
         <div className="relative md:absolute md:bottom-0 left-0 w-full grid grid-cols-2 md:grid-cols-4 border-t border-white/20 z-10">
-          {[
-            { label: "Children Served", value: 5000, suffix: "+" },
-            { label: "Meals Provided", value: 120000, suffix: "+" },
-            { label: "Schools Assisted", value: 14, suffix: "" },
-            { label: "Districts Reached", value: 22, suffix: "" },
-          ].map((s) => (
+          {statCards.map((s) => (
             <div
               key={s.label}
               className="p-6 md:p-8 bg-ink/30 backdrop-blur-sm border-r last:border-r-0 border-white/20"
@@ -235,32 +237,6 @@ function HomePage() {
           </div>
         </div>
 
-        {/* Image strip flows directly beneath pillars — no gap, unified section */}
-        <div className="grid grid-cols-1 md:grid-cols-3 max-w-7xl mx-auto md:px-6">
-          {[
-            { src: programEducation, label: "Education" },
-            { src: programHealth, label: "Healthcare" },
-            { src: programNutrition, label: "Nutrition" },
-          ].map((img) => (
-            <div key={img.label} className="relative aspect-[4/3] overflow-hidden group">
-              <img
-                src={img.src}
-                alt={img.label}
-                loading="lazy"
-                className="size-full object-cover group-hover:scale-105 transition-transform duration-700"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-ink/80 via-ink/20 to-transparent" />
-              <div className="absolute bottom-0 left-0 p-6">
-                <span className="block font-mono text-[10px] text-brand-gold uppercase tracking-widest mb-1">
-                  / Field Program
-                </span>
-                <span className="block font-display font-extrabold text-2xl text-white">
-                  {img.label}
-                </span>
-              </div>
-            </div>
-          ))}
-        </div>
       </section>
 
 
@@ -308,42 +284,7 @@ function HomePage() {
             </Link>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-8">
-            {[
-              {
-                img: storySarah,
-                tag: "Education",
-                title: "Sarah's journey to medical school",
-                excerpt:
-                  "Once unable to afford basic primary fees, Sarah is now pursuing her dream of becoming a community doctor through our sponsorship program.",
-              },
-              {
-                img: storyWater,
-                tag: "Community",
-                title: "Clean water for Kiboga village",
-                excerpt:
-                  "A new solar-powered borehole now provides clean water to over 200 families and the local primary school.",
-              },
-            ].map((s) => (
-              <article key={s.title} className="group">
-                <div className="aspect-[4/3] overflow-hidden mb-6 bg-surface">
-                  <img
-                    src={s.img}
-                    alt={s.title}
-                    loading="lazy"
-                    className="size-full object-cover group-hover:scale-105 transition-transform duration-700"
-                  />
-                </div>
-                <p className="font-mono text-[11px] uppercase tracking-widest text-brand-orange mb-3">
-                  / {s.tag}
-                </p>
-                <h3 className="font-display font-extrabold text-2xl md:text-3xl mb-3 leading-tight">
-                  {s.title}
-                </h3>
-                <p className="text-ink/60 leading-relaxed">{s.excerpt}</p>
-              </article>
-            ))}
-          </div>
+          <HomeStories />
         </div>
       </section>
 
@@ -446,7 +387,7 @@ function FeaturedChild() {
     return (
       <div className="bg-white/5 border border-white/10 p-8">
         <p className="font-mono text-brand-gold text-[11px] uppercase tracking-widest mb-6">/ Sponsorship</p>
-        <img src={brian} alt="" className="aspect-square object-cover mb-6" />
+        <div className="aspect-square bg-white/5 mb-6 grid place-items-center text-white/30 text-xs font-mono uppercase tracking-widest">No child yet</div>
         <h3 className="font-display font-extrabold text-2xl mb-2">Sponsor a child</h3>
         <p className="text-white/60 text-sm mb-6 leading-relaxed">Add children in the admin dashboard and they'll appear here for sponsorship.</p>
         <Link to="/donate" className="block w-full text-center border border-white/30 py-4 font-display font-bold uppercase tracking-widest text-xs hover:bg-white/10">Donate</Link>
@@ -457,13 +398,37 @@ function FeaturedChild() {
     <div className="bg-white/5 border border-white/10 p-8">
       <p className="font-mono text-brand-gold text-[11px] uppercase tracking-widest mb-6">/ Featured Sponsorship</p>
       <div className="aspect-square bg-ink mb-6 overflow-hidden">
-        {child.photo_url ? <img src={child.photo_url} alt={child.name} className="size-full object-cover" /> : <div className="size-full bg-white/5" />}
+        {child.photo_url ? <M src={child.photo_url} alt={child.name} className="size-full object-cover" /> : <div className="size-full bg-white/5" />}
       </div>
       <h3 className="font-display font-extrabold text-2xl mb-2">Meet {child.name}{child.age ? `, ${child.age}` : ""}</h3>
       {child.story && <p className="text-white/60 text-sm mb-6 leading-relaxed">{child.story}</p>}
       <Link to="/donate" className="block w-full text-center border border-white/30 py-4 font-display font-bold uppercase tracking-widest text-xs hover:bg-white/10">
         Sponsor {child.name}{child.monthly_amount ? ` · UGX ${Number(child.monthly_amount).toLocaleString()}/mo` : ""}
       </Link>
+    </div>
+  );
+}
+
+function HomeStories() {
+  const [items, setItems] = useState<Array<{ id: string; title: string; tag: string; excerpt: string; image_url: string | null }>>([]);
+  useEffect(() => {
+    supabase.from("stories").select("id,title,tag,excerpt,image_url").eq("is_published", true).order("sort_order").limit(2).then(({ data }) => setItems((data ?? []) as typeof items));
+  }, []);
+  if (items.length === 0) {
+    return <p className="text-ink/50 font-mono text-sm">No stories yet. Add them from the admin dashboard.</p>;
+  }
+  return (
+    <div className="grid md:grid-cols-2 gap-8">
+      {items.map((s) => (
+        <article key={s.id} className="group">
+          <div className="aspect-[4/3] overflow-hidden mb-6 bg-surface">
+            {s.image_url && <M src={s.image_url} alt={s.title} loading="lazy" className="size-full object-cover group-hover:scale-105 transition-transform duration-700" />}
+          </div>
+          <p className="font-mono text-[11px] uppercase tracking-widest text-brand-orange mb-3">/ {s.tag}</p>
+          <h3 className="font-display font-extrabold text-2xl md:text-3xl mb-3 leading-tight">{s.title}</h3>
+          <p className="text-ink/60 leading-relaxed">{s.excerpt}</p>
+        </article>
+      ))}
     </div>
   );
 }

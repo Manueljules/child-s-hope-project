@@ -5,6 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { SiteLayout, PageHeader } from "@/components/site/SiteLayout";
 import { uploadToBucket } from "@/lib/upload";
 import { Save, Plus, Trash2, LogOut, Edit3, Landmark, Image as ImageIcon, MessageSquare, Wallet, Users, FolderKanban, Newspaper, CalendarDays, Baby, Mail, Lock, Upload } from "lucide-react";
+import { M, V } from "@/lib/media";
 
 export const Route = createFileRoute("/_authenticated/admin")({
   head: () => ({ meta: [{ title: "Admin Dashboard — Masembe Childcare Foundation" }] }),
@@ -171,7 +172,7 @@ function ProjectsEditor() {
           const pct = p.budget > 0 ? Math.round((Number(p.raised) / Number(p.budget)) * 100) : 0;
           return (
             <div key={p.id} className="py-4 flex items-center gap-4">
-              {p.cover_image ? <img src={p.cover_image} alt="" className="size-14 object-cover" /> : <div className="size-14 bg-ink/5" />}
+              {p.cover_image ? <M src={p.cover_image} alt="" className="size-14 object-cover" /> : <div className="size-14 bg-ink/5" />}
               <div className="flex-1 min-w-0">
                 <p className="font-display font-extrabold truncate">{p.title}</p>
                 <p className="text-xs text-ink/50">{p.status} · {p.district} · {pct}% funded</p>
@@ -228,7 +229,7 @@ function MediaManager({ project, onClose }: { project: Project; onClose: () => v
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         {list.map((m) => (
           <div key={m.id} className="relative aspect-square bg-surface overflow-hidden group">
-            {m.media_type === "video" ? <video src={m.url} className="size-full object-cover" /> : <img src={m.url} alt="" className="size-full object-cover" />}
+            {m.media_type === "video" ? <V src={m.url} className="size-full object-cover" /> : <M src={m.url} alt="" className="size-full object-cover" />}
             <button onClick={() => remove(m.id)} className="absolute top-1 right-1 size-7 bg-white/90 grid place-items-center opacity-0 group-hover:opacity-100 transition-opacity"><Trash2 className="size-3 text-red-600" /></button>
           </div>
         ))}
@@ -300,7 +301,7 @@ function ChildrenEditor() {
       <div className="divide-y divide-ink/10">
         {(kids ?? []).map((c) => (
           <div key={c.id} className="py-4 flex items-center gap-4">
-            {c.photo_url ? <img src={c.photo_url} alt="" className="size-14 object-cover rounded-full" /> : <div className="size-14 bg-ink/5 rounded-full" />}
+            {c.photo_url ? <M src={c.photo_url} alt="" className="size-14 object-cover rounded-full" /> : <div className="size-14 bg-ink/5 rounded-full" />}
             <div className="flex-1 min-w-0">
               <p className="font-display font-extrabold truncate">{c.name}{c.age ? `, ${c.age}` : ""}</p>
               <p className="text-xs text-ink/50">{c.location} · {c.is_sponsored ? "Sponsored" : "Awaiting sponsor"}</p>
@@ -418,7 +419,7 @@ function NewsMediaManager({ post, onClose }: { post: NewsPost; onClose: () => vo
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         {list.map((m) => (
           <div key={m.id} className="relative aspect-square bg-surface overflow-hidden group">
-            <img src={m.url} alt="" className="size-full object-cover" />
+            <M src={m.url} alt="" className="size-full object-cover" />
             <button onClick={() => remove(m.id)} className="absolute top-1 right-1 size-7 bg-white/90 grid place-items-center opacity-0 group-hover:opacity-100 transition-opacity"><Trash2 className="size-3 text-red-600" /></button>
           </div>
         ))}
@@ -761,7 +762,7 @@ function StoriesEditor() {
       <div className="divide-y divide-ink/10">
         {(stories ?? []).map((s) => (
           <div key={s.id} className="py-4 flex items-center gap-4">
-            {s.image_url ? <img src={s.image_url} alt="" className="size-14 object-cover" /> : <div className="size-14 bg-ink/5" />}
+            {s.image_url ? <M src={s.image_url} alt="" className="size-14 object-cover" /> : <div className="size-14 bg-ink/5" />}
             <div className="flex-1 min-w-0">
               <p className="font-display font-extrabold truncate">{s.title}</p>
               <p className="text-xs text-ink/50">{s.tag} · {s.is_published ? "Published" : "Draft"}</p>
@@ -993,7 +994,7 @@ function ImageUploadField({ label, bucket, value, onChange }: { label: string; b
           <Upload className="size-4" /> {busy ? "Uploading…" : value ? "Replace" : "Upload"}
           <input hidden type="file" accept="image/*" onChange={(e) => { const f = e.target.files?.[0]; if (f) onFile(f); e.currentTarget.value = ""; }} />
         </label>
-        {value && <img src={value} alt="" className="size-14 object-cover" />}
+        {value && <M src={value} alt="" className="size-14 object-cover" />}
       </div>
       <input type="text" value={value} onChange={(e) => onChange(e.target.value)} placeholder="…or paste an image URL" className="mt-2 w-full border border-brand-blue/10 px-3 py-2 text-xs focus:outline-none" />
     </div>

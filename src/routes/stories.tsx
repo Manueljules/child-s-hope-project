@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { SiteLayout, PageHeader } from "@/components/site/SiteLayout";
 import { supabase } from "@/integrations/supabase/client";
 import heroStories from "@/assets/hero-stories.jpg.asset.json";
+import { M } from "@/lib/media";
 
 type Story = { id: string; title: string; tag: string | null; excerpt: string | null; body: string | null; image_url: string | null };
 
@@ -34,7 +35,7 @@ function StoriesPage() {
           {stories.map((s, i) => (
             <article key={s.id} className={`grid md:grid-cols-2 gap-10 items-center ${i % 2 ? "md:[&>*:first-child]:order-2" : ""}`}>
               <div className="aspect-[4/5] overflow-hidden bg-surface">
-                {s.image_url && <img src={s.image_url} alt={s.title} loading="lazy" className="size-full object-cover" />}
+                {s.image_url && <M src={s.image_url} alt={s.title} loading="lazy" className="size-full object-cover" />}
               </div>
               <div>
                 {s.tag && <p className="font-mono text-brand-orange text-xs uppercase tracking-widest mb-4">/ {s.tag}</p>}
