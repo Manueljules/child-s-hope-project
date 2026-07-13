@@ -237,32 +237,6 @@ function HomePage() {
           </div>
         </div>
 
-        {/* Image strip flows directly beneath pillars — no gap, unified section */}
-        <div className="grid grid-cols-1 md:grid-cols-3 max-w-7xl mx-auto md:px-6">
-          {[
-            { src: programEducation, label: "Education" },
-            { src: programHealth, label: "Healthcare" },
-            { src: programNutrition, label: "Nutrition" },
-          ].map((img) => (
-            <div key={img.label} className="relative aspect-[4/3] overflow-hidden group">
-              <img
-                src={img.src}
-                alt={img.label}
-                loading="lazy"
-                className="size-full object-cover group-hover:scale-105 transition-transform duration-700"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-ink/80 via-ink/20 to-transparent" />
-              <div className="absolute bottom-0 left-0 p-6">
-                <span className="block font-mono text-[10px] text-brand-gold uppercase tracking-widest mb-1">
-                  / Field Program
-                </span>
-                <span className="block font-display font-extrabold text-2xl text-white">
-                  {img.label}
-                </span>
-              </div>
-            </div>
-          ))}
-        </div>
       </section>
 
 
