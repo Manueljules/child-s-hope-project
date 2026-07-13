@@ -387,7 +387,7 @@ function FeaturedChild() {
     return (
       <div className="bg-white/5 border border-white/10 p-8">
         <p className="font-mono text-brand-gold text-[11px] uppercase tracking-widest mb-6">/ Sponsorship</p>
-        <img src={brian} alt="" className="aspect-square object-cover mb-6" />
+        <div className="aspect-square bg-white/5 mb-6 grid place-items-center text-white/30 text-xs font-mono uppercase tracking-widest">No child yet</div>
         <h3 className="font-display font-extrabold text-2xl mb-2">Sponsor a child</h3>
         <p className="text-white/60 text-sm mb-6 leading-relaxed">Add children in the admin dashboard and they'll appear here for sponsorship.</p>
         <Link to="/donate" className="block w-full text-center border border-white/30 py-4 font-display font-bold uppercase tracking-widest text-xs hover:bg-white/10">Donate</Link>
@@ -398,13 +398,37 @@ function FeaturedChild() {
     <div className="bg-white/5 border border-white/10 p-8">
       <p className="font-mono text-brand-gold text-[11px] uppercase tracking-widest mb-6">/ Featured Sponsorship</p>
       <div className="aspect-square bg-ink mb-6 overflow-hidden">
-        {child.photo_url ? <img src={child.photo_url} alt={child.name} className="size-full object-cover" /> : <div className="size-full bg-white/5" />}
+        {child.photo_url ? <M src={child.photo_url} alt={child.name} className="size-full object-cover" /> : <div className="size-full bg-white/5" />}
       </div>
       <h3 className="font-display font-extrabold text-2xl mb-2">Meet {child.name}{child.age ? `, ${child.age}` : ""}</h3>
       {child.story && <p className="text-white/60 text-sm mb-6 leading-relaxed">{child.story}</p>}
       <Link to="/donate" className="block w-full text-center border border-white/30 py-4 font-display font-bold uppercase tracking-widest text-xs hover:bg-white/10">
         Sponsor {child.name}{child.monthly_amount ? ` · UGX ${Number(child.monthly_amount).toLocaleString()}/mo` : ""}
       </Link>
+    </div>
+  );
+}
+
+function HomeStories() {
+  const [items, setItems] = useState<Array<{ id: string; title: string; tag: string; excerpt: string; image_url: string | null }>>([]);
+  useEffect(() => {
+    supabase.from("stories").select("id,title,tag,excerpt,image_url").eq("is_published", true).order("sort_order").limit(2).then(({ data }) => setItems((data ?? []) as typeof items));
+  }, []);
+  if (items.length === 0) {
+    return <p className="text-ink/50 font-mono text-sm">No stories yet. Add them from the admin dashboard.</p>;
+  }
+  return (
+    <div className="grid md:grid-cols-2 gap-8">
+      {items.map((s) => (
+        <article key={s.id} className="group">
+          <div className="aspect-[4/3] overflow-hidden mb-6 bg-surface">
+            {s.image_url && <M src={s.image_url} alt={s.title} loading="lazy" className="size-full object-cover group-hover:scale-105 transition-transform duration-700" />}
+          </div>
+          <p className="font-mono text-[11px] uppercase tracking-widest text-brand-orange mb-3">/ {s.tag}</p>
+          <h3 className="font-display font-extrabold text-2xl md:text-3xl mb-3 leading-tight">{s.title}</h3>
+          <p className="text-ink/60 leading-relaxed">{s.excerpt}</p>
+        </article>
+      ))}
     </div>
   );
 }
