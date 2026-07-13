@@ -284,42 +284,7 @@ function HomePage() {
             </Link>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-8">
-            {[
-              {
-                img: storySarah,
-                tag: "Education",
-                title: "Sarah's journey to medical school",
-                excerpt:
-                  "Once unable to afford basic primary fees, Sarah is now pursuing her dream of becoming a community doctor through our sponsorship program.",
-              },
-              {
-                img: storyWater,
-                tag: "Community",
-                title: "Clean water for Kiboga village",
-                excerpt:
-                  "A new solar-powered borehole now provides clean water to over 200 families and the local primary school.",
-              },
-            ].map((s) => (
-              <article key={s.title} className="group">
-                <div className="aspect-[4/3] overflow-hidden mb-6 bg-surface">
-                  <img
-                    src={s.img}
-                    alt={s.title}
-                    loading="lazy"
-                    className="size-full object-cover group-hover:scale-105 transition-transform duration-700"
-                  />
-                </div>
-                <p className="font-mono text-[11px] uppercase tracking-widest text-brand-orange mb-3">
-                  / {s.tag}
-                </p>
-                <h3 className="font-display font-extrabold text-2xl md:text-3xl mb-3 leading-tight">
-                  {s.title}
-                </h3>
-                <p className="text-ink/60 leading-relaxed">{s.excerpt}</p>
-              </article>
-            ))}
-          </div>
+          <HomeStories />
         </div>
       </section>
 
