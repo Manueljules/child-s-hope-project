@@ -44,6 +44,18 @@ function Counter({ end, suffix = "", duration = 2000 }: { end: number; suffix?: 
 }
 
 function HomePage() {
+  const [stats, setStats] = useState<{ children_served: number; meals_provided: number; schools_assisted: number; districts_reached: number }>({ children_served: 0, meals_provided: 0, schools_assisted: 0, districts_reached: 0 });
+  useEffect(() => {
+    supabase.from("site_content").select("value").eq("key", "impact_stats").maybeSingle().then(({ data }) => {
+      if (data?.value) setStats(data.value as typeof stats);
+    });
+  }, []);
+  const statCards = [
+    { label: "Children Served", value: Number(stats.children_served) || 0, suffix: "+" },
+    { label: "Meals Provided", value: Number(stats.meals_provided) || 0, suffix: "+" },
+    { label: "Schools Assisted", value: Number(stats.schools_assisted) || 0, suffix: "" },
+    { label: "Districts Reached", value: Number(stats.districts_reached) || 0, suffix: "" },
+  ];
   return (
     <SiteLayout>
       {/* HERO */}
@@ -104,12 +116,7 @@ function HomePage() {
 
         {/* Impact bar */}
         <div className="relative md:absolute md:bottom-0 left-0 w-full grid grid-cols-2 md:grid-cols-4 border-t border-white/20 z-10">
-          {[
-            { label: "Children Served", value: 5000, suffix: "+" },
-            { label: "Meals Provided", value: 120000, suffix: "+" },
-            { label: "Schools Assisted", value: 14, suffix: "" },
-            { label: "Districts Reached", value: 22, suffix: "" },
-          ].map((s) => (
+          {statCards.map((s) => (
             <div
               key={s.label}
               className="p-6 md:p-8 bg-ink/30 backdrop-blur-sm border-r last:border-r-0 border-white/20"
