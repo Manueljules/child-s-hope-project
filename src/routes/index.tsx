@@ -3,14 +3,9 @@ import { useEffect, useState } from "react";
 import { ArrowRight, Heart, GraduationCap, Stethoscope, Utensils, Home as HomeIcon, Shield, Sparkles } from "lucide-react";
 import { SiteLayout } from "@/components/site/SiteLayout";
 import { supabase } from "@/integrations/supabase/client";
+import { M } from "@/lib/media";
 import heroHomeAsset from "@/assets/hero-home.jpg.asset.json";
 const heroChildren = heroHomeAsset.url;
-import brian from "@/assets/sponsor-brian.jpg";
-import storySarah from "@/assets/story-sarah.jpg";
-import storyWater from "@/assets/story-water.jpg";
-import programEducation from "@/assets/program-education.jpg";
-import programHealth from "@/assets/program-health.jpg";
-import programNutrition from "@/assets/program-nutrition.jpg";
 
 export const Route = createFileRoute("/")({
   head: () => ({
