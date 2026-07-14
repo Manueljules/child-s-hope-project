@@ -126,8 +126,6 @@ function ProjectsPage() {
           project={open}
           media={media}
           children={children}
-          slide={slide}
-          setSlide={setSlide}
           onClose={() => setOpen(null)}
         />
       )}
@@ -135,12 +133,10 @@ function ProjectsPage() {
   );
 }
 
-function ProjectModal({ project, media, children, slide, setSlide, onClose }: {
+function ProjectModal({ project, media, children, onClose }: {
   project: Project;
   media: Media[];
   children: Child[];
-  slide: number;
-  setSlide: (n: number) => void;
   onClose: () => void;
 }) {
   const total = Number(project.raised) + Number(project.cash_raised ?? 0);
