@@ -118,8 +118,9 @@ function ProjectsEditor() {
   const [managingMedia, setManagingMedia] = useState<Project | null>(null);
 
   async function save(p: Project) {
-    if (p.id) await supabase.from("projects").update(p).eq("id", p.id);
-    else await supabase.from("projects").insert(p);
+    const { raised, ...payload } = p;
+    if (p.id) await supabase.from("projects").update(payload).eq("id", p.id);
+    else await supabase.from("projects").insert(payload);
     qc.invalidateQueries({ queryKey: ["admin_projects"] });
     setEditing(null);
   }
@@ -147,7 +148,10 @@ function ProjectsEditor() {
             </select>
           </label>
           <AdminField label="Budget (UGX)" type="number" value={String(editing.budget)} onChange={(v) => setEditing({ ...editing, budget: Number(v) })} />
-          <AdminField label="Raised online (UGX) — auto from donations" type="number" value={String(editing.raised)} onChange={(v) => setEditing({ ...editing, raised: Number(v) })} />
+          <div className="block">
+            <span className="block font-mono text-[11px] uppercase tracking-widest text-ink/60 mb-2">Raised online (UGX) — auto from donations</span>
+            <div className="w-full border border-brand-blue/10 bg-ink/5 px-4 py-3 text-sm text-ink/70">{Number(editing.raised).toLocaleString()}</div>
+          </div>
           <AdminField label="Cash raised (UGX) — offline / in-kind" type="number" value={String(editing.cash_raised ?? 0)} onChange={(v) => setEditing({ ...editing, cash_raised: Number(v) })} />
 
           <AdminField label="Beneficiaries" type="number" value={String(editing.beneficiaries)} onChange={(v) => setEditing({ ...editing, beneficiaries: Number(v) })} />
