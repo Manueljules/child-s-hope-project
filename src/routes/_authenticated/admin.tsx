@@ -172,7 +172,9 @@ function ProjectsEditor() {
       </div>
       <div className="divide-y divide-ink/10">
         {(projects ?? []).map((p) => {
-          const pct = p.budget > 0 ? Math.round((Number(p.raised) / Number(p.budget)) * 100) : 0;
+          const total = Number(p.raised) + Number(p.cash_raised ?? 0);
+          const pct = p.budget > 0 ? Math.round((total / Number(p.budget)) * 100) : 0;
+
           return (
             <div key={p.id} className="py-4 flex items-center gap-4">
               {p.cover_image ? <M src={p.cover_image} alt="" className="size-14 object-cover" /> : <div className="size-14 bg-ink/5" />}
