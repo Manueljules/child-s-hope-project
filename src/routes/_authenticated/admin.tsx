@@ -118,8 +118,9 @@ function ProjectsEditor() {
   const [managingMedia, setManagingMedia] = useState<Project | null>(null);
 
   async function save(p: Project) {
-    if (p.id) await supabase.from("projects").update(p).eq("id", p.id);
-    else await supabase.from("projects").insert(p);
+    const { raised, ...payload } = p;
+    if (p.id) await supabase.from("projects").update(payload).eq("id", p.id);
+    else await supabase.from("projects").insert(payload);
     qc.invalidateQueries({ queryKey: ["admin_projects"] });
     setEditing(null);
   }
