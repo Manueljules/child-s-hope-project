@@ -74,8 +74,10 @@ function ProjectsPage() {
           )}
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {projects.map((p) => {
-              const pct = p.budget > 0 ? Math.min(100, Math.round((Number(p.raised) / Number(p.budget)) * 100)) : 0;
-              const needed = Math.max(0, Number(p.budget) - Number(p.raised));
+              const total = Number(p.raised) + Number(p.cash_raised ?? 0);
+              const pct = p.budget > 0 ? Math.min(100, Math.round((total / Number(p.budget)) * 100)) : 0;
+              const needed = Math.max(0, Number(p.budget) - total);
+
               return (
                 <button key={p.id} onClick={() => setOpen(p)} className="text-left border border-brand-blue/10 bg-white flex flex-col hover:border-brand-blue transition-colors">
                   <div className="aspect-video overflow-hidden bg-surface">
