@@ -101,12 +101,13 @@ function AdminPage() {
    ============================================================ */
 type Project = {
   id?: string; title: string; slug?: string | null; short_description: string; description: string;
-  district: string; status: string; budget: number; raised: number; beneficiaries: number;
+  district: string; status: string; budget: number; raised: number; cash_raised: number; beneficiaries: number;
   cover_image: string; is_published: boolean; sort_order: number;
 };
 function emptyProject(order: number): Project {
-  return { title: "", short_description: "", description: "", district: "", status: "current", budget: 0, raised: 0, beneficiaries: 0, cover_image: "", is_published: true, sort_order: order };
+  return { title: "", short_description: "", description: "", district: "", status: "current", budget: 0, raised: 0, cash_raised: 0, beneficiaries: 0, cover_image: "", is_published: true, sort_order: order };
 }
+
 function ProjectsEditor() {
   const qc = useQueryClient();
   const { data: projects } = useQuery({
