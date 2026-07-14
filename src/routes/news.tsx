@@ -80,42 +80,14 @@ function NewsPage() {
 }
 
 function NewsCard({ post, media }: { post: Post; media: NewsMedia[] }) {
-  const [slide, setSlide] = useState(0);
-  const [muted, setMuted] = useState(true); // browsers block autoplay-with-sound; start muted, let user unmute
-  const slides = media;
-
   return (
     <article>
-      {post.video_url && (
-        <div className="relative aspect-video bg-black mb-4">
-          <V
-            src={post.video_url}
-            autoPlay
-            loop
-            muted={muted}
-            playsInline
-            controls={false}
-            className="size-full object-cover"
-          />
-          <button onClick={() => setMuted((m) => !m)} className="absolute bottom-3 right-3 size-10 bg-white/90 grid place-items-center hover:bg-white">
-            {muted ? <VolumeX className="size-4" /> : <Volume2 className="size-4" />}
-          </button>
+      {media.length > 0 && (
+        <div className="mb-4">
+          <MediaCarousel items={media.map((m) => ({ id: m.id, url: m.url }))} alt={post.title} />
         </div>
       )}
-      {slides.length > 0 && !post.video_url && (
-        <div className="relative aspect-video bg-surface mb-4 overflow-hidden">
-          <M src={slides[slide].url} alt="" className="size-full object-cover" />
-          {slides.length > 1 && (
-            <>
-              <button onClick={() => setSlide((slide - 1 + slides.length) % slides.length)} className="absolute left-2 top-1/2 -translate-y-1/2 size-9 bg-white/90 grid place-items-center"><ChevronLeft className="size-4" /></button>
-              <button onClick={() => setSlide((slide + 1) % slides.length)} className="absolute right-2 top-1/2 -translate-y-1/2 size-9 bg-white/90 grid place-items-center"><ChevronRight className="size-4" /></button>
-              <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1">
-                {slides.map((_, i) => <button key={i} onClick={() => setSlide(i)} className={`size-2 rounded-full ${i === slide ? "bg-white" : "bg-white/40"}`} />)}
-              </div>
-            </>
-          )}
-        </div>
-      )}
+
       <div className="flex items-center gap-3 font-mono text-[10px] uppercase tracking-widest text-ink/40 mb-2">
         {post.tag && <><span className="text-brand-orange">{post.tag}</span><span>·</span></>}
         <span>{new Date(post.published_at).toLocaleDateString()}</span>
