@@ -1,10 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { SiteLayout, PageHeader } from "@/components/site/SiteLayout";
-import { X, ChevronLeft, ChevronRight, MapPin } from "lucide-react";
+import { X, MapPin } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import heroProjects from "@/assets/hero-projects.jpg.asset.json";
-import { M, V } from "@/lib/media";
+import { M } from "@/lib/media";
+import { MediaCarousel } from "@/components/site/MediaCarousel";
 
 export const Route = createFileRoute("/projects")({
   head: () => ({
