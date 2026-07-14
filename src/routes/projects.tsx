@@ -144,8 +144,10 @@ function ProjectModal({ project, media, children, slide, setSlide, onClose }: {
   setSlide: (n: number) => void;
   onClose: () => void;
 }) {
-  const pct = project.budget > 0 ? Math.min(100, Math.round((Number(project.raised) / Number(project.budget)) * 100)) : 0;
-  const needed = Math.max(0, Number(project.budget) - Number(project.raised));
+  const total = Number(project.raised) + Number(project.cash_raised ?? 0);
+  const pct = project.budget > 0 ? Math.min(100, Math.round((total / Number(project.budget)) * 100)) : 0;
+  const needed = Math.max(0, Number(project.budget) - total);
+
   const slides = media.length > 0 ? media : (project.cover_image ? [{ id: "cover", url: project.cover_image, media_type: "image", sort_order: 0 }] : []);
   const cur = slides[slide];
 
