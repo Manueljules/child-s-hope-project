@@ -45,7 +45,6 @@ function ProjectsPage() {
   const [open, setOpen] = useState<Project | null>(null);
   const [media, setMedia] = useState<Media[]>([]);
   const [children, setChildren] = useState<Child[]>([]);
-  const [slide, setSlide] = useState(0);
 
   useEffect(() => {
     supabase.from("projects").select("*").eq("is_published", true).order("sort_order").then(({ data }) => {
@@ -55,7 +54,6 @@ function ProjectsPage() {
 
   useEffect(() => {
     if (!open) return;
-    setSlide(0);
     supabase.from("project_media").select("*").eq("project_id", open.id).order("sort_order").then(({ data }) => {
       setMedia((data ?? []) as Media[]);
     });
