@@ -101,12 +101,13 @@ function AdminPage() {
    ============================================================ */
 type Project = {
   id?: string; title: string; slug?: string | null; short_description: string; description: string;
-  district: string; status: string; budget: number; raised: number; beneficiaries: number;
+  district: string; status: string; budget: number; raised: number; cash_raised: number; beneficiaries: number;
   cover_image: string; is_published: boolean; sort_order: number;
 };
 function emptyProject(order: number): Project {
-  return { title: "", short_description: "", description: "", district: "", status: "current", budget: 0, raised: 0, beneficiaries: 0, cover_image: "", is_published: true, sort_order: order };
+  return { title: "", short_description: "", description: "", district: "", status: "current", budget: 0, raised: 0, cash_raised: 0, beneficiaries: 0, cover_image: "", is_published: true, sort_order: order };
 }
+
 function ProjectsEditor() {
   const qc = useQueryClient();
   const { data: projects } = useQuery({
@@ -146,7 +147,9 @@ function ProjectsEditor() {
             </select>
           </label>
           <AdminField label="Budget (UGX)" type="number" value={String(editing.budget)} onChange={(v) => setEditing({ ...editing, budget: Number(v) })} />
-          <AdminField label="Raised (UGX) — includes cash/in-kind" type="number" value={String(editing.raised)} onChange={(v) => setEditing({ ...editing, raised: Number(v) })} />
+          <AdminField label="Raised online (UGX) — auto from donations" type="number" value={String(editing.raised)} onChange={(v) => setEditing({ ...editing, raised: Number(v) })} />
+          <AdminField label="Cash raised (UGX) — offline / in-kind" type="number" value={String(editing.cash_raised ?? 0)} onChange={(v) => setEditing({ ...editing, cash_raised: Number(v) })} />
+
           <AdminField label="Beneficiaries" type="number" value={String(editing.beneficiaries)} onChange={(v) => setEditing({ ...editing, beneficiaries: Number(v) })} />
           <ImageUploadField label="Cover image" bucket="project-media" value={editing.cover_image} onChange={(url) => setEditing({ ...editing, cover_image: url })} />
         </div>
@@ -169,7 +172,9 @@ function ProjectsEditor() {
       </div>
       <div className="divide-y divide-ink/10">
         {(projects ?? []).map((p) => {
-          const pct = p.budget > 0 ? Math.round((Number(p.raised) / Number(p.budget)) * 100) : 0;
+          const total = Number(p.raised) + Number(p.cash_raised ?? 0);
+          const pct = p.budget > 0 ? Math.round((total / Number(p.budget)) * 100) : 0;
+
           return (
             <div key={p.id} className="py-4 flex items-center gap-4">
               {p.cover_image ? <M src={p.cover_image} alt="" className="size-14 object-cover" /> : <div className="size-14 bg-ink/5" />}

@@ -25,9 +25,11 @@ type Project = {
   status: string;
   budget: number;
   raised: number;
+  cash_raised: number;
   beneficiaries: number;
   cover_image: string | null;
 };
+
 type Media = { id: string; url: string; media_type: string; sort_order: number };
 type Child = { id: string; name: string; age: number | null; photo_url: string | null };
 
@@ -72,8 +74,10 @@ function ProjectsPage() {
           )}
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {projects.map((p) => {
-              const pct = p.budget > 0 ? Math.min(100, Math.round((Number(p.raised) / Number(p.budget)) * 100)) : 0;
-              const needed = Math.max(0, Number(p.budget) - Number(p.raised));
+              const total = Number(p.raised) + Number(p.cash_raised ?? 0);
+              const pct = p.budget > 0 ? Math.min(100, Math.round((total / Number(p.budget)) * 100)) : 0;
+              const needed = Math.max(0, Number(p.budget) - total);
+
               return (
                 <button key={p.id} onClick={() => setOpen(p)} className="text-left border border-brand-blue/10 bg-white flex flex-col hover:border-brand-blue transition-colors">
                   <div className="aspect-video overflow-hidden bg-surface">
@@ -140,8 +144,10 @@ function ProjectModal({ project, media, children, slide, setSlide, onClose }: {
   setSlide: (n: number) => void;
   onClose: () => void;
 }) {
-  const pct = project.budget > 0 ? Math.min(100, Math.round((Number(project.raised) / Number(project.budget)) * 100)) : 0;
-  const needed = Math.max(0, Number(project.budget) - Number(project.raised));
+  const total = Number(project.raised) + Number(project.cash_raised ?? 0);
+  const pct = project.budget > 0 ? Math.min(100, Math.round((total / Number(project.budget)) * 100)) : 0;
+  const needed = Math.max(0, Number(project.budget) - total);
+
   const slides = media.length > 0 ? media : (project.cover_image ? [{ id: "cover", url: project.cover_image, media_type: "image", sort_order: 0 }] : []);
   const cur = slides[slide];
 
@@ -192,7 +198,7 @@ function ProjectModal({ project, media, children, slide, setSlide, onClose }: {
 
             <div>
               <div className="flex justify-between text-sm font-mono mb-2">
-                <span className="text-ink/60">Raised UGX {Number(project.raised).toLocaleString()}</span>
+                <span className="text-ink/60">Raised UGX {total.toLocaleString()}</span>
                 <span className="text-brand-blue font-bold">{pct}%</span>
               </div>
               <div className="w-full h-2 bg-brand-blue/10">

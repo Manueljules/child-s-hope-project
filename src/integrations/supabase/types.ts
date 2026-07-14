@@ -376,6 +376,7 @@ export type Database = {
         Row: {
           beneficiaries: number
           budget: number
+          cash_raised: number
           cover_image: string | null
           created_at: string
           description: string | null
@@ -393,6 +394,7 @@ export type Database = {
         Insert: {
           beneficiaries?: number
           budget?: number
+          cash_raised?: number
           cover_image?: string | null
           created_at?: string
           description?: string | null
@@ -410,6 +412,7 @@ export type Database = {
         Update: {
           beneficiaries?: number
           budget?: number
+          cash_raised?: number
           cover_image?: string | null
           created_at?: string
           description?: string | null
