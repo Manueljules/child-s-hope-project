@@ -1,10 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { SiteLayout, PageHeader } from "@/components/site/SiteLayout";
-import { X, ChevronLeft, ChevronRight, MapPin } from "lucide-react";
+import { X, MapPin } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import heroProjects from "@/assets/hero-projects.jpg.asset.json";
-import { M, V } from "@/lib/media";
+import { M } from "@/lib/media";
+import { MediaCarousel } from "@/components/site/MediaCarousel";
 
 export const Route = createFileRoute("/projects")({
   head: () => ({
@@ -44,7 +45,6 @@ function ProjectsPage() {
   const [open, setOpen] = useState<Project | null>(null);
   const [media, setMedia] = useState<Media[]>([]);
   const [children, setChildren] = useState<Child[]>([]);
-  const [slide, setSlide] = useState(0);
 
   useEffect(() => {
     supabase.from("projects").select("*").eq("is_published", true).order("sort_order").then(({ data }) => {
@@ -54,7 +54,6 @@ function ProjectsPage() {
 
   useEffect(() => {
     if (!open) return;
-    setSlide(0);
     supabase.from("project_media").select("*").eq("project_id", open.id).order("sort_order").then(({ data }) => {
       setMedia((data ?? []) as Media[]);
     });
@@ -127,8 +126,6 @@ function ProjectsPage() {
           project={open}
           media={media}
           children={children}
-          slide={slide}
-          setSlide={setSlide}
           onClose={() => setOpen(null)}
         />
       )}
@@ -136,12 +133,10 @@ function ProjectsPage() {
   );
 }
 
-function ProjectModal({ project, media, children, slide, setSlide, onClose }: {
+function ProjectModal({ project, media, children, onClose }: {
   project: Project;
   media: Media[];
   children: Child[];
-  slide: number;
-  setSlide: (n: number) => void;
   onClose: () => void;
 }) {
   const total = Number(project.raised) + Number(project.cash_raised ?? 0);
@@ -149,7 +144,6 @@ function ProjectModal({ project, media, children, slide, setSlide, onClose }: {
   const needed = Math.max(0, Number(project.budget) - total);
 
   const slides = media.length > 0 ? media : (project.cover_image ? [{ id: "cover", url: project.cover_image, media_type: "image", sort_order: 0 }] : []);
-  const cur = slides[slide];
 
   return (
     <div className="fixed inset-0 z-50 bg-ink/90 overflow-y-auto" onClick={onClose}>
@@ -159,33 +153,12 @@ function ProjectModal({ project, media, children, slide, setSlide, onClose }: {
             <X className="size-5" />
           </button>
 
-          {/* Slider */}
-          <div className="relative aspect-video bg-ink overflow-hidden">
-            {cur ? (
-              cur.media_type === "video" ? (
-                <V src={cur.url} controls className="size-full object-contain bg-black" />
-              ) : (
-                <M src={cur.url} alt={project.title} className="size-full object-cover" />
-              )
-            ) : (
-              <div className="size-full grid place-items-center text-white/40 text-sm">No media yet</div>
-            )}
-            {slides.length > 1 && (
-              <>
-                <button onClick={() => setSlide((slide - 1 + slides.length) % slides.length)} className="absolute left-3 top-1/2 -translate-y-1/2 size-10 bg-white/90 grid place-items-center hover:bg-white">
-                  <ChevronLeft className="size-5" />
-                </button>
-                <button onClick={() => setSlide((slide + 1) % slides.length)} className="absolute right-3 top-1/2 -translate-y-1/2 size-10 bg-white/90 grid place-items-center hover:bg-white">
-                  <ChevronRight className="size-5" />
-                </button>
-                <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1">
-                  {slides.map((_, i) => (
-                    <button key={i} onClick={() => setSlide(i)} className={`size-2 rounded-full ${i === slide ? "bg-white" : "bg-white/40"}`} />
-                  ))}
-                </div>
-              </>
-            )}
-          </div>
+          {slides.length > 0 ? (
+            <MediaCarousel items={slides.map((s) => ({ id: s.id, url: s.url, media_type: s.media_type }))} alt={project.title} />
+          ) : (
+            <div className="aspect-video bg-ink grid place-items-center text-white/40 text-sm">No media yet</div>
+          )}
+
 
           <div className="p-6 md:p-10 space-y-6">
             <div>
