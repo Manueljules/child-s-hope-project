@@ -25,9 +25,11 @@ type Project = {
   status: string;
   budget: number;
   raised: number;
+  cash_raised: number;
   beneficiaries: number;
   cover_image: string | null;
 };
+
 type Media = { id: string; url: string; media_type: string; sort_order: number };
 type Child = { id: string; name: string; age: number | null; photo_url: string | null };
 
