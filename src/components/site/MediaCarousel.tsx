@@ -135,3 +135,34 @@ export function MediaCarousel({
     </div>
   );
 }
+
+function VideoSlide({
+  src,
+  playing,
+  videoRef,
+  onPlay,
+  onPause,
+  onEnded,
+}: {
+  src: string;
+  playing: boolean;
+  videoRef: React.MutableRefObject<HTMLVideoElement | null>;
+  onPlay: () => void;
+  onPause: () => void;
+  onEnded: () => void;
+}) {
+  const resolved = useResolvedUrl(src);
+  if (!resolved) return <div className="size-full bg-black" aria-hidden />;
+  return (
+    <video
+      ref={videoRef}
+      src={resolved}
+      className="size-full object-contain bg-black"
+      controls={playing}
+      playsInline
+      onPlay={onPlay}
+      onPause={onPause}
+      onEnded={onEnded}
+    />
+  );
+}
