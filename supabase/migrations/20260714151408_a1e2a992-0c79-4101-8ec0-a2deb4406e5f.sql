@@ -1,0 +1,1 @@
+ALTER TABLE public.projects ADD COLUMN IF NOT EXISTS cash_raised numeric NOT NULL DEFAULT 0;
