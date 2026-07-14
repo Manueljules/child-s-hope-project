@@ -383,7 +383,7 @@ function NewsEditor() {
               <p className="font-display font-extrabold truncate">{p.title}</p>
               <p className="text-xs text-ink/50">{p.tag} · {new Date(p.published_at).toLocaleDateString()}</p>
             </div>
-            <button onClick={() => setManagingMedia(p)} className="text-brand-blue text-xs font-mono uppercase tracking-widest">Photos</button>
+            <button onClick={() => setManagingMedia(p)} className="text-brand-blue text-xs font-mono uppercase tracking-widest">Media</button>
             <button onClick={() => setEditing(p)} className="text-brand-blue text-xs font-mono uppercase tracking-widest">Edit</button>
             <button onClick={() => remove(p.id!)} className="text-red-600"><Trash2 className="size-4" /></button>
           </div>
