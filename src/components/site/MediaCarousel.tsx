@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { ChevronLeft, ChevronRight, Play } from "lucide-react";
-import { M, V } from "@/lib/media";
+import { M, useResolvedUrl } from "@/lib/media";
 
 export type CarouselItem = { id: string; url: string; media_type?: string | null };
 
