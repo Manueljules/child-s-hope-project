@@ -198,7 +198,7 @@ function ProjectModal({ project, media, children, slide, setSlide, onClose }: {
 
             <div>
               <div className="flex justify-between text-sm font-mono mb-2">
-                <span className="text-ink/60">Raised UGX {Number(project.raised).toLocaleString()}</span>
+                <span className="text-ink/60">Raised UGX {total.toLocaleString()}</span>
                 <span className="text-brand-blue font-bold">{pct}%</span>
               </div>
               <div className="w-full h-2 bg-brand-blue/10">
