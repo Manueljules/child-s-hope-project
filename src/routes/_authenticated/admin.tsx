@@ -355,7 +355,7 @@ function NewsEditor() {
         <h2 className="font-display font-extrabold text-xl">{editing.id ? "Edit post" : "New post"}</h2>
         <AdminField label="Title" value={editing.title} onChange={(v) => setEditing({ ...editing, title: v })} />
         <AdminField label="Tag" value={editing.tag} onChange={(v) => setEditing({ ...editing, tag: v })} placeholder="Announcement, Impact, Event..." />
-        <AdminField label="Video URL (autoplays)" value={editing.video_url} onChange={(v) => setEditing({ ...editing, video_url: v })} placeholder="https://... (mp4 or YouTube embed)" />
+        
         <AdminTextArea label="Excerpt" value={editing.excerpt} onChange={(v) => setEditing({ ...editing, excerpt: v })} rows={2} />
         <AdminTextArea label="Body" value={editing.body} onChange={(v) => setEditing({ ...editing, body: v })} rows={10} />
         <label className="flex items-center gap-2 text-sm">
