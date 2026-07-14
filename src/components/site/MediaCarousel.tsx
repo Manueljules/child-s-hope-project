@@ -59,12 +59,10 @@ export function MediaCarousel({
     >
       {video ? (
         <>
-          <V
-            ref={videoRef as never}
+          <VideoSlide
             src={cur.url}
-            className="size-full object-contain bg-black"
-            controls={playingVideo}
-            playsInline
+            playing={playingVideo}
+            videoRef={videoRef}
             onPlay={() => setPlayingVideo(true)}
             onPause={() => setPlayingVideo(false)}
             onEnded={() => {
@@ -72,6 +70,7 @@ export function MediaCarousel({
               if (items.length > 1) go(i + 1);
             }}
           />
+
           {!playingVideo && (
             <button
               type="button"
