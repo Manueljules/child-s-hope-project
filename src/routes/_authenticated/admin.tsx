@@ -147,7 +147,9 @@ function ProjectsEditor() {
             </select>
           </label>
           <AdminField label="Budget (UGX)" type="number" value={String(editing.budget)} onChange={(v) => setEditing({ ...editing, budget: Number(v) })} />
-          <AdminField label="Raised (UGX) — includes cash/in-kind" type="number" value={String(editing.raised)} onChange={(v) => setEditing({ ...editing, raised: Number(v) })} />
+          <AdminField label="Raised online (UGX) — auto from donations" type="number" value={String(editing.raised)} onChange={(v) => setEditing({ ...editing, raised: Number(v) })} />
+          <AdminField label="Cash raised (UGX) — offline / in-kind" type="number" value={String(editing.cash_raised ?? 0)} onChange={(v) => setEditing({ ...editing, cash_raised: Number(v) })} />
+
           <AdminField label="Beneficiaries" type="number" value={String(editing.beneficiaries)} onChange={(v) => setEditing({ ...editing, beneficiaries: Number(v) })} />
           <ImageUploadField label="Cover image" bucket="project-media" value={editing.cover_image} onChange={(url) => setEditing({ ...editing, cover_image: url })} />
         </div>
