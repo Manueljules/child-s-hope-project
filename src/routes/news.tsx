@@ -2,8 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { SiteLayout, PageHeader } from "@/components/site/SiteLayout";
 import { supabase } from "@/integrations/supabase/client";
-import { ChevronLeft, ChevronRight, Volume2, VolumeX } from "lucide-react";
-import { M, V } from "@/lib/media";
+import { MediaCarousel } from "@/components/site/MediaCarousel";
 
 type Post = { id: string; title: string; tag: string | null; excerpt: string | null; body: string | null; video_url: string | null; published_at: string };
 type NewsMedia = { id: string; news_id: string; url: string };
