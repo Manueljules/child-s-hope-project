@@ -403,7 +403,7 @@ function NewsMediaManager({ post, onClose }: { post: NewsPost; onClose: () => vo
   const list = (media ?? []) as Array<{ id: string; url: string; sort_order: number }>;
   const [busy, setBusy] = useState(false);
   async function upload(file: File) {
-    if (list.length >= 5) { alert("Maximum 5 photos per news post."); return; }
+    if (list.length >= 5) { alert("Maximum 5 items per news post."); return; }
     setBusy(true);
     try {
       const url = await uploadToBucket("news-media", file);
@@ -413,22 +413,35 @@ function NewsMediaManager({ post, onClose }: { post: NewsPost; onClose: () => vo
   }
 
   async function remove(id: string) {
-    if (!confirm("Delete this photo?")) return;
+    if (!confirm("Delete this item?")) return;
     await supabase.from("news_media").delete().eq("id", id);
     qc.invalidateQueries({ queryKey: ["news_media", nid] });
   }
+  const isVideo = (u: string) => /\.(mp4|webm|mov|m4v|ogg|ogv)(\?|$)/i.test(u);
   return (
     <div className="space-y-4">
       <button onClick={onClose} className="text-brand-blue text-xs font-mono uppercase tracking-widest">← Back to news</button>
-      <h2 className="font-display font-extrabold text-xl">Photos · {post.title} <span className="text-sm text-ink/50">({list.length}/5)</span></h2>
+      <h2 className="font-display font-extrabold text-xl">Media · {post.title} <span className="text-sm text-ink/50">({list.length}/5)</span></h2>
+      <p className="text-xs text-ink/60">Add up to 5 photos or videos. They auto-slide on the news page; videos play when tapped.</p>
       <label className={`flex items-center gap-2 bg-brand-blue text-white px-4 py-3 font-display font-extrabold uppercase tracking-widest text-xs cursor-pointer w-fit ${busy ? "opacity-60" : ""}`}>
-        <Upload className="size-4" /> {busy ? "Uploading…" : "Upload photo"}
-        <input hidden type="file" accept="image/*" onChange={(e) => { const f = e.target.files?.[0]; if (f) upload(f); e.currentTarget.value = ""; }} />
+        <Upload className="size-4" /> {busy ? "Uploading…" : "Upload photo or video"}
+        <input hidden type="file" accept="image/*,video/*" onChange={(e) => { const f = e.target.files?.[0]; if (f) upload(f); e.currentTarget.value = ""; }} />
       </label>
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         {list.map((m) => (
           <div key={m.id} className="relative aspect-square bg-surface overflow-hidden group">
-            <M src={m.url} alt="" className="size-full object-cover" />
+            {isVideo(m.url) ? (
+              <V src={m.url} className="size-full object-cover" muted playsInline />
+            ) : (
+              <M src={m.url} alt="" className="size-full object-cover" />
+            )}
+            {isVideo(m.url) && (
+              <span className="absolute inset-0 grid place-items-center pointer-events-none">
+                <span className="size-8 rounded-full bg-white/90 grid place-items-center">
+                  <Upload className="size-3.5 text-brand-blue rotate-90" />
+                </span>
+              </span>
+            )}
             <button onClick={() => remove(m.id)} className="absolute top-1 right-1 size-7 bg-white/90 grid place-items-center opacity-0 group-hover:opacity-100 transition-opacity"><Trash2 className="size-3 text-red-600" /></button>
           </div>
         ))}
