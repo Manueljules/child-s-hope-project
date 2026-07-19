@@ -59,18 +59,18 @@ function HomePage() {
   return (
     <SiteLayout>
       {/* HERO */}
-      <header className="relative min-h-[85vh] md:min-h-[92vh] flex flex-col justify-center bg-brand-blue text-white overflow-hidden">
+      <header className="relative min-h-[60vh] sm:min-h-[85vh] md:min-h-[92vh] flex flex-col justify-center bg-brand-blue text-white overflow-hidden">
         <div className="absolute inset-0">
           <img
             src={heroChildren}
             alt="Ugandan school children smiling in a classroom"
             width={1920}
             height={1280}
-            className="size-full object-cover"
+            className="size-full object-contain sm:object-cover bg-brand-blue"
             style={{ objectPosition: "center 35%" }}
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-brand-blue/85 via-brand-blue/55 to-brand-blue/20 md:from-brand-blue/80 md:via-brand-blue/45 md:to-brand-blue/10" />
-          <div className="absolute inset-0 bg-gradient-to-t from-brand-blue/80 via-brand-blue/20 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-r from-brand-blue/70 via-brand-blue/40 to-brand-blue/10 sm:from-brand-blue/85 sm:via-brand-blue/55 sm:to-brand-blue/20 md:from-brand-blue/80 md:via-brand-blue/45 md:to-brand-blue/10" />
+          <div className="absolute inset-0 bg-gradient-to-t from-brand-blue/85 via-brand-blue/30 to-transparent" />
         </div>
         <div className="relative max-w-7xl mx-auto px-5 sm:px-6 py-16 sm:py-20 md:py-28 z-10 w-full">
           <div className="max-w-3xl animate-slide-up">
