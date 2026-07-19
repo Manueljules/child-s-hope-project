@@ -61,13 +61,13 @@ export function SiteNav() {
 
   return (
     <nav className="sticky top-0 z-50 w-full bg-background/95 backdrop-blur-md border-b border-brand-blue/10">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 sm:h-20 flex items-center justify-between gap-2 sm:gap-4">
+      <div className="max-w-7xl mx-auto px-3 sm:px-6 h-14 sm:h-20 flex items-center justify-between gap-1 sm:gap-4">
         <Link to="/" className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
-          <div className="size-9 sm:size-10 bg-brand-blue grid place-items-center font-display font-extrabold text-white text-lg sm:text-xl shrink-0">
+          <div className="size-8 sm:size-10 bg-brand-blue grid place-items-center font-display font-extrabold text-white text-base sm:text-xl shrink-0">
             M
           </div>
-          <div className="leading-none min-w-0 hidden xs:block sm:block">
-            <span className="block font-display font-extrabold text-sm sm:text-lg tracking-tight uppercase truncate">
+          <div className="leading-none min-w-0">
+            <span className="block font-display font-extrabold text-[11px] sm:text-lg tracking-tight uppercase truncate">
               Masembe
             </span>
             <span className="hidden sm:block text-[10px] font-mono uppercase tracking-widest text-brand-blue truncate">
@@ -90,10 +90,10 @@ export function SiteNav() {
           ))}
         </div>
 
-        <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
+        <div className="flex items-center gap-1 sm:gap-2 shrink-0">
           <Link
             to="/donate"
-            className="bg-brand-orange text-white px-3 sm:px-8 py-2.5 sm:py-3 font-display font-extrabold text-[11px] sm:text-sm uppercase tracking-widest hover:bg-brand-orange/90 transition-all shadow-lg shadow-brand-orange/20 whitespace-nowrap"
+            className="bg-brand-orange text-white px-2.5 sm:px-8 py-2 sm:py-3 font-display font-extrabold text-[10px] sm:text-sm uppercase tracking-wider sm:tracking-widest hover:bg-brand-orange/90 transition-all shadow-lg shadow-brand-orange/20 whitespace-nowrap"
           >
             <span className="sm:hidden">Donate</span>
             <span className="hidden sm:inline">Donate Now</span>
@@ -105,11 +105,11 @@ export function SiteNav() {
               aria-haspopup="listbox"
               aria-expanded={langOpen}
               aria-label="Select language"
-              className="flex items-center gap-1 px-2 sm:px-3 py-2.5 sm:py-3 border border-brand-blue/20 text-ink hover:text-brand-blue hover:border-brand-blue/50 font-display font-bold text-xs uppercase tracking-wider transition-colors"
+              className="flex items-center gap-1 px-2 sm:px-3 py-2 sm:py-3 border border-brand-blue/20 text-ink hover:text-brand-blue hover:border-brand-blue/50 font-display font-bold text-xs uppercase tracking-wider transition-colors"
             >
-              <Globe className="size-4" />
+              <Globe className="size-3.5 sm:size-4" />
               <span className="hidden sm:inline">{currentLang.code.toUpperCase()}</span>
-              <ChevronDown className={`size-3.5 transition-transform ${langOpen ? "rotate-180" : ""}`} />
+              <ChevronDown className={`hidden sm:inline size-3.5 transition-transform ${langOpen ? "rotate-180" : ""}`} />
             </button>
             {langOpen && (
               <ul
@@ -148,7 +148,7 @@ export function SiteNav() {
             type="button"
             aria-label={open ? "Close menu" : "Open menu"}
             onClick={() => setOpen((v) => !v)}
-            className="xl:hidden size-9 sm:size-11 grid place-items-center text-ink hover:text-brand-blue"
+            className="xl:hidden size-8 sm:size-11 grid place-items-center text-ink hover:text-brand-blue"
           >
             {open ? <X className="size-5" /> : <Menu className="size-5" />}
           </button>

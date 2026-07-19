@@ -159,7 +159,7 @@ function DonatePage() {
       {/* Full-bleed hero with floating donation card */}
       <section className="relative min-h-[calc(100vh-4rem)] w-full overflow-hidden">
         {/* Background image */}
-        <img src={heroChildren} alt="" aria-hidden className="absolute inset-0 size-full object-cover" />
+        <img src={heroChildren} alt="" aria-hidden className="absolute inset-0 size-full object-contain sm:object-cover bg-brand-blue" />
         <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/30 to-black/10" />
 
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 py-10 md:py-16 min-h-[calc(100vh-4rem)] flex items-center justify-center md:justify-end">
