@@ -105,7 +105,7 @@ export function SiteNav() {
               aria-haspopup="listbox"
               aria-expanded={langOpen}
               aria-label="Select language"
-              className="flex items-center gap-1.5 px-2.5 sm:px-3 py-3 border border-brand-blue/20 text-ink hover:text-brand-blue hover:border-brand-blue/50 font-display font-bold text-xs uppercase tracking-wider transition-colors"
+              className="flex items-center gap-1 px-2 sm:px-3 py-2.5 sm:py-3 border border-brand-blue/20 text-ink hover:text-brand-blue hover:border-brand-blue/50 font-display font-bold text-xs uppercase tracking-wider transition-colors"
             >
               <Globe className="size-4" />
               <span className="hidden sm:inline">{currentLang.code.toUpperCase()}</span>
