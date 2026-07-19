@@ -61,16 +61,16 @@ export function SiteNav() {
 
   return (
     <nav className="sticky top-0 z-50 w-full bg-background/95 backdrop-blur-md border-b border-brand-blue/10">
-      <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between gap-4">
-        <Link to="/" className="flex items-center gap-3 min-w-0">
-          <div className="size-10 bg-brand-blue grid place-items-center font-display font-extrabold text-white text-xl shrink-0">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 sm:h-20 flex items-center justify-between gap-2 sm:gap-4">
+        <Link to="/" className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
+          <div className="size-9 sm:size-10 bg-brand-blue grid place-items-center font-display font-extrabold text-white text-lg sm:text-xl shrink-0">
             M
           </div>
-          <div className="leading-none min-w-0">
-            <span className="block font-display font-extrabold text-base sm:text-lg tracking-tight uppercase truncate">
+          <div className="leading-none min-w-0 hidden xs:block sm:block">
+            <span className="block font-display font-extrabold text-sm sm:text-lg tracking-tight uppercase truncate">
               Masembe
             </span>
-            <span className="block text-[10px] font-mono uppercase tracking-widest text-brand-blue truncate">
+            <span className="hidden sm:block text-[10px] font-mono uppercase tracking-widest text-brand-blue truncate">
               Childcare Foundation
             </span>
           </div>
