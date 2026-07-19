@@ -73,9 +73,8 @@ export function SiteFooter() {
             <ul className="space-y-3 text-sm text-ink/60 font-medium">
               <li><Link to="/" className="hover:text-brand-blue">Home</Link></li>
               <li><Link to="/about" className="hover:text-brand-blue">About Us</Link></li>
-              <li><Link to="/founder" className="hover:text-brand-blue">Founder</Link></li>
-              <li><Link to="/leadership" className="hover:text-brand-blue">Leadership</Link></li>
               <li><Link to="/news" className="hover:text-brand-blue">News & Events</Link></li>
+              <li><Link to="/faq" className="hover:text-brand-blue">FAQ</Link></li>
             </ul>
           </div>
 
@@ -138,8 +137,6 @@ export function SiteFooter() {
         <div className="pt-8 border-t border-brand-blue/10 flex flex-col md:flex-row justify-between gap-4 text-[10px] font-mono uppercase tracking-widest text-ink/40">
           <span>© {new Date().getFullYear()} Masembe Childcare Foundation Uganda. All Rights Reserved.</span>
           <div className="flex gap-6">
-            <Link to="/privacy" className="hover:text-brand-blue">Privacy</Link>
-            <Link to="/terms" className="hover:text-brand-blue">Terms</Link>
             <Link to="/contact" className="hover:text-brand-blue">Contact</Link>
           </div>
         </div>
