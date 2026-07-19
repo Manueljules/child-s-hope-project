@@ -4,7 +4,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { SiteLayout, PageHeader } from "@/components/site/SiteLayout";
 import { uploadToBucket } from "@/lib/upload";
-import { Save, Plus, Trash2, LogOut, Edit3, Landmark, Image as ImageIcon, MessageSquare, Wallet, Users, FolderKanban, Newspaper, CalendarDays, Baby, Mail, Lock, Upload } from "lucide-react";
+import { Save, Plus, Trash2, LogOut, Image as ImageIcon, MessageSquare, Wallet, Users, FolderKanban, Newspaper, CalendarDays, Baby, Mail, Upload } from "lucide-react";
 import { M, V } from "@/lib/media";
 
 export const Route = createFileRoute("/_authenticated/admin")({
@@ -13,7 +13,7 @@ export const Route = createFileRoute("/_authenticated/admin")({
 });
 
 type Tab =
-  | "messages" | "hero" | "stats" | "stories" | "accounts" | "donations"
+  | "messages" | "stats" | "stories" | "donations"
   | "projects" | "children" | "news" | "events" | "inbox" | "newsletter";
 
 function AdminPage() {
@@ -54,9 +54,7 @@ function AdminPage() {
     { id: "inbox", label: "Inbox", icon: Mail },
     { id: "newsletter", label: "Newsletter", icon: Users },
     { id: "messages", label: "Leader Messages", icon: MessageSquare },
-    { id: "hero", label: "Hero & About", icon: Edit3 },
     { id: "stats", label: "Impact Stats", icon: Users },
-    { id: "accounts", label: "Payment Accounts", icon: Landmark },
     { id: "donations", label: "Donations Log", icon: Wallet },
   ];
 
@@ -85,9 +83,7 @@ function AdminPage() {
             {tab === "inbox" && <InboxEditor />}
             {tab === "newsletter" && <NewsletterEditor />}
             {tab === "messages" && <LeaderMessagesEditor />}
-            {tab === "hero" && <ContentJsonEditor keyName="hero" title="Hero section" fields={[["eyebrow", "Eyebrow"], ["title", "Title"], ["subtitle", "Subtitle"]]} />}
             {tab === "stats" && <ContentJsonEditor keyName="impact_stats" title="Impact statistics" fields={[["children_served", "Children served"], ["meals_provided", "Meals provided"], ["schools_assisted", "Schools assisted"], ["districts_reached", "Districts reached"]]} numeric />}
-            {tab === "accounts" && <AccountsPinGate />}
             {tab === "donations" && <DonationsLog />}
           </div>
         </div>
@@ -799,136 +795,6 @@ function StoriesEditor() {
   );
 }
 
-/* ============================================================
-   ACCOUNTS (PIN-gated)
-   ============================================================ */
-function AccountsPinGate() {
-  const [unlocked, setUnlocked] = useState(false);
-  const [pin, setPin] = useState("");
-  const [error, setError] = useState<string | null>(null);
-  const [hasPin, setHasPin] = useState<boolean | null>(null);
-  const [newPin, setNewPin] = useState("");
-
-  useEffect(() => {
-    supabase.from("admin_settings").select("value").eq("key", "accounts_pin").maybeSingle().then(({ data }) => {
-      setHasPin(!!data);
-    });
-  }, []);
-
-  async function unlock() {
-    const { data } = await supabase.from("admin_settings").select("value").eq("key", "accounts_pin").maybeSingle();
-    if (data?.value === pin) { setUnlocked(true); setError(null); }
-    else setError("Incorrect PIN.");
-  }
-  async function setInitialPin() {
-    if (newPin.length < 4) { setError("PIN must be at least 4 digits."); return; }
-    await supabase.from("admin_settings").upsert({ key: "accounts_pin", value: newPin, updated_at: new Date().toISOString() });
-    setHasPin(true);
-    setUnlocked(true);
-  }
-
-  if (hasPin === null) return <p className="text-ink/50">Loading…</p>;
-  if (unlocked) return <AccountsEditor onLock={() => setUnlocked(false)} />;
-
-  if (!hasPin) {
-    return (
-      <div className="max-w-md space-y-4">
-        <h2 className="font-display font-extrabold text-xl inline-flex items-center gap-2"><Lock className="size-5" /> Set a PIN</h2>
-        <p className="text-sm text-ink/60">Payment-account details are locked behind a PIN. Set one now — anyone who wants to edit them will need it.</p>
-        <AdminField label="Create PIN (4+ digits)" value={newPin} onChange={setNewPin} type="password" />
-        {error && <p className="text-sm text-red-600">{error}</p>}
-        <button onClick={setInitialPin} className="bg-brand-blue text-white px-6 py-3 font-display font-extrabold uppercase tracking-widest text-xs">Set PIN & unlock</button>
-      </div>
-    );
-  }
-
-  return (
-    <div className="max-w-md space-y-4">
-      <h2 className="font-display font-extrabold text-xl inline-flex items-center gap-2"><Lock className="size-5" /> Payment Accounts</h2>
-      <p className="text-sm text-ink/60">Enter the PIN to view or edit the accounts where donations are directed.</p>
-      <AdminField label="PIN" value={pin} onChange={setPin} type="password" />
-      {error && <p className="text-sm text-red-600">{error}</p>}
-      <button onClick={unlock} className="bg-brand-blue text-white px-6 py-3 font-display font-extrabold uppercase tracking-widest text-xs">Unlock</button>
-    </div>
-  );
-}
-
-type Account = { id?: string; label: string; bank_name: string; account_name: string; account_number: string; swift_code: string; currency: string; mobile_money_provider: string; mobile_money_number: string; is_primary: boolean; is_active: boolean; notes: string };
-function AccountsEditor({ onLock }: { onLock: () => void }) {
-  const qc = useQueryClient();
-  const { data } = useQuery({
-    queryKey: ["admin_accounts"],
-    queryFn: async () => (await supabase.from("donation_accounts").select("*").order("created_at")).data as Account[] | null,
-  });
-  const [editing, setEditing] = useState<Account | null>(null);
-  const empty: Account = { label: "", bank_name: "", account_name: "", account_number: "", swift_code: "", currency: "UGX", mobile_money_provider: "", mobile_money_number: "", is_primary: false, is_active: true, notes: "" };
-
-  async function save(a: Account) {
-    if (a.id) await supabase.from("donation_accounts").update({ ...a, updated_at: new Date().toISOString() }).eq("id", a.id);
-    else await supabase.from("donation_accounts").insert(a);
-    qc.invalidateQueries({ queryKey: ["admin_accounts"] });
-    setEditing(null);
-  }
-  async function remove(id: string) {
-    if (!confirm("Delete this account?")) return;
-    await supabase.from("donation_accounts").delete().eq("id", id);
-    qc.invalidateQueries({ queryKey: ["admin_accounts"] });
-  }
-
-  if (editing) {
-    return (
-      <div className="space-y-4">
-        <h2 className="font-display font-extrabold text-xl">{editing.id ? "Edit account" : "New account"}</h2>
-        <div className="grid md:grid-cols-2 gap-4">
-          <AdminField label="Label" value={editing.label} onChange={(v) => setEditing({ ...editing, label: v })} />
-          <AdminField label="Currency" value={editing.currency} onChange={(v) => setEditing({ ...editing, currency: v })} />
-          <AdminField label="Bank name" value={editing.bank_name} onChange={(v) => setEditing({ ...editing, bank_name: v })} />
-          <AdminField label="Account name" value={editing.account_name} onChange={(v) => setEditing({ ...editing, account_name: v })} />
-          <AdminField label="Account number" value={editing.account_number} onChange={(v) => setEditing({ ...editing, account_number: v })} />
-          <AdminField label="SWIFT / IBAN" value={editing.swift_code} onChange={(v) => setEditing({ ...editing, swift_code: v })} />
-          <AdminField label="Mobile money provider" value={editing.mobile_money_provider} onChange={(v) => setEditing({ ...editing, mobile_money_provider: v })} placeholder="MTN, Airtel..." />
-          <AdminField label="Mobile money number" value={editing.mobile_money_number} onChange={(v) => setEditing({ ...editing, mobile_money_number: v })} />
-        </div>
-        <AdminTextArea label="Notes" value={editing.notes} onChange={(v) => setEditing({ ...editing, notes: v })} rows={3} />
-        <div className="flex gap-6 text-sm">
-          <label className="flex items-center gap-2"><input type="checkbox" checked={editing.is_primary} onChange={(e) => setEditing({ ...editing, is_primary: e.target.checked })} /> Primary</label>
-          <label className="flex items-center gap-2"><input type="checkbox" checked={editing.is_active} onChange={(e) => setEditing({ ...editing, is_active: e.target.checked })} /> Active</label>
-        </div>
-        <div className="flex gap-2">
-          <button onClick={() => save(editing)} className="bg-brand-blue text-white px-6 py-3 font-display font-extrabold uppercase tracking-widest text-xs inline-flex items-center gap-2"><Save className="size-4" />Save</button>
-          <button onClick={() => setEditing(null)} className="border border-ink/20 px-6 py-3 font-display font-extrabold uppercase tracking-widest text-xs">Cancel</button>
-        </div>
-      </div>
-    );
-  }
-
-  return (
-    <div className="space-y-4">
-      <div className="flex justify-between items-center">
-        <h2 className="font-display font-extrabold text-xl">Where donation money goes</h2>
-        <div className="flex gap-2">
-          <button onClick={() => setEditing(empty)} className="bg-brand-orange text-white px-4 py-2 font-display font-extrabold uppercase tracking-widest text-xs inline-flex items-center gap-2"><Plus className="size-4" />New</button>
-          <button onClick={onLock} className="border border-ink/20 px-4 py-2 font-display font-extrabold uppercase tracking-widest text-xs inline-flex items-center gap-2"><Lock className="size-4" />Lock</button>
-        </div>
-      </div>
-      <div className="divide-y divide-ink/10">
-        {(data ?? []).map((a) => (
-          <div key={a.id} className="py-4 flex items-center gap-4">
-            <div className="size-10 bg-brand-blue/10 text-brand-blue grid place-items-center"><Landmark className="size-4" /></div>
-            <div className="flex-1 min-w-0">
-              <p className="font-display font-extrabold truncate">{a.label} <span className="text-xs text-ink/50 font-mono">· {a.currency}</span></p>
-              <p className="text-xs text-ink/50 truncate">{a.bank_name} {a.account_number && `· ${a.account_number}`} {a.mobile_money_provider && `· ${a.mobile_money_provider} ${a.mobile_money_number}`}</p>
-            </div>
-            {a.is_primary && <span className="text-[10px] font-mono uppercase tracking-widest text-brand-gold border border-brand-gold px-2 py-1">Primary</span>}
-            <button onClick={() => setEditing(a)} className="text-brand-blue text-xs font-mono uppercase tracking-widest">Edit</button>
-            <button onClick={() => remove(a.id!)} className="text-red-600"><Trash2 className="size-4" /></button>
-          </div>
-        ))}
-        {(data ?? []).length === 0 && <p className="text-ink/50 text-sm py-6">No donation accounts yet.</p>}
-      </div>
-    </div>
-  );
-}
 
 /* ============================================================
    DONATIONS LOG

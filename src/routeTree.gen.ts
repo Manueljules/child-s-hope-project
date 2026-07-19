@@ -10,15 +10,11 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as VolunteerRouteImport } from './routes/volunteer'
-import { Route as TermsRouteImport } from './routes/terms'
 import { Route as StoriesRouteImport } from './routes/stories'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as ProjectsRouteImport } from './routes/projects'
-import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as NewsRouteImport } from './routes/news'
-import { Route as LeadershipRouteImport } from './routes/leadership'
 import { Route as GalleryRouteImport } from './routes/gallery'
-import { Route as FounderRouteImport } from './routes/founder'
 import { Route as FaqRouteImport } from './routes/faq'
 import { Route as DonateRouteImport } from './routes/donate'
 import { Route as ContactRouteImport } from './routes/contact'
@@ -31,11 +27,6 @@ import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/
 const VolunteerRoute = VolunteerRouteImport.update({
   id: '/volunteer',
   path: '/volunteer',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const TermsRoute = TermsRouteImport.update({
-  id: '/terms',
-  path: '/terms',
   getParentRoute: () => rootRouteImport,
 } as any)
 const StoriesRoute = StoriesRouteImport.update({
@@ -53,29 +44,14 @@ const ProjectsRoute = ProjectsRouteImport.update({
   path: '/projects',
   getParentRoute: () => rootRouteImport,
 } as any)
-const PrivacyRoute = PrivacyRouteImport.update({
-  id: '/privacy',
-  path: '/privacy',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const NewsRoute = NewsRouteImport.update({
   id: '/news',
   path: '/news',
   getParentRoute: () => rootRouteImport,
 } as any)
-const LeadershipRoute = LeadershipRouteImport.update({
-  id: '/leadership',
-  path: '/leadership',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const GalleryRoute = GalleryRouteImport.update({
   id: '/gallery',
   path: '/gallery',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const FounderRoute = FounderRouteImport.update({
-  id: '/founder',
-  path: '/founder',
   getParentRoute: () => rootRouteImport,
 } as any)
 const FaqRoute = FaqRouteImport.update({
@@ -125,15 +101,11 @@ export interface FileRoutesByFullPath {
   '/contact': typeof ContactRoute
   '/donate': typeof DonateRoute
   '/faq': typeof FaqRoute
-  '/founder': typeof FounderRoute
   '/gallery': typeof GalleryRoute
-  '/leadership': typeof LeadershipRoute
   '/news': typeof NewsRoute
-  '/privacy': typeof PrivacyRoute
   '/projects': typeof ProjectsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/stories': typeof StoriesRoute
-  '/terms': typeof TermsRoute
   '/volunteer': typeof VolunteerRoute
   '/admin': typeof AuthenticatedAdminRoute
 }
@@ -144,15 +116,11 @@ export interface FileRoutesByTo {
   '/contact': typeof ContactRoute
   '/donate': typeof DonateRoute
   '/faq': typeof FaqRoute
-  '/founder': typeof FounderRoute
   '/gallery': typeof GalleryRoute
-  '/leadership': typeof LeadershipRoute
   '/news': typeof NewsRoute
-  '/privacy': typeof PrivacyRoute
   '/projects': typeof ProjectsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/stories': typeof StoriesRoute
-  '/terms': typeof TermsRoute
   '/volunteer': typeof VolunteerRoute
   '/admin': typeof AuthenticatedAdminRoute
 }
@@ -165,15 +133,11 @@ export interface FileRoutesById {
   '/contact': typeof ContactRoute
   '/donate': typeof DonateRoute
   '/faq': typeof FaqRoute
-  '/founder': typeof FounderRoute
   '/gallery': typeof GalleryRoute
-  '/leadership': typeof LeadershipRoute
   '/news': typeof NewsRoute
-  '/privacy': typeof PrivacyRoute
   '/projects': typeof ProjectsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/stories': typeof StoriesRoute
-  '/terms': typeof TermsRoute
   '/volunteer': typeof VolunteerRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
 }
@@ -186,15 +150,11 @@ export interface FileRouteTypes {
     | '/contact'
     | '/donate'
     | '/faq'
-    | '/founder'
     | '/gallery'
-    | '/leadership'
     | '/news'
-    | '/privacy'
     | '/projects'
     | '/sitemap.xml'
     | '/stories'
-    | '/terms'
     | '/volunteer'
     | '/admin'
   fileRoutesByTo: FileRoutesByTo
@@ -205,15 +165,11 @@ export interface FileRouteTypes {
     | '/contact'
     | '/donate'
     | '/faq'
-    | '/founder'
     | '/gallery'
-    | '/leadership'
     | '/news'
-    | '/privacy'
     | '/projects'
     | '/sitemap.xml'
     | '/stories'
-    | '/terms'
     | '/volunteer'
     | '/admin'
   id:
@@ -225,15 +181,11 @@ export interface FileRouteTypes {
     | '/contact'
     | '/donate'
     | '/faq'
-    | '/founder'
     | '/gallery'
-    | '/leadership'
     | '/news'
-    | '/privacy'
     | '/projects'
     | '/sitemap.xml'
     | '/stories'
-    | '/terms'
     | '/volunteer'
     | '/_authenticated/admin'
   fileRoutesById: FileRoutesById
@@ -246,15 +198,11 @@ export interface RootRouteChildren {
   ContactRoute: typeof ContactRoute
   DonateRoute: typeof DonateRoute
   FaqRoute: typeof FaqRoute
-  FounderRoute: typeof FounderRoute
   GalleryRoute: typeof GalleryRoute
-  LeadershipRoute: typeof LeadershipRoute
   NewsRoute: typeof NewsRoute
-  PrivacyRoute: typeof PrivacyRoute
   ProjectsRoute: typeof ProjectsRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   StoriesRoute: typeof StoriesRoute
-  TermsRoute: typeof TermsRoute
   VolunteerRoute: typeof VolunteerRoute
 }
 
@@ -265,13 +213,6 @@ declare module '@tanstack/react-router' {
       path: '/volunteer'
       fullPath: '/volunteer'
       preLoaderRoute: typeof VolunteerRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/terms': {
-      id: '/terms'
-      path: '/terms'
-      fullPath: '/terms'
-      preLoaderRoute: typeof TermsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/stories': {
@@ -295,13 +236,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProjectsRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/privacy': {
-      id: '/privacy'
-      path: '/privacy'
-      fullPath: '/privacy'
-      preLoaderRoute: typeof PrivacyRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/news': {
       id: '/news'
       path: '/news'
@@ -309,25 +243,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof NewsRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/leadership': {
-      id: '/leadership'
-      path: '/leadership'
-      fullPath: '/leadership'
-      preLoaderRoute: typeof LeadershipRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/gallery': {
       id: '/gallery'
       path: '/gallery'
       fullPath: '/gallery'
       preLoaderRoute: typeof GalleryRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/founder': {
-      id: '/founder'
-      path: '/founder'
-      fullPath: '/founder'
-      preLoaderRoute: typeof FounderRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/faq': {
@@ -408,27 +328,13 @@ const rootRouteChildren: RootRouteChildren = {
   ContactRoute: ContactRoute,
   DonateRoute: DonateRoute,
   FaqRoute: FaqRoute,
-  FounderRoute: FounderRoute,
   GalleryRoute: GalleryRoute,
-  LeadershipRoute: LeadershipRoute,
   NewsRoute: NewsRoute,
-  PrivacyRoute: PrivacyRoute,
   ProjectsRoute: ProjectsRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   StoriesRoute: StoriesRoute,
-  TermsRoute: TermsRoute,
   VolunteerRoute: VolunteerRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
