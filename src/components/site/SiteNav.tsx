@@ -90,12 +90,13 @@ export function SiteNav() {
           ))}
         </div>
 
-        <div className="flex items-center gap-2 shrink-0">
+        <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
           <Link
             to="/donate"
-            className="bg-brand-orange text-white px-5 sm:px-8 py-3 font-display font-extrabold text-xs sm:text-sm uppercase tracking-widest hover:bg-brand-orange/90 transition-all shadow-lg shadow-brand-orange/20"
+            className="bg-brand-orange text-white px-3 sm:px-8 py-2.5 sm:py-3 font-display font-extrabold text-[11px] sm:text-sm uppercase tracking-widest hover:bg-brand-orange/90 transition-all shadow-lg shadow-brand-orange/20 whitespace-nowrap"
           >
-            Donate Now
+            <span className="sm:hidden">Donate</span>
+            <span className="hidden sm:inline">Donate Now</span>
           </Link>
           <div ref={langRef} className="relative" data-no-translate>
             <button
