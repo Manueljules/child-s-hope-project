@@ -59,7 +59,7 @@ function HomePage() {
   return (
     <SiteLayout>
       {/* HERO */}
-      <header className="relative min-h-[92vh] flex flex-col justify-center bg-brand-blue text-white overflow-hidden">
+      <header className="relative min-h-[85vh] md:min-h-[92vh] flex flex-col justify-center bg-brand-blue text-white overflow-hidden">
         <div className="absolute inset-0">
           <img
             src={heroChildren}
@@ -67,20 +67,20 @@ function HomePage() {
             width={1920}
             height={1280}
             className="size-full object-cover"
-            style={{ objectPosition: "center 30%" }}
+            style={{ objectPosition: "center 35%" }}
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-brand-blue/80 via-brand-blue/45 to-brand-blue/10" />
-          <div className="absolute inset-0 bg-gradient-to-t from-brand-blue/70 via-transparent to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-r from-brand-blue/85 via-brand-blue/55 to-brand-blue/20 md:from-brand-blue/80 md:via-brand-blue/45 md:to-brand-blue/10" />
+          <div className="absolute inset-0 bg-gradient-to-t from-brand-blue/80 via-brand-blue/20 to-transparent" />
         </div>
-        <div className="relative max-w-7xl mx-auto px-6 py-28 z-10 w-full">
+        <div className="relative max-w-7xl mx-auto px-5 sm:px-6 py-16 sm:py-20 md:py-28 z-10 w-full">
           <div className="max-w-3xl animate-slide-up">
-            <p className="font-mono text-brand-gold text-xs uppercase tracking-[0.3em] mb-6">
+            <p className="font-mono text-brand-gold text-[10px] sm:text-xs uppercase tracking-[0.25em] sm:tracking-[0.3em] mb-4 sm:mb-6">
               / Masembe Childcare Foundation Uganda
             </p>
-            <h1 className="font-display font-extrabold text-[clamp(2.75rem,8vw,6rem)] leading-[0.9] tracking-tighter mb-8">
+            <h1 className="font-display font-extrabold text-[clamp(2.25rem,9vw,6rem)] leading-[0.95] md:leading-[0.9] tracking-tight md:tracking-tighter mb-6 sm:mb-8">
               MAKE A CHILD <span className="text-brand-gold italic">JUST</span> BETTER.
             </h1>
-            <p className="text-lg md:text-2xl text-white/90 mb-10 max-w-2xl leading-relaxed">
+            <p className="text-base sm:text-lg md:text-2xl text-white/90 mb-8 sm:mb-10 max-w-2xl leading-relaxed">
               Every child deserves love, education, protection, and a real opportunity to
               achieve their dreams. Together, we can transform vulnerable children's lives
               across Uganda.
