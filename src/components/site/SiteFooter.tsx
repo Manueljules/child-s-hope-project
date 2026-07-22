@@ -2,6 +2,7 @@ import { Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { Facebook, Instagram, Twitter, Linkedin, Youtube, Mail } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { Logo } from "./Logo";
 
 export function SiteFooter() {
   const [email, setEmail] = useState("");
@@ -27,9 +28,7 @@ export function SiteFooter() {
         <div className="grid md:grid-cols-12 gap-12 mb-16">
           <div className="md:col-span-5">
             <div className="flex items-center gap-2 mb-6">
-              <div className="size-10 bg-brand-blue grid place-items-center font-display font-extrabold text-white text-xl">
-                M
-              </div>
+              <Logo className="size-10 shrink-0" />
               <div className="leading-none">
                 <span className="block font-display font-extrabold text-base tracking-tight uppercase">
                   Masembe

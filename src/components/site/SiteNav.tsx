@@ -1,6 +1,7 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { Menu, X, Globe, ChevronDown } from "lucide-react";
+import { Logo } from "./Logo";
 import { applyLanguage, getStoredLang, setStoredLang } from "@/lib/translator";
 
 const languages = [
@@ -63,9 +64,7 @@ export function SiteNav() {
     <nav className="sticky top-0 z-50 w-full bg-background/95 backdrop-blur-md border-b border-brand-blue/10">
       <div className="max-w-7xl mx-auto px-3 sm:px-6 h-14 sm:h-20 flex items-center justify-between gap-1 sm:gap-4">
         <Link to="/" className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
-          <div className="size-8 sm:size-10 bg-brand-blue grid place-items-center font-display font-extrabold text-white text-base sm:text-xl shrink-0">
-            M
-          </div>
+          <Logo className="size-8 sm:size-11 shrink-0" />
           <div className="leading-none min-w-0">
             <span className="block font-display font-extrabold text-[11px] sm:text-lg tracking-tight uppercase truncate">
               Masembe
