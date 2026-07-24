@@ -1,9 +1,15 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 
-/* Sandbox endpoints (per user selection: sandbox for both providers). */
-const PAYPAL_BASE = "https://api-m.sandbox.paypal.com";
-const PESAPAL_BASE = "https://cybqa.pesapal.com/pesapalv3";
+/* Endpoints — switch via PAYPAL_ENV / PESAPAL_ENV env vars ("live" | "sandbox"). Default: live. */
+const PAYPAL_BASE =
+  (process.env.PAYPAL_ENV ?? "live").toLowerCase() === "sandbox"
+    ? "https://api-m.sandbox.paypal.com"
+    : "https://api-m.paypal.com";
+const PESAPAL_BASE =
+  (process.env.PESAPAL_ENV ?? "live").toLowerCase() === "sandbox"
+    ? "https://cybqa.pesapal.com/pesapalv3"
+    : "https://pay.pesapal.com/v3";
 
 /* UGX is not supported by PayPal — convert to USD for the PayPal order. */
 const UGX_PER_USD = 3800;
