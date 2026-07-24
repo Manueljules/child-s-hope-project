@@ -56,7 +56,7 @@ export const createPaypalOrder = createServerFn({ method: "POST" })
           : data.amount; // EUR/GBP approx 1:1 for sandbox display
 
     // 1) OAuth token
-    const tokenRes = await fetch(`${PAYPAL_BASE}/v1/oauth2/token`, {
+    const tokenRes = await fetch(`${paypalBase()}/v1/oauth2/token`, {
       method: "POST",
       headers: {
         Authorization: `Basic ${btoa(`${clientId}:${secret}`)}`,
@@ -92,7 +92,7 @@ export const createPaypalOrder = createServerFn({ method: "POST" })
     // 3) Create order
     const returnUrl = `${data.origin}/donate?provider=paypal&status=success&ref=${reference}`;
     const cancelUrl = `${data.origin}/donate?status=cancelled`;
-    const orderRes = await fetch(`${PAYPAL_BASE}/v2/checkout/orders`, {
+    const orderRes = await fetch(`${paypalBase()}/v2/checkout/orders`, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${access_token}`,
@@ -133,7 +133,7 @@ async function pesapalToken() {
   const key = process.env.PESAPAL_CONSUMER_KEY;
   const secret = process.env.PESAPAL_CONSUMER_SECRET;
   if (!key || !secret) throw new Error("Pesapal credentials missing");
-  const res = await fetch(`${PESAPAL_BASE}/api/Auth/RequestToken`, {
+  const res = await fetch(`${pesapalBase()}/api/Auth/RequestToken`, {
     method: "POST",
     headers: { "Content-Type": "application/json", Accept: "application/json" },
     body: JSON.stringify({ consumer_key: key, consumer_secret: secret }),
@@ -152,7 +152,7 @@ async function ensurePesapalIpn(token: string, origin: string) {
   const cached = (existing.data?.value as { ipn_id?: string } | null)?.ipn_id;
   if (cached) return cached;
 
-  const res = await fetch(`${PESAPAL_BASE}/api/URLSetup/RegisterIPN`, {
+  const res = await fetch(`${pesapalBase()}/api/URLSetup/RegisterIPN`, {
     method: "POST",
     headers: { "Content-Type": "application/json", Accept: "application/json", Authorization: `Bearer ${token}` },
     body: JSON.stringify({ url: ipnUrl, ipn_notification_type: "GET" }),
@@ -206,7 +206,7 @@ export const createPesapalOrder = createServerFn({ method: "POST" })
       },
     };
 
-    const res = await fetch(`${PESAPAL_BASE}/api/Transactions/SubmitOrderRequest`, {
+    const res = await fetch(`${pesapalBase()}/api/Transactions/SubmitOrderRequest`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -241,7 +241,7 @@ export const verifyDonation = createServerFn({ method: "POST" })
     if (data.provider === "paypal") {
       const clientId = process.env.PAYPAL_CLIENT_ID!;
       const secret = process.env.PAYPAL_SECRET!;
-      const tokenRes = await fetch(`${PAYPAL_BASE}/v1/oauth2/token`, {
+      const tokenRes = await fetch(`${paypalBase()}/v1/oauth2/token`, {
         method: "POST",
         headers: {
           Authorization: `Basic ${btoa(`${clientId}:${secret}`)}`,
@@ -253,7 +253,7 @@ export const verifyDonation = createServerFn({ method: "POST" })
       const orderId = (row.metadata as { paypal_order_id?: string } | null)?.paypal_order_id;
       if (!orderId) throw new Error("Missing PayPal order id");
       // Capture the order (auto-confirms if approved by user)
-      const capRes = await fetch(`${PAYPAL_BASE}/v2/checkout/orders/${orderId}/capture`, {
+      const capRes = await fetch(`${paypalBase()}/v2/checkout/orders/${orderId}/capture`, {
         method: "POST",
         headers: { Authorization: `Bearer ${access_token}`, "Content-Type": "application/json" },
       });
@@ -270,7 +270,7 @@ export const verifyDonation = createServerFn({ method: "POST" })
     const token = await pesapalToken();
     const trackingId = (row.metadata as { order_tracking_id?: string } | null)?.order_tracking_id;
     if (!trackingId) throw new Error("Missing Pesapal tracking id");
-    const res = await fetch(`${PESAPAL_BASE}/api/Transactions/GetTransactionStatus?orderTrackingId=${trackingId}`, {
+    const res = await fetch(`${pesapalBase()}/api/Transactions/GetTransactionStatus?orderTrackingId=${trackingId}`, {
       headers: { Accept: "application/json", Authorization: `Bearer ${token}` },
     });
     const j = (await res.json()) as { payment_status_description?: string; status_code?: number };
