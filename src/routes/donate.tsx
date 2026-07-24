@@ -1,10 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
+import { useServerFn } from "@tanstack/react-start";
 import { SiteLayout, PageHeader } from "@/components/site/SiteLayout";
-import { Heart, Lock, CheckCircle2, ChevronLeft, ChevronRight, Download, ShieldCheck } from "lucide-react";
-import { PAYMENT_METHODS } from "@/components/donate/PaymentLogos";
+import { Heart, Lock, CheckCircle2, ChevronLeft, ChevronRight, Download, ShieldCheck, ExternalLink } from "lucide-react";
+import { PROVIDERS, type ProviderId } from "@/components/donate/PaymentLogos";
 import { generateReceiptPDF, type ReceiptData } from "@/lib/receipt";
 import { supabase } from "@/integrations/supabase/client";
+import { createPaypalOrder, createPesapalOrder, verifyDonation } from "@/lib/payments.functions";
 import heroDonateAsset from "@/assets/hero-donate-bg.jpg.asset.json";
 const heroChildren = heroDonateAsset.url;
 
@@ -75,17 +77,14 @@ function DonatePage() {
   }, [currency]);
 
 
-  // step 2
-  const [method, setMethod] = useState<string | null>(null);
+  // step 2 — provider (paypal | pesapal)
+  const [provider, setProvider] = useState<ProviderId | null>(null);
+  const providerMeta = PROVIDERS.find((p) => p.id === provider);
 
   // step 3 — donor
   const [donor, setDonor] = useState({ name: "", email: "", phone: "", country: "Uganda" });
   const [anon, setAnon] = useState(false);
   const [dedication, setDedication] = useState("");
-  // step 3 — payment details
-  const [card, setCard] = useState({ number: "", name: "", expiry: "", cvc: "" });
-  const [paypalEmail, setPaypalEmail] = useState("");
-  const [walletPhone, setWalletPhone] = useState("");
 
   // step 5 — receipt
   const [receipt, setReceipt] = useState<ReceiptData | null>(null);
@@ -93,66 +92,87 @@ function DonatePage() {
   const [error, setError] = useState<string | null>(null);
 
   const finalAmount = custom ? Number(custom) : amount;
-  const methodMeta = PAYMENT_METHODS.find((m) => m.id === method);
 
   const canAdvance = (() => {
     if (step === 1) return finalAmount > 0;
-    if (step === 2) return !!method;
+    if (step === 2) return !!provider;
     if (step === 3) {
       if (!anon && (!donor.name || !donor.email)) return false;
       if (anon && !donor.email) return false;
-      if (methodMeta?.kind === "card") return card.number.length >= 12 && card.name && card.expiry && card.cvc.length >= 3;
-      if (methodMeta?.kind === "wallet") return walletPhone.length >= 6;
-      if (methodMeta?.kind === "paypal") return /\S+@\S+\.\S+/.test(paypalEmail);
     }
     return true;
   })();
 
+  const paypalFn = useServerFn(createPaypalOrder);
+  const pesapalFn = useServerFn(createPesapalOrder);
+  const verifyFn = useServerFn(verifyDonation);
+
+  // Handle return from provider (?provider=paypal|pesapal&status=success&ref=...)
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const p = new URLSearchParams(window.location.search);
+    const prov = p.get("provider") as ProviderId | null;
+    const status = p.get("status");
+    const ref = p.get("ref");
+    if (!prov || status !== "success" || !ref) return;
+    (async () => {
+      try {
+        const { donation } = await verifyFn({ data: { reference: ref, provider: prov } });
+        if (!donation) return;
+        setReceipt({
+          reference: donation.reference,
+          createdAt: new Date(donation.created_at),
+          donorName: donation.donor_name ?? "",
+          donorEmail: donation.donor_email ?? "",
+          amount: Number(donation.amount),
+          currency: donation.currency,
+          frequency: donation.frequency,
+          donationType: donation.donation_type,
+          paymentMethod: donation.payment_method ?? prov,
+          anonymous: !!donation.anonymous,
+          dedication: donation.dedication ?? "",
+        });
+        setStep(5);
+        // Clean the URL so a refresh doesn't re-verify
+        window.history.replaceState({}, "", "/donate");
+      } catch (e) {
+        setError(e instanceof Error ? e.message : "Could not verify your donation.");
+      }
+    })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   async function submitDonation() {
+    if (!provider) return;
     setSubmitting(true);
     setError(null);
     try {
-      const reference = newRef();
       const payload = {
-        reference,
-        donor_name: anon ? null : donor.name,
-        donor_email: donor.email,
-        donor_phone: donor.phone || null,
-        donor_country: donor.country || null,
-        amount: finalAmount,
-        currency,
-        frequency: freq,
-        donation_type: type,
-        payment_method: methodMeta?.label ?? method,
-        status: "confirmed", // simulated success (Stripe wiring next); trigger updates project.raised
-        anonymous: anon,
-        dedication: dedication || null,
-        project_id: projectId || null,
-        metadata: { simulated: true },
-
-      };
-      const { error: err } = await supabase.from("donations").insert(payload);
-      if (err) throw err;
-      setReceipt({
-        reference,
-        createdAt: new Date(),
-        donorName: donor.name,
-        donorEmail: donor.email,
         amount: finalAmount,
         currency,
         frequency: freq,
         donationType: type,
-        paymentMethod: methodMeta?.label ?? method ?? "—",
-        anonymous: anon,
-        dedication,
-      });
-      setStep(5);
+        projectId: projectId || null,
+        donor: {
+          name: donor.name || null,
+          email: donor.email,
+          phone: donor.phone || null,
+          country: donor.country || null,
+          anonymous: anon,
+          dedication: dedication || null,
+        },
+        origin: window.location.origin,
+      };
+      const { redirectUrl } = provider === "paypal"
+        ? await paypalFn({ data: payload })
+        : await pesapalFn({ data: payload });
+      window.location.href = redirectUrl;
     } catch (e: unknown) {
       setError(e instanceof Error ? e.message : "Something went wrong. Please try again.");
-    } finally {
       setSubmitting(false);
     }
   }
+
 
   return (
     <SiteLayout>
@@ -282,21 +302,47 @@ function DonatePage() {
                 </div>
               )}
 
-              {/* Step 2 */}
+              {/* Step 2 — choose provider */}
               {step === 2 && (
                 <div className="space-y-5 animate-fade-in">
                   <h2 className="font-display font-extrabold text-2xl">Choose a payment method</h2>
-                  <div className="grid grid-cols-3 gap-3">
-                    {PAYMENT_METHODS.map((m) => (
-                      <button
-                        key={m.id}
-                        type="button"
-                        onClick={() => setMethod(m.id)}
-                        className={`aspect-[5/3] border flex items-center justify-center bg-white transition-all ${method === m.id ? "border-brand-blue ring-2 ring-brand-blue/30" : "border-brand-blue/20 hover:border-brand-blue"}`}
-                      >
-                        <m.Logo className="h-8 max-w-[75%]" />
-                      </button>
-                    ))}
+                  <p className="text-sm text-ink/60">
+                    Pay securely through one of our checkout partners. You'll be redirected to complete payment.
+                  </p>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    {PROVIDERS.map((p) => {
+                      const selected = provider === p.id;
+                      return (
+                        <button
+                          key={p.id}
+                          type="button"
+                          onClick={() => setProvider(p.id)}
+                          className={`text-left border-2 p-5 bg-white transition-all flex flex-col gap-4 min-h-[190px] ${
+                            selected ? `${p.ring} ring-4 shadow-lg` : "border-brand-blue/15 hover:border-brand-blue/60"
+                          }`}
+                        >
+                          <div className="flex items-center justify-between">
+                            <p.Brand className="h-10 max-w-[70%]" />
+                            {selected && <CheckCircle2 className="size-6 text-brand-green shrink-0" />}
+                          </div>
+                          <p className="text-xs text-ink/60 leading-snug">{p.tagline}</p>
+                          <div className="mt-auto">
+                            <p className="font-mono text-[10px] uppercase tracking-widest text-ink/40 mb-2">Accepts</p>
+                            <div className="flex flex-wrap items-center gap-2">
+                              {p.methods.map((m) => (
+                                <span
+                                  key={m.label}
+                                  title={m.label}
+                                  className="inline-flex items-center justify-center h-7 min-w-[42px] px-1.5 bg-surface border border-ink/5"
+                                >
+                                  <m.Logo className="h-4 max-w-[46px]" />
+                                </span>
+                              ))}
+                            </div>
+                          </div>
+                        </button>
+                      );
+                    })}
                   </div>
                   <div className="flex items-center gap-2 text-[11px] font-mono uppercase tracking-widest text-ink/50">
                     <ShieldCheck className="size-4 text-brand-green" /> Encrypted · PCI-compliant
@@ -304,15 +350,15 @@ function DonatePage() {
                 </div>
               )}
 
-              {/* Step 3 */}
-              {step === 3 && methodMeta && (
+              {/* Step 3 — donor details only (card / wallet data collected on provider's page) */}
+              {step === 3 && providerMeta && (
                 <div className="space-y-5 animate-fade-in max-h-[70vh] overflow-y-auto pr-1">
                   <div className="flex items-center justify-between border-b border-brand-blue/10 pb-3">
                     <div>
-                      <p className="font-mono text-[10px] uppercase tracking-widest text-brand-blue">/ Paying with</p>
-                      <p className="font-display font-extrabold text-lg">{methodMeta.label}</p>
+                      <p className="font-mono text-[10px] uppercase tracking-widest text-brand-blue">/ Checkout via</p>
+                      <p className="font-display font-extrabold text-lg">{providerMeta.name}</p>
                     </div>
-                    <methodMeta.Logo className="h-7" />
+                    <providerMeta.Brand className="h-7" />
                   </div>
                   <h3 className="font-display font-extrabold text-lg">Your details</h3>
                   <label className="flex items-center gap-2 text-sm">
@@ -323,31 +369,8 @@ function DonatePage() {
                   <Field label="Phone" type="tel" value={donor.phone} onChange={(v) => setDonor({ ...donor, phone: v })} />
                   <Field label="Country" value={donor.country} onChange={(v) => setDonor({ ...donor, country: v })} />
                   <Field label="Dedication (optional)" value={dedication} onChange={setDedication} placeholder="In honor of..." />
-
-                  <div className="border-t border-brand-blue/10 pt-4 space-y-3">
-                    <h3 className="font-display font-extrabold text-lg">Payment details</h3>
-                    {methodMeta.kind === "card" && (
-                      <>
-                        <Field label="Card number" value={card.number} onChange={(v) => setCard({ ...card, number: v.replace(/[^0-9 ]/g, "").slice(0, 19) })} placeholder="1234 5678 9012 3456" required />
-                        <Field label="Name on card" value={card.name} onChange={(v) => setCard({ ...card, name: v })} required />
-                        <div className="grid grid-cols-2 gap-3">
-                          <Field label="Expiry" value={card.expiry} onChange={(v) => setCard({ ...card, expiry: v.slice(0, 5) })} placeholder="MM/YY" required />
-                          <Field label="CVC" value={card.cvc} onChange={(v) => setCard({ ...card, cvc: v.replace(/\D/g, "").slice(0, 4) })} placeholder="123" required />
-                        </div>
-                      </>
-                    )}
-                    {methodMeta.kind === "wallet" && (
-                      <>
-                        <p className="text-xs text-ink/60">You'll confirm the payment on your {methodMeta.label} device.</p>
-                        <Field label="Phone linked to wallet" type="tel" value={walletPhone} onChange={setWalletPhone} required />
-                      </>
-                    )}
-                    {methodMeta.kind === "paypal" && (
-                      <Field label="PayPal email" type="email" value={paypalEmail} onChange={setPaypalEmail} required />
-                    )}
-                    <div className="flex items-center gap-2 text-[10px] font-mono uppercase tracking-widest text-ink/50 pt-1">
-                      <Lock className="size-3" /> Encrypted in transit
-                    </div>
+                  <div className="flex items-center gap-2 text-[10px] font-mono uppercase tracking-widest text-ink/50 pt-1">
+                    <Lock className="size-3" /> Card, wallet & mobile-money details are entered on {providerMeta.name}'s secure page.
                   </div>
                 </div>
               )}
@@ -360,7 +383,7 @@ function DonatePage() {
                     <Row k="Amount" v={`${currency} ${finalAmount.toLocaleString()}`} big />
                     <Row k="Type" v={TYPES.find((t) => t.id === type)?.label ?? type} />
                     <Row k="Frequency" v={freq === "one" ? "One-time" : freq} />
-                    <Row k="Payment" v={methodMeta?.label ?? "—"} />
+                    <Row k="Payment" v={providerMeta?.name ?? "—"} />
                     <Row k="Donor" v={anon ? "Anonymous" : donor.name} />
                     <Row k="Email" v={donor.email} />
                     {dedication && <Row k="Dedication" v={dedication} />}
@@ -368,6 +391,7 @@ function DonatePage() {
                   {error && <p className="text-sm text-red-600">{error}</p>}
                 </div>
               )}
+
 
               {/* Step 5 */}
               {step === 5 && receipt && (
@@ -418,7 +442,7 @@ function DonatePage() {
                     onClick={submitDonation}
                     className="w-full bg-brand-orange text-white py-4 font-display font-extrabold uppercase tracking-widest text-sm rounded-full hover:bg-brand-orange/90 disabled:opacity-60 inline-flex items-center justify-center gap-2"
                   >
-                    <Heart className="size-4" /> {submitting ? "Processing…" : `Donate ${currency} ${finalAmount.toLocaleString()}`}
+                    <Heart className="size-4" /> {submitting ? "Redirecting…" : `Continue to ${providerMeta?.name ?? "Checkout"}`} <ExternalLink className="size-4" />
                   </button>
                   <button
                     type="button"
