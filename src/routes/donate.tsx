@@ -302,21 +302,47 @@ function DonatePage() {
                 </div>
               )}
 
-              {/* Step 2 */}
+              {/* Step 2 — choose provider */}
               {step === 2 && (
                 <div className="space-y-5 animate-fade-in">
                   <h2 className="font-display font-extrabold text-2xl">Choose a payment method</h2>
-                  <div className="grid grid-cols-3 gap-3">
-                    {PAYMENT_METHODS.map((m) => (
-                      <button
-                        key={m.id}
-                        type="button"
-                        onClick={() => setMethod(m.id)}
-                        className={`aspect-[5/3] border flex items-center justify-center bg-white transition-all ${method === m.id ? "border-brand-blue ring-2 ring-brand-blue/30" : "border-brand-blue/20 hover:border-brand-blue"}`}
-                      >
-                        <m.Logo className="h-8 max-w-[75%]" />
-                      </button>
-                    ))}
+                  <p className="text-sm text-ink/60">
+                    Pay securely through one of our checkout partners. You'll be redirected to complete payment.
+                  </p>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    {PROVIDERS.map((p) => {
+                      const selected = provider === p.id;
+                      return (
+                        <button
+                          key={p.id}
+                          type="button"
+                          onClick={() => setProvider(p.id)}
+                          className={`text-left border-2 p-5 bg-white transition-all flex flex-col gap-4 min-h-[190px] ${
+                            selected ? `${p.ring} ring-4 shadow-lg` : "border-brand-blue/15 hover:border-brand-blue/60"
+                          }`}
+                        >
+                          <div className="flex items-center justify-between">
+                            <p.Brand className="h-10 max-w-[70%]" />
+                            {selected && <CheckCircle2 className="size-6 text-brand-green shrink-0" />}
+                          </div>
+                          <p className="text-xs text-ink/60 leading-snug">{p.tagline}</p>
+                          <div className="mt-auto">
+                            <p className="font-mono text-[10px] uppercase tracking-widest text-ink/40 mb-2">Accepts</p>
+                            <div className="flex flex-wrap items-center gap-2">
+                              {p.methods.map((m) => (
+                                <span
+                                  key={m.label}
+                                  title={m.label}
+                                  className="inline-flex items-center justify-center h-7 min-w-[42px] px-1.5 bg-surface border border-ink/5"
+                                >
+                                  <m.Logo className="h-4 max-w-[46px]" />
+                                </span>
+                              ))}
+                            </div>
+                          </div>
+                        </button>
+                      );
+                    })}
                   </div>
                   <div className="flex items-center gap-2 text-[11px] font-mono uppercase tracking-widest text-ink/50">
                     <ShieldCheck className="size-4 text-brand-green" /> Encrypted · PCI-compliant
@@ -324,15 +350,15 @@ function DonatePage() {
                 </div>
               )}
 
-              {/* Step 3 */}
-              {step === 3 && methodMeta && (
+              {/* Step 3 — donor details only (card / wallet data collected on provider's page) */}
+              {step === 3 && providerMeta && (
                 <div className="space-y-5 animate-fade-in max-h-[70vh] overflow-y-auto pr-1">
                   <div className="flex items-center justify-between border-b border-brand-blue/10 pb-3">
                     <div>
-                      <p className="font-mono text-[10px] uppercase tracking-widest text-brand-blue">/ Paying with</p>
-                      <p className="font-display font-extrabold text-lg">{methodMeta.label}</p>
+                      <p className="font-mono text-[10px] uppercase tracking-widest text-brand-blue">/ Checkout via</p>
+                      <p className="font-display font-extrabold text-lg">{providerMeta.name}</p>
                     </div>
-                    <methodMeta.Logo className="h-7" />
+                    <providerMeta.Brand className="h-7" />
                   </div>
                   <h3 className="font-display font-extrabold text-lg">Your details</h3>
                   <label className="flex items-center gap-2 text-sm">
@@ -343,31 +369,8 @@ function DonatePage() {
                   <Field label="Phone" type="tel" value={donor.phone} onChange={(v) => setDonor({ ...donor, phone: v })} />
                   <Field label="Country" value={donor.country} onChange={(v) => setDonor({ ...donor, country: v })} />
                   <Field label="Dedication (optional)" value={dedication} onChange={setDedication} placeholder="In honor of..." />
-
-                  <div className="border-t border-brand-blue/10 pt-4 space-y-3">
-                    <h3 className="font-display font-extrabold text-lg">Payment details</h3>
-                    {methodMeta.kind === "card" && (
-                      <>
-                        <Field label="Card number" value={card.number} onChange={(v) => setCard({ ...card, number: v.replace(/[^0-9 ]/g, "").slice(0, 19) })} placeholder="1234 5678 9012 3456" required />
-                        <Field label="Name on card" value={card.name} onChange={(v) => setCard({ ...card, name: v })} required />
-                        <div className="grid grid-cols-2 gap-3">
-                          <Field label="Expiry" value={card.expiry} onChange={(v) => setCard({ ...card, expiry: v.slice(0, 5) })} placeholder="MM/YY" required />
-                          <Field label="CVC" value={card.cvc} onChange={(v) => setCard({ ...card, cvc: v.replace(/\D/g, "").slice(0, 4) })} placeholder="123" required />
-                        </div>
-                      </>
-                    )}
-                    {methodMeta.kind === "wallet" && (
-                      <>
-                        <p className="text-xs text-ink/60">You'll confirm the payment on your {methodMeta.label} device.</p>
-                        <Field label="Phone linked to wallet" type="tel" value={walletPhone} onChange={setWalletPhone} required />
-                      </>
-                    )}
-                    {methodMeta.kind === "paypal" && (
-                      <Field label="PayPal email" type="email" value={paypalEmail} onChange={setPaypalEmail} required />
-                    )}
-                    <div className="flex items-center gap-2 text-[10px] font-mono uppercase tracking-widest text-ink/50 pt-1">
-                      <Lock className="size-3" /> Encrypted in transit
-                    </div>
+                  <div className="flex items-center gap-2 text-[10px] font-mono uppercase tracking-widest text-ink/50 pt-1">
+                    <Lock className="size-3" /> Card, wallet & mobile-money details are entered on {providerMeta.name}'s secure page.
                   </div>
                 </div>
               )}
@@ -380,7 +383,7 @@ function DonatePage() {
                     <Row k="Amount" v={`${currency} ${finalAmount.toLocaleString()}`} big />
                     <Row k="Type" v={TYPES.find((t) => t.id === type)?.label ?? type} />
                     <Row k="Frequency" v={freq === "one" ? "One-time" : freq} />
-                    <Row k="Payment" v={methodMeta?.label ?? "—"} />
+                    <Row k="Payment" v={providerMeta?.name ?? "—"} />
                     <Row k="Donor" v={anon ? "Anonymous" : donor.name} />
                     <Row k="Email" v={donor.email} />
                     {dedication && <Row k="Dedication" v={dedication} />}
@@ -388,6 +391,7 @@ function DonatePage() {
                   {error && <p className="text-sm text-red-600">{error}</p>}
                 </div>
               )}
+
 
               {/* Step 5 */}
               {step === 5 && receipt && (
