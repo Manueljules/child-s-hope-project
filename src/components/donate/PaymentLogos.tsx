@@ -1,6 +1,7 @@
-import type { ComponentProps } from "react";
+import type { ComponentProps, ReactElement } from "react";
 
 type Props = ComponentProps<"svg">;
+type SvgIcon = (p: Props) => ReactElement;
 
 /* ---------- Card / wallet sub-icons ---------- */
 
@@ -113,10 +114,10 @@ export const PROVIDERS: Array<{
   id: ProviderId;
   name: string;
   tagline: string;
-  Brand: (p: Props) => JSX.Element;
+  Brand: SvgIcon;
   accents: string;
   ring: string;
-  methods: Array<{ label: string; Logo: (p: Props) => JSX.Element }>;
+  methods: Array<{ label: string; Logo: SvgIcon }>;
 }> = [
   {
     id: "pesapal",
