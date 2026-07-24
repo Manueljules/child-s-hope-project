@@ -77,17 +77,14 @@ function DonatePage() {
   }, [currency]);
 
 
-  // step 2
-  const [method, setMethod] = useState<string | null>(null);
+  // step 2 — provider (paypal | pesapal)
+  const [provider, setProvider] = useState<ProviderId | null>(null);
+  const providerMeta = PROVIDERS.find((p) => p.id === provider);
 
   // step 3 — donor
   const [donor, setDonor] = useState({ name: "", email: "", phone: "", country: "Uganda" });
   const [anon, setAnon] = useState(false);
   const [dedication, setDedication] = useState("");
-  // step 3 — payment details
-  const [card, setCard] = useState({ number: "", name: "", expiry: "", cvc: "" });
-  const [paypalEmail, setPaypalEmail] = useState("");
-  const [walletPhone, setWalletPhone] = useState("");
 
   // step 5 — receipt
   const [receipt, setReceipt] = useState<ReceiptData | null>(null);
@@ -95,66 +92,87 @@ function DonatePage() {
   const [error, setError] = useState<string | null>(null);
 
   const finalAmount = custom ? Number(custom) : amount;
-  const methodMeta = PAYMENT_METHODS.find((m) => m.id === method);
 
   const canAdvance = (() => {
     if (step === 1) return finalAmount > 0;
-    if (step === 2) return !!method;
+    if (step === 2) return !!provider;
     if (step === 3) {
       if (!anon && (!donor.name || !donor.email)) return false;
       if (anon && !donor.email) return false;
-      if (methodMeta?.kind === "card") return card.number.length >= 12 && card.name && card.expiry && card.cvc.length >= 3;
-      if (methodMeta?.kind === "wallet") return walletPhone.length >= 6;
-      if (methodMeta?.kind === "paypal") return /\S+@\S+\.\S+/.test(paypalEmail);
     }
     return true;
   })();
 
+  const paypalFn = useServerFn(createPaypalOrder);
+  const pesapalFn = useServerFn(createPesapalOrder);
+  const verifyFn = useServerFn(verifyDonation);
+
+  // Handle return from provider (?provider=paypal|pesapal&status=success&ref=...)
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const p = new URLSearchParams(window.location.search);
+    const prov = p.get("provider") as ProviderId | null;
+    const status = p.get("status");
+    const ref = p.get("ref");
+    if (!prov || status !== "success" || !ref) return;
+    (async () => {
+      try {
+        const { donation } = await verifyFn({ data: { reference: ref, provider: prov } });
+        if (!donation) return;
+        setReceipt({
+          reference: donation.reference,
+          createdAt: new Date(donation.created_at),
+          donorName: donation.donor_name ?? "",
+          donorEmail: donation.donor_email ?? "",
+          amount: Number(donation.amount),
+          currency: donation.currency,
+          frequency: donation.frequency,
+          donationType: donation.donation_type,
+          paymentMethod: donation.payment_method ?? prov,
+          anonymous: !!donation.anonymous,
+          dedication: donation.dedication ?? "",
+        });
+        setStep(5);
+        // Clean the URL so a refresh doesn't re-verify
+        window.history.replaceState({}, "", "/donate");
+      } catch (e) {
+        setError(e instanceof Error ? e.message : "Could not verify your donation.");
+      }
+    })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   async function submitDonation() {
+    if (!provider) return;
     setSubmitting(true);
     setError(null);
     try {
-      const reference = newRef();
       const payload = {
-        reference,
-        donor_name: anon ? null : donor.name,
-        donor_email: donor.email,
-        donor_phone: donor.phone || null,
-        donor_country: donor.country || null,
-        amount: finalAmount,
-        currency,
-        frequency: freq,
-        donation_type: type,
-        payment_method: methodMeta?.label ?? method,
-        status: "confirmed", // simulated success (Stripe wiring next); trigger updates project.raised
-        anonymous: anon,
-        dedication: dedication || null,
-        project_id: projectId || null,
-        metadata: { simulated: true },
-
-      };
-      const { error: err } = await supabase.from("donations").insert(payload);
-      if (err) throw err;
-      setReceipt({
-        reference,
-        createdAt: new Date(),
-        donorName: donor.name,
-        donorEmail: donor.email,
         amount: finalAmount,
         currency,
         frequency: freq,
         donationType: type,
-        paymentMethod: methodMeta?.label ?? method ?? "—",
-        anonymous: anon,
-        dedication,
-      });
-      setStep(5);
+        projectId: projectId || null,
+        donor: {
+          name: donor.name || null,
+          email: donor.email,
+          phone: donor.phone || null,
+          country: donor.country || null,
+          anonymous: anon,
+          dedication: dedication || null,
+        },
+        origin: window.location.origin,
+      };
+      const { redirectUrl } = provider === "paypal"
+        ? await paypalFn({ data: payload })
+        : await pesapalFn({ data: payload });
+      window.location.href = redirectUrl;
     } catch (e: unknown) {
       setError(e instanceof Error ? e.message : "Something went wrong. Please try again.");
-    } finally {
       setSubmitting(false);
     }
   }
+
 
   return (
     <SiteLayout>
