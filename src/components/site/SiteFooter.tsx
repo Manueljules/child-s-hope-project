@@ -83,6 +83,7 @@ export function SiteFooter() {
             </h4>
             <ul className="space-y-3 text-sm text-ink/60 font-medium">
               <li><Link to="/donate" className="hover:text-brand-blue">Donate</Link></li>
+              <li><Link to="/manage-subscription" className="hover:text-brand-blue">Manage recurring donation</Link></li>
               <li><Link to="/volunteer" className="hover:text-brand-blue">Volunteer</Link></li>
               <li><Link to="/projects" className="hover:text-brand-blue">Our Projects</Link></li>
               <li><Link to="/stories" className="hover:text-brand-blue">Stories</Link></li>

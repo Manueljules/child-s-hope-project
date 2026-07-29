@@ -6,7 +6,7 @@ import { Heart, Lock, CheckCircle2, ChevronLeft, ChevronRight, Download, ShieldC
 import { PROVIDERS, type ProviderId } from "@/components/donate/PaymentLogos";
 import { generateReceiptPDF, type ReceiptData } from "@/lib/receipt";
 import { supabase } from "@/integrations/supabase/client";
-import { createPaypalOrder, createPesapalOrder, verifyDonation } from "@/lib/payments.functions";
+import { createPaypalOrder, createPesapalOrder, verifyDonation, cancelSubscription } from "@/lib/payments.functions";
 import heroDonateAsset from "@/assets/hero-donate-bg.jpg.asset.json";
 const heroChildren = heroDonateAsset.url;
 
@@ -106,6 +106,10 @@ function DonatePage() {
   const paypalFn = useServerFn(createPaypalOrder);
   const pesapalFn = useServerFn(createPesapalOrder);
   const verifyFn = useServerFn(verifyDonation);
+  const cancelFn = useServerFn(cancelSubscription);
+  const isRecurring = freq === "weekly" || freq === "monthly" || freq === "annual";
+  const [cancelling, setCancelling] = useState(false);
+  const [cancelled, setCancelled] = useState(false);
 
   // Handle return from provider (?provider=paypal|pesapal&status=success&ref=...)
   useEffect(() => {
@@ -388,6 +392,20 @@ function DonatePage() {
                     <Row k="Email" v={donor.email} />
                     {dedication && <Row k="Dedication" v={dedication} />}
                   </div>
+                  {isRecurring && (
+                    <div className="bg-brand-blue/5 border border-brand-blue/20 p-4 text-sm text-ink/80 space-y-1">
+                      <p className="font-display font-extrabold text-brand-blue">Recurring donation</p>
+                      <p>
+                        You'll be charged <strong>{currency} {finalAmount.toLocaleString()}</strong>{" "}
+                        automatically every {freq === "annual" ? "year" : freq === "weekly" ? "week" : "month"} on {providerMeta?.name}.
+                      </p>
+                      <p className="text-xs text-ink/60">
+                        You can cancel anytime from the receipt page or at{" "}
+                        <a href="/manage-subscription" className="text-brand-blue underline">/manage-subscription</a>{" "}
+                        using your reference and email.
+                      </p>
+                    </div>
+                  )}
                   {error && <p className="text-sm text-red-600">{error}</p>}
                 </div>
               )}
@@ -398,7 +416,7 @@ function DonatePage() {
                 <div className="text-center py-6 animate-fade-in">
                   <CheckCircle2 className="size-16 text-brand-green mx-auto mb-4" />
                   <h2 className="font-display font-extrabold text-3xl mb-2">Thank you!</h2>
-                  <p className="text-ink/70 mb-1">Your donation of <strong>{receipt.currency} {receipt.amount.toLocaleString()}</strong> has been received.</p>
+                  <p className="text-ink/70 mb-1">Your {receipt.frequency !== "one" ? "recurring " : ""}donation of <strong>{receipt.currency} {receipt.amount.toLocaleString()}</strong>{receipt.frequency !== "one" ? ` / ${receipt.frequency}` : ""} has been received.</p>
                   <p className="text-xs font-mono text-ink/50 mb-6">Ref {receipt.reference}</p>
                   <button
                     onClick={() => generateReceiptPDF(receipt)}
@@ -406,7 +424,34 @@ function DonatePage() {
                   >
                     <Download className="size-4" /> Download Receipt (PDF)
                   </button>
-                  <a href="/" className="mt-4 inline-block text-brand-blue font-mono text-[11px] uppercase tracking-widest hover:underline">Back to home</a>
+                  {receipt.frequency !== "one" && !cancelled && (
+                    <button
+                      onClick={async () => {
+                        if (!confirm("Cancel this recurring donation? No further payments will be taken.")) return;
+                        setCancelling(true);
+                        try {
+                          await cancelFn({ data: { reference: receipt.reference, email: receipt.donorEmail } });
+                          setCancelled(true);
+                        } catch (e) {
+                          setError(e instanceof Error ? e.message : "Cancellation failed");
+                        } finally {
+                          setCancelling(false);
+                        }
+                      }}
+                      className="mt-3 w-full border border-red-500 text-red-600 py-3 font-display font-extrabold uppercase tracking-widest text-xs hover:bg-red-50 disabled:opacity-50"
+                      disabled={cancelling}
+                    >
+                      {cancelling ? "Cancelling…" : "Cancel recurring donation"}
+                    </button>
+                  )}
+                  {cancelled && <p className="mt-3 text-sm text-brand-green">Recurring donation cancelled.</p>}
+                  {error && <p className="mt-3 text-sm text-red-600">{error}</p>}
+                  <div className="mt-4 flex items-center justify-center gap-4 text-brand-blue font-mono text-[11px] uppercase tracking-widest">
+                    <a href="/" className="hover:underline">Back to home</a>
+                    {receipt.frequency !== "one" && (
+                      <a href="/manage-subscription" className="hover:underline">Manage donation</a>
+                    )}
+                  </div>
                 </div>
               )}
 

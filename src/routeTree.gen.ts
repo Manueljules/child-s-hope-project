@@ -14,6 +14,7 @@ import { Route as StoriesRouteImport } from './routes/stories'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as ProjectsRouteImport } from './routes/projects'
 import { Route as NewsRouteImport } from './routes/news'
+import { Route as ManageSubscriptionRouteImport } from './routes/manage-subscription'
 import { Route as GalleryRouteImport } from './routes/gallery'
 import { Route as FaqRouteImport } from './routes/faq'
 import { Route as DonateRouteImport } from './routes/donate'
@@ -48,6 +49,11 @@ const ProjectsRoute = ProjectsRouteImport.update({
 const NewsRoute = NewsRouteImport.update({
   id: '/news',
   path: '/news',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ManageSubscriptionRoute = ManageSubscriptionRouteImport.update({
+  id: '/manage-subscription',
+  path: '/manage-subscription',
   getParentRoute: () => rootRouteImport,
 } as any)
 const GalleryRoute = GalleryRouteImport.update({
@@ -108,6 +114,7 @@ export interface FileRoutesByFullPath {
   '/donate': typeof DonateRoute
   '/faq': typeof FaqRoute
   '/gallery': typeof GalleryRoute
+  '/manage-subscription': typeof ManageSubscriptionRoute
   '/news': typeof NewsRoute
   '/projects': typeof ProjectsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -124,6 +131,7 @@ export interface FileRoutesByTo {
   '/donate': typeof DonateRoute
   '/faq': typeof FaqRoute
   '/gallery': typeof GalleryRoute
+  '/manage-subscription': typeof ManageSubscriptionRoute
   '/news': typeof NewsRoute
   '/projects': typeof ProjectsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -142,6 +150,7 @@ export interface FileRoutesById {
   '/donate': typeof DonateRoute
   '/faq': typeof FaqRoute
   '/gallery': typeof GalleryRoute
+  '/manage-subscription': typeof ManageSubscriptionRoute
   '/news': typeof NewsRoute
   '/projects': typeof ProjectsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -160,6 +169,7 @@ export interface FileRouteTypes {
     | '/donate'
     | '/faq'
     | '/gallery'
+    | '/manage-subscription'
     | '/news'
     | '/projects'
     | '/sitemap.xml'
@@ -176,6 +186,7 @@ export interface FileRouteTypes {
     | '/donate'
     | '/faq'
     | '/gallery'
+    | '/manage-subscription'
     | '/news'
     | '/projects'
     | '/sitemap.xml'
@@ -193,6 +204,7 @@ export interface FileRouteTypes {
     | '/donate'
     | '/faq'
     | '/gallery'
+    | '/manage-subscription'
     | '/news'
     | '/projects'
     | '/sitemap.xml'
@@ -211,6 +223,7 @@ export interface RootRouteChildren {
   DonateRoute: typeof DonateRoute
   FaqRoute: typeof FaqRoute
   GalleryRoute: typeof GalleryRoute
+  ManageSubscriptionRoute: typeof ManageSubscriptionRoute
   NewsRoute: typeof NewsRoute
   ProjectsRoute: typeof ProjectsRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
@@ -254,6 +267,13 @@ declare module '@tanstack/react-router' {
       path: '/news'
       fullPath: '/news'
       preLoaderRoute: typeof NewsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/manage-subscription': {
+      id: '/manage-subscription'
+      path: '/manage-subscription'
+      fullPath: '/manage-subscription'
+      preLoaderRoute: typeof ManageSubscriptionRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/gallery': {
@@ -349,6 +369,7 @@ const rootRouteChildren: RootRouteChildren = {
   DonateRoute: DonateRoute,
   FaqRoute: FaqRoute,
   GalleryRoute: GalleryRoute,
+  ManageSubscriptionRoute: ManageSubscriptionRoute,
   NewsRoute: NewsRoute,
   ProjectsRoute: ProjectsRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
