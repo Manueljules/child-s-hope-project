@@ -6,7 +6,7 @@ import { Heart, Lock, CheckCircle2, ChevronLeft, ChevronRight, Download, ShieldC
 import { PROVIDERS, type ProviderId } from "@/components/donate/PaymentLogos";
 import { generateReceiptPDF, type ReceiptData } from "@/lib/receipt";
 import { supabase } from "@/integrations/supabase/client";
-import { createPaypalOrder, createPesapalOrder, verifyDonation } from "@/lib/payments.functions";
+import { createPaypalOrder, createPesapalOrder, verifyDonation, cancelSubscription } from "@/lib/payments.functions";
 import heroDonateAsset from "@/assets/hero-donate-bg.jpg.asset.json";
 const heroChildren = heroDonateAsset.url;
 
