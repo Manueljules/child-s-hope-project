@@ -72,7 +72,7 @@ function ManagePage() {
 
   return (
     <SiteLayout>
-      <PageHeader title="Manage your donation" subtitle="Look up your recurring donation and cancel anytime." />
+      <PageHeader eyebrow="Donations" title="Manage your donation" description="Look up your recurring donation and cancel it anytime." />
       <section className="max-w-3xl mx-auto px-4 sm:px-6 py-12">
         <form onSubmit={onLookup} className="bg-white border border-brand-blue/15 p-6 space-y-4">
           <div>
