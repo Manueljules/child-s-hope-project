@@ -392,6 +392,20 @@ function DonatePage() {
                     <Row k="Email" v={donor.email} />
                     {dedication && <Row k="Dedication" v={dedication} />}
                   </div>
+                  {isRecurring && (
+                    <div className="bg-brand-blue/5 border border-brand-blue/20 p-4 text-sm text-ink/80 space-y-1">
+                      <p className="font-display font-extrabold text-brand-blue">Recurring donation</p>
+                      <p>
+                        You'll be charged <strong>{currency} {finalAmount.toLocaleString()}</strong>{" "}
+                        automatically every {freq === "annual" ? "year" : freq === "weekly" ? "week" : "month"} on {providerMeta?.name}.
+                      </p>
+                      <p className="text-xs text-ink/60">
+                        You can cancel anytime from the receipt page or at{" "}
+                        <a href="/manage-subscription" className="text-brand-blue underline">/manage-subscription</a>{" "}
+                        using your reference and email.
+                      </p>
+                    </div>
+                  )}
                   {error && <p className="text-sm text-red-600">{error}</p>}
                 </div>
               )}
