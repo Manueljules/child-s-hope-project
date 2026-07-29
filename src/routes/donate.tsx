@@ -106,6 +106,10 @@ function DonatePage() {
   const paypalFn = useServerFn(createPaypalOrder);
   const pesapalFn = useServerFn(createPesapalOrder);
   const verifyFn = useServerFn(verifyDonation);
+  const cancelFn = useServerFn(cancelSubscription);
+  const isRecurring = freq === "weekly" || freq === "monthly" || freq === "annual";
+  const [cancelling, setCancelling] = useState(false);
+  const [cancelled, setCancelled] = useState(false);
 
   // Handle return from provider (?provider=paypal|pesapal&status=success&ref=...)
   useEffect(() => {
